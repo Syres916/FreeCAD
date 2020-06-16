@@ -163,6 +163,9 @@ void DlgGeneralImp::saveSettings()
     hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/MainWindow");
     hGrp->SetBool("TiledBackground", ui->tiledBackground->isChecked());
 
+    hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/RecentFiles");
+    hGrp->SetBool("FilterRecentFiles", ui->filterRecentFiles->isChecked());
+
     QVariant sheet = ui->StyleSheets->itemData(ui->StyleSheets->currentIndex());
     hGrp->SetASCII("StyleSheet", (const char*)sheet.toByteArray());
     Application::Instance->setStyleSheet(sheet.toString(), ui->tiledBackground->isChecked());
@@ -241,6 +244,9 @@ void DlgGeneralImp::loadSettings()
 
     hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/MainWindow");
     ui->tiledBackground->setChecked(hGrp->GetBool("TiledBackground", false));
+
+    hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/RecentFiles");
+    ui->filterRecentFiles->setChecked(hGrp->GetBool("FilterRecentFiles", true));
 
     // List all .qss/.css files
     QMap<QString, QString> cssFiles;
