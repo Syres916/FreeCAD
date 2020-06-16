@@ -129,6 +129,26 @@
          <item>
           <layout class="QHBoxLayout">
            <property name="spacing">
+            <number>5</number>
+           </property>
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QCheckBox" name="filterRecentFiles">
+             <property name="toolTip">
+              <string>Display only FCStd files in Recent File list</string>
+             </property>
+             <property name="text">
+              <string>Filter FCStd Files in Recent File list</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout">
+           <property name="spacing">
             <number>6</number>
            </property>
            <property name="margin">
