@@ -520,7 +520,7 @@ class _ArchMaterialTaskPanel:
     def setFields(self):
         "sets the task box contents from self.material"
         if 'Name' in self.material:
-            self.form.FieldName.setText(self.material['Name'])
+            self.form.FieldName.setText(self.obj.Name)
         elif self.obj:
             self.form.FieldName.setText(self.obj.Label)
         if 'Description' in self.material:
@@ -576,14 +576,33 @@ class _ArchMaterialTaskPanel:
         self.material['Transparency'] = str(self.form.SpinBox_Transparency.value())
 
     def accept(self):
+        newmatproceed = True
         self.getFields()
         if self.obj:
             if hasattr(self.obj,"Material"):
-                self.obj.Material = self.material
-                self.obj.Label = self.material['Name']
-        FreeCADGui.ActiveDocument.resetEdit()
-        FreeCADGui.Control.closeDialog()
-        FreeCAD.ActiveDocument.recompute()
+                for m in self.existingmaterials:
+                    if self.material['Name'] == m.Name:
+                        FreeCAD.Console.PrintError('This material Name already exists, please retry with a different name\n')
+                        newmatproceed = False
+                    if self.material['Name'] == m.Label:
+                        FreeCAD.Console.PrintError('This material Label already exists, please retry with a different name\n')
+                        newmatproceed = False
+            else:
+                newmatproceed = False
+        else:
+            newmatproceed = False
+        if newmatproceed is True:
+            self.obj.Material = self.material
+            self.obj.Label = self.material['Name']
+            FreeCADGui.ActiveDocument.resetEdit()
+            FreeCADGui.Control.closeDialog()
+            FreeCAD.ActiveDocument.recompute()
+
+    def reject(self):
+            FreeCADGui.ActiveDocument.resetEdit()
+            FreeCADGui.Control.closeDialog()
+            FreeCAD.ActiveDocument.removeObject(self.obj.Name)
+            FreeCAD.ActiveDocument.recompute()
 
     def chooseMat(self, card):
         "sets self.material from a card"
