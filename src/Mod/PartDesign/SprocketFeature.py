@@ -87,12 +87,12 @@ class Sprocket:
         obj.addProperty("App::PropertyInteger","NumberOfTeeth","Sprocket","Number of gear teeth")
         obj.addProperty("App::PropertyLength","Pitch","Sprocket","Chain Pitch")
         obj.addProperty("App::PropertyLength","RollerDiameter","Sprocket","Roller Diameter")
-        obj.addProperty("App::PropertyString","ANSISize","Sprocket","ANSI Size")
+        obj.addProperty("App::PropertyString","SprocketRef","Sprocket","Sprocket Reference")
 
         obj.NumberOfTeeth = 50
         obj.Pitch = "0.375 in" 
         obj.RollerDiameter = "0.20 in"
-        obj.ANSISize = "35"
+        obj.SprocketRef = "ANSI 35"
 
         obj.Proxy = self
         
@@ -154,7 +154,7 @@ class SprocketTaskPanel:
         QtCore.QObject.connect(self.form.Quantity_Pitch, QtCore.SIGNAL("valueChanged(double)"), self.pitchChanged)
         QtCore.QObject.connect(self.form.Quantity_RollerDiameter, QtCore.SIGNAL("valueChanged(double)"), self.rollerDiameterChanged)
         QtCore.QObject.connect(self.form.spinBox_NumberOfTeeth, QtCore.SIGNAL("valueChanged(int)"), self.numTeethChanged)
-        QtCore.QObject.connect(self.form.comboBox_ANSISize, QtCore.SIGNAL("currentTextChanged(const QString)"), self.ANSISizeChanged)
+        QtCore.QObject.connect(self.form.comboBox_SprocketRef, QtCore.SIGNAL("currentTextChanged(const QString)"), self.SprocketRefChanged)
         
         self.update()
         
@@ -169,7 +169,7 @@ class SprocketTaskPanel:
         self.obj.NumberOfTeeth  = self.form.spinBox_NumberOfTeeth.value()
         self.obj.Pitch        = self.form.Quantity_Pitch.text()
         self.obj.RollerDiameter  = self.form.Quantity_RollerDiameter.text()
-        self.obj.ANSISize     = self.form.comboBox_ANSISize.currentText()
+        self.obj.SprocketRef     = self.form.comboBox_SprocketRef.currentText()
     
     def transferFrom(self):
         """
@@ -178,35 +178,51 @@ class SprocketTaskPanel:
         self.form.spinBox_NumberOfTeeth.setValue(self.obj.NumberOfTeeth)
         self.form.Quantity_Pitch.setText(self.obj.Pitch.UserString)
         self.form.Quantity_RollerDiameter.setText(self.obj.RollerDiameter.UserString)
-        self.form.comboBox_ANSISize.setCurrentText(self.obj.ANSISize)
+        self.form.comboBox_SprocketRef.setCurrentText(self.obj.SprocketRef)
                                                     
     def pitchChanged(self, value):
         self.obj.Pitch = value
         self.obj.Proxy.execute(self.obj)
         FreeCAD.Gui.SendMsgToActiveView("ViewFit")
 
-    def ANSISizeChanged(self, size):
+    def SprocketRefChanged(self, size):
         """
         ANSI B29.1-2011 standard roller chain sizes in USCS units (inches)
         {size: [Pitch, Roller Diameter]}
         """
-        ANSIRollerTable = {"25": [0.250, 0.130],
-                           "35": [0.375, 0.200],
-                           "41": [0.500, 0.306],
-                           "40": [0.500, 0.312],
-                           "50": [0.625, 0.400],
-                           "60": [0.750, 0.469],
-                           "80": [1.000, 0.625],
-                           "100":[1.250, 0.750],
-                           "120":[1.500, 0.875],
-                           "140":[1.750, 1.000],
-                           "160":[2.000, 1.125],
-                           "180":[2.250, 1.460],
-                           "200":[2.500, 1.562],
-                           "240":[3.000, 1.875]}
+        SprocketRefRollerTable = {"ANSI 25": [0.250, 0.130],
+                           "ANSI 35": [0.375, 0.200],
+                           "ANSI 41": [0.500, 0.306],
+                           "ANSI 40": [0.500, 0.312],
+                           "ANSI 50": [0.625, 0.400],
+                           "ANSI 60": [0.750, 0.469],
+                           "ANSI 80": [1.000, 0.625],
+                           "ANSI 100":[1.250, 0.750],
+                           "ANSI 120":[1.500, 0.875],
+                           "ANSI 140":[1.750, 1.000],
+                           "ANSI 160":[2.000, 1.125],
+                           "ANSI 180":[2.250, 1.460],
+                           "ANSI 200":[2.500, 1.562],
+                           "ANSI 240":[3.000, 1.875],
+                           "Motorcycle 420":[0.500, 0.3125],
+                           "Motorcycle 425":[0.500, 0.3125],
+                           "Motorcycle 428":[0.500, 0.335],
+                           "Motorcycle 520":[0.625, 0.400],
+                           "Motorcycle 525":[0.625, 0.400],
+                           "Motorcycle 530":[0.625, 0.400],
+                           "Motorcycle 630":[0.75, 0.400],
+                           "Bicycle with Derailleur":[0.500, 0.3125],
+                           "Bicycle without Derailleur":[0.500, 0.3125],
+                           "ISO 606 06B":[0.375, 5.72/25.4],
+                           "ISO 606 08B":[0.500, 7.75/25.4],
+                           "ISO 606 10B":[0.625, 9.65/25.4],
+                           "ISO 606 12B":[0.750, 11.68/25.4],
+                           "ISO 606 16B":[1.000, 17.02/25.4],
+                           "ISO 606 20B":[1.250, 19.56/25.4],
+                           "ISO 606 24B":[1.5, 25.4/25.4]}
 
-        self.obj.Pitch           = str(ANSIRollerTable[size][0]) + " in"
-        self.obj.RollerDiameter  = str(ANSIRollerTable[size][1]) + " in"
+        self.obj.Pitch           = str(SprocketRefRollerTable[size][0]) + " in"
+        self.obj.RollerDiameter  = str(SprocketRefRollerTable[size][1]) + " in"
         self.form.Quantity_Pitch.setText(self.obj.Pitch.UserString)
         self.form.Quantity_RollerDiameter.setText(self.obj.RollerDiameter.UserString)
             
