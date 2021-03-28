@@ -131,6 +131,9 @@ void CmdPrimtiveCompAdditive::activated(int iMsg)
     copyVisual(prm, "DisplayMode", base);
     
     PartDesignGui::setEdit(prm,pcActiveBody);
+
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/PartDesign");
+    hGrp->SetInt("DefaultPrimAddId", iMsg);
 }
 
 Gui::Action * CmdPrimtiveCompAdditive::createAction(void)
@@ -175,9 +178,37 @@ Gui::Action * CmdPrimtiveCompAdditive::createAction(void)
     _pcAction = pcAction;
     languageChange();
 
-    pcAction->setIcon(p1->icon());
-    int defaultId = 0;
-    pcAction->setProperty("defaultAction", QVariant(defaultId));
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/PartDesign");
+    int defPrimAddId = hGrp->GetInt("DefaultPrimAddId", 0);
+
+    if (defPrimAddId == 0) {
+        pcAction->setIcon(p1->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimAddId));
+    } else if (defPrimAddId == 1) {
+        pcAction->setIcon(p2->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimAddId));
+    } else if (defPrimAddId == 2) {
+        pcAction->setIcon(p3->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimAddId));
+    } else if (defPrimAddId == 3) {
+        pcAction->setIcon(p4->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimAddId));
+    } else if (defPrimAddId == 4) {
+        pcAction->setIcon(p5->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimAddId));
+    } else if (defPrimAddId == 5) {
+        pcAction->setIcon(p6->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimAddId));
+    } else if (defPrimAddId == 6) {
+        pcAction->setIcon(p7->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimAddId));
+    } else if (defPrimAddId == 7) {
+        pcAction->setIcon(p8->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimAddId));
+    } else {
+        int defaultId = 0;
+        pcAction->setProperty("defaultAction", QVariant(defaultId));
+    }
 
     return pcAction;
 }
@@ -287,6 +318,9 @@ void CmdPrimtiveCompSubtractive::activated(int iMsg)
     }
 
     PartDesignGui::setEdit(Feat,pcActiveBody);
+
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/PartDesign");
+    hGrp->SetInt("DefaultPrimSubId", iMsg);
 }
 
 Gui::Action * CmdPrimtiveCompSubtractive::createAction(void)
@@ -331,9 +365,37 @@ Gui::Action * CmdPrimtiveCompSubtractive::createAction(void)
     _pcAction = pcAction;
     languageChange();
 
-    pcAction->setIcon(p1->icon());
-    int defaultId = 0;
-    pcAction->setProperty("defaultAction", QVariant(defaultId));
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/PartDesign");
+    int defPrimSubId = hGrp->GetInt("DefaultPrimSubId", 0);
+
+    if (defPrimSubId == 0) {
+        pcAction->setIcon(p1->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimSubId));
+    } else if (defPrimSubId == 1) {
+        pcAction->setIcon(p2->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimSubId));
+    } else if (defPrimSubId == 2) {
+        pcAction->setIcon(p3->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimSubId));
+    } else if (defPrimSubId == 3) {
+        pcAction->setIcon(p4->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimSubId));
+    } else if (defPrimSubId == 4) {
+        pcAction->setIcon(p5->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimSubId));
+    } else if (defPrimSubId == 5) {
+        pcAction->setIcon(p6->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimSubId));
+    } else if (defPrimSubId == 6) {
+        pcAction->setIcon(p7->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimSubId));
+    } else if (defPrimSubId == 7) {
+        pcAction->setIcon(p8->icon());
+        pcAction->setProperty("defaultAction", QVariant(defPrimSubId));
+    } else {
+        int defaultId = 0;
+        pcAction->setProperty("defaultAction", QVariant(defaultId));
+    }
 
     return pcAction;
 }
