@@ -99,33 +99,35 @@ class Line(gui_base_original.Creator):
         """
         if arg["Type"] == "SoKeyboardEvent" and arg["Key"] == "ESCAPE":
             self.finish()
-        elif arg["Type"] == "SoLocation2Event":
-            self.point, ctrlPoint, info = gui_tool_utils.getPoint(self, arg)
-            gui_tool_utils.redraw3DView()
-        elif (arg["Type"] == "SoMouseButtonEvent"
-              and arg["State"] == "DOWN"
-              and arg["Button"] == "BUTTON1"):
-            if arg["Position"] == self.pos:
-                return self.finish(False, cont=True)
-            if (not self.node) and (not self.support):
-                gui_tool_utils.getSupport(arg)
-                (self.point,
-                 ctrlPoint, info) = gui_tool_utils.getPoint(self, arg)
-            if self.point:
-                self.ui.redraw()
-                self.pos = arg["Position"]
-                self.node.append(self.point)
-                self.drawSegment(self.point)
-                if not self.isWire and len(self.node) == 2:
-                    self.finish(False, cont=True)
-                if len(self.node) > 2:
-                    # The wire is closed
-                    if (self.point - self.node[0]).Length < utils.tolerance():
-                        self.undolast()
-                        if len(self.node) > 2:
-                            self.finish(True, cont=True)
-                        else:
-                            self.finish(False, cont=True)
+        if App.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetBool("mousePosition",True):
+            if arg["Type"] == "SoLocation2Event":
+                self.point, ctrlPoint, info = gui_tool_utils.getPoint(self, arg)
+                gui_tool_utils.redraw3DView()
+            elif (arg["Type"] == "SoMouseButtonEvent"
+                  and arg["State"] == "DOWN"
+                  and arg["Button"] == "BUTTON1"):
+                if arg["Position"] == self.pos:
+                    return self.finish(False, cont=True)
+                if (not self.node) and (not self.support):
+                    gui_tool_utils.getSupport(arg)
+                    (self.point,
+                     ctrlPoint, info) = gui_tool_utils.getPoint(self, arg)
+                if self.point:
+                    self.ui.redraw()
+                    self.pos = arg["Position"]
+                    self.node.append(self.point)
+                    self.drawSegment(self.point)
+                    if not self.isWire and len(self.node) == 2:
+                        self.finish(False, cont=True)
+                    if len(self.node) > 2:
+                        # The wire is closed
+                        if (self.point - self.node[0]).Length < utils.tolerance():
+                            self.undolast()
+                            if len(self.node) > 2:
+                                self.finish(True, cont=True)
+                            else:
+                                self.finish(False, cont=True)
+
 
     def finish(self, closed=False, cont=False):
         """Terminate the operation and close the polyline if asked.
