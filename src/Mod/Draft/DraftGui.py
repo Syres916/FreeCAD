@@ -469,6 +469,11 @@ class DraftToolBar:
         self.labelz = self._label("labelz", zl)
         self.zValue = self._inputfield("zValue", zl)
         self.zValue.setText(FreeCAD.Units.Quantity(0,FreeCAD.Units.Length).UserString)
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+        mousePos = p.GetBool("mousePosition",True)
+        self.mousePosition = self._checkbox("MousePosition",self.layout,checked=mousePos)
+        self.resetXYZButton = self._pushbutton("addButton", self.layout, width=10)
+        self.resetXYZButton.setText("Reset XYZ")
         self.pointButton = self._pushbutton("addButton", bl, icon="Draft_AddPoint")
 
         # text
@@ -571,6 +576,7 @@ class DraftToolBar:
         QtCore.QObject.connect(self.lengthValue,QtCore.SIGNAL("valueChanged(double)"),self.changeLengthValue)
         QtCore.QObject.connect(self.angleValue,QtCore.SIGNAL("valueChanged(double)"),self.changeAngleValue)
         QtCore.QObject.connect(self.angleLock,QtCore.SIGNAL("stateChanged(int)"),self.toggleAngle)
+        QtCore.QObject.connect(self.mousePosition,QtCore.SIGNAL("stateChanged(int)"),self.toggleMousePos)
         QtCore.QObject.connect(self.radiusValue,QtCore.SIGNAL("valueChanged(double)"),self.changeRadiusValue)
         QtCore.QObject.connect(self.xValue,QtCore.SIGNAL("returnPressed()"),self.checkx)
         QtCore.QObject.connect(self.yValue,QtCore.SIGNAL("returnPressed()"),self.checky)
@@ -602,6 +608,7 @@ class DraftToolBar:
         QtCore.QObject.connect(self.orientWPButton,QtCore.SIGNAL("pressed()"),self.orientWP)
         QtCore.QObject.connect(self.undoButton,QtCore.SIGNAL("pressed()"),self.undoSegment)
         QtCore.QObject.connect(self.selectButton,QtCore.SIGNAL("pressed()"),self.selectEdge)
+        QtCore.QObject.connect(self.resetXYZButton,QtCore.SIGNAL("pressed()"),self.resetXYZValues)
         QtCore.QObject.connect(self.continueCmd,QtCore.SIGNAL("stateChanged(int)"),self.setContinue)
         QtCore.QObject.connect(self.isCopy,QtCore.SIGNAL("stateChanged(int)"),self.setCopymode)
         QtCore.QObject.connect(self.isRelative,QtCore.SIGNAL("stateChanged(int)"),self.setRelative)
@@ -761,7 +768,10 @@ class DraftToolBar:
             "draft", "If checked, an OCC-style offset will be performed"
                      + "instead of the classic offset"))
         self.occOffset.setText(translate("draft", "&OCC-style offset"))
-
+        self.mousePosition.setToolTip(translate(
+            "draft", "If checked, the mouse coordinates will be"
+                     + "reflected in the X, Y, Z fields"))
+        self.mousePosition.setText(translate("draft", "Enable mouse coordinates in 3D View"))
         # OBSOLETE
         # self.addButton.setToolTip(translate("draft", "Add points to the current object"))
         # self.delButton.setToolTip(translate("draft", "Remove points from the current object"))
@@ -999,6 +1009,8 @@ class DraftToolBar:
         self.y = 0
         self.z = 0
         self.pointButton.show()
+        self.mousePosition.show()
+        self.resetXYZButton.show()
         if rel: self.isRelative.show()
         todo.delay(self.setFocus,None)
         self.xValue.selectAll()
@@ -2124,6 +2136,12 @@ class DraftToolBar:
             return None
         self.update_spherical_coords()
 
+    def resetXYZValues(self):
+        # reset XYZ to (0,0,0)
+        self.xValue.setText(FreeCAD.Units.Quantity(0,FreeCAD.Units.Length).UserString)
+        self.yValue.setText(FreeCAD.Units.Quantity(0,FreeCAD.Units.Length).UserString)
+        self.zValue.setText(FreeCAD.Units.Quantity(0,FreeCAD.Units.Length).UserString)
+
     def changeRadiusValue(self,d):
         self.radius = d
 
@@ -2154,6 +2172,13 @@ class DraftToolBar:
         else:
             FreeCADGui.Snapper.setAngle()
             self.angle = None
+
+    def toggleMousePos(self,b):
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+        if b:
+            mousePos = p.SetBool("mousePosition",True)
+        else:
+            mousePos = p.SetBool("mousePosition",False)
 
     def update_spherical_coords(self):
         length, theta, phi = DraftVecUtils.get_spherical_coords(
