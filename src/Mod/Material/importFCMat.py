@@ -121,7 +121,7 @@ def read(filename):
             continue
         # the use of line number is not smart for a data model
         # a wrong user edit could break the file
-        if line.startswith(';') and ln == 0:
+        if line.startswith(';') and ln == 1:
             v = line.split(";")[1].strip()  # Line 1
             if hasattr(v, "decode"):
                 v = v.decode('utf-8')
@@ -131,7 +131,7 @@ def read(filename):
                     "File CardName ( {} ) is not content CardName ( {} )\n"
                     .format(card_name_file, card_name_content)
                 )
-        elif line.startswith(';') and ln == 1:
+        elif line.startswith(';') and ln == 2:
             v = line.split(";")[1].strip()  # Line 2
             if hasattr(v, "decode"):
                 v = v.decode('utf-8')
@@ -196,7 +196,10 @@ def write(filename, dictionary, write_group_section=True):
     # print(filename)
     card_name_file = os.path.splitext(os.path.basename(filename))[0]
     # print(card_name_file)
-    f = pythonopen(filename, "w")
+    if sys.version_info.major >= 3:
+        f = pythonopen(filename, 'w', encoding='utf-8')
+    else:
+        f = pythonopen(filename, 'w')
     # write header
     # first five lines are the same in any card file, see comment above read def
     if header["CardName"] != card_name_file:
@@ -204,8 +207,7 @@ def write(filename, dictionary, write_group_section=True):
         FreeCAD.Console.PrintMessage("File CardName is used: {}\n".format(card_name_file))
     if sys.version_info.major >= 3:
         f.write("; " + card_name_file + "\n")
-        # f.write("; " + header["AuthorAndLicense"] + "\n")
-        f.write("; " + header.get("AuthorAndLicense", "no author") + "\n")
+        f.write('; ' + str(header.get("AuthorAndLicense", "no author")) + '\n')
     else:
         f.write("; " + header["CardName"].encode("utf8") + "\n")
         f.write("; " + header["AuthorAndLicense"].encode("utf8") + "\n")
