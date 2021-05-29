@@ -535,6 +535,8 @@ class MaterialEditor:
     def savefile(self):
         "Saves a FCMat file."
 
+        if self.card_path:
+            self.directory = os.path.dirname(self.card_path)
         model = self.widget.treeView.model()
         item = model.findItems(translate("Material", "Name"),
                                QtCore.Qt.MatchRecursive, 0)[0]
