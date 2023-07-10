@@ -289,8 +289,7 @@ void DrawSketchHandler::activate(ViewProviderSketch* vp)
     sketchgui = vp;
 
     // save the cursor at the time the DSH is activated
-    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+    Gui::View3DInventorViewer* viewer = getViewer();
     oldCursor = viewer->getWidget()->cursor();
 
     updateCursor();
@@ -415,10 +414,8 @@ void DrawSketchHandler::setSvgCursor(const QString& cursorName,
 
 void DrawSketchHandler::setCursor(const QPixmap& p, int x, int y, bool autoScale)
 {
-    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
-        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
-
+    Gui::View3DInventorViewer* viewer = getViewer();
+    if (viewer) {
         QCursor cursor;
         QPixmap p1(p);
         // TODO remove autoScale after all cursors are SVG-based
@@ -521,18 +518,16 @@ void DrawSketchHandler::applyCursor()
 
 void DrawSketchHandler::applyCursor(QCursor& newCursor)
 {
-    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
-        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+    Gui::View3DInventorViewer* viewer = getViewer();
+    if (viewer) {
         viewer->getWidget()->setCursor(newCursor);
     }
 }
 
 void DrawSketchHandler::unsetCursor()
 {
-    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
-        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+    Gui::View3DInventorViewer* viewer = getViewer();
+    if (viewer) {
         viewer->getWidget()->setCursor(oldCursor);
     }
 }
@@ -540,9 +535,8 @@ void DrawSketchHandler::unsetCursor()
 qreal DrawSketchHandler::devicePixelRatio()
 {
     qreal pixelRatio = 1;
-    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
-        Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
+    Gui::View3DInventorViewer* viewer = getViewer();
+    if (viewer) {
         pixelRatio = viewer->devicePixelRatio();
     }
     return pixelRatio;
@@ -578,10 +572,8 @@ DrawSketchHandler::suggestedConstraintsPixmaps(std::vector<AutoConstraint>& sugg
         }
         if (!iconType.isEmpty()) {
             qreal pixelRatio = 1;
-            Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-            if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
-                Gui::View3DInventorViewer* viewer =
-                    static_cast<Gui::View3DInventor*>(view)->getViewer();
+            Gui::View3DInventorViewer* viewer = getViewer();
+            if (viewer) {
                 pixelRatio = viewer->devicePixelRatio();
             }
             int iconWidth = 16 * pixelRatio;
@@ -1162,5 +1154,14 @@ void DrawSketchHandler::moveConstraint(int constNum, const Base::Vector2d& toPos
 void DrawSketchHandler::signalToolChanged() const
 {
     ViewProviderSketchDrawSketchHandlerAttorney::signalToolChanged(*sketchgui, this->getToolName());
+}
+
+Gui::View3DInventorViewer* DrawSketchHandler::getViewer()
+{
+    Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
+    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+        return static_cast<Gui::View3DInventor*>(view)->getViewer();
+    }
+    return nullptr;
 }
 
