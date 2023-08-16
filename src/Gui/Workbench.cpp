@@ -798,7 +798,8 @@ ToolBarItem* StdWorkbench::setupToolBars() const
           << "Separator" << "Std_SelBack" << "Std_SelForward" << "Std_LinkSelectActions"
           << "Separator" << "Std_TreeViewActions" << "Std_ViewIsometric" << "Separator" << "Std_ViewFront"
           << "Std_ViewTop" << "Std_ViewRight" << "Separator" << "Std_ViewRear" << "Std_ViewBottom"
-          << "Std_ViewLeft" << "Separator" << "Std_MeasureDistance" ;
+          << "Std_ViewLeft"  << "Std_VertexSelection" << "Std_EdgeSelection" << "Std_FaceSelection" 
+          << "Std_RemoveSelectionGate" << "Separator" << "Std_MeasureDistance" ;
 
     // Structure
     auto structure = new ToolBarItem( root );
@@ -822,7 +823,8 @@ ToolBarItem* StdWorkbench::setupCommandBars() const
     view->setCommand("Standard views");
     *view << "Std_ViewFitAll" << "Std_ViewFitSelection" << "Std_ViewIsometric" << "Separator"
           << "Std_ViewFront" << "Std_ViewRight" << "Std_ViewTop" << "Separator"
-          << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
+          << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom" << "Std_VertexSelection"
+          << "Std_EdgeSelection" << "Std_FaceSelection" << "Std_RemoveSelectionGate";
     // Special Ops
     auto macro = new ToolBarItem( root );
     macro->setCommand("Special Ops");
