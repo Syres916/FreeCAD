@@ -1359,6 +1359,108 @@ void StdCmdViewTop::activated(int iMsg)
     doCommand(Command::Gui,"Gui.activeDocument().activeView().viewTop()");
 }
 
+
+//===========================================================================
+// Std_VertexSelection
+//===========================================================================
+DEF_3DV_CMD(StdCmdVertexSelection)
+
+StdCmdVertexSelection::StdCmdVertexSelection()
+  : Command("Std_VertexSelection")
+{
+    sGroup        = "Standard-View";
+    sMenuText     = QT_TR_NOOP("Vertex Selection");
+    sToolTipText  = QT_TR_NOOP("Select a Vertex/Vertices");
+    sWhatsThis    = "Std_VertexSelection";
+    sStatusTip    = QT_TR_NOOP("Select a Vertex/Vertices");
+    sPixmap       = "vertex-selection";
+    sAccel        = "X, S";
+    eType         = Alter3DView;
+}
+
+void StdCmdVertexSelection::activated(int iMsg)
+{
+    Q_UNUSED(iMsg);
+    doCommand(Command::Gui,"Gui.Selection.addSelectionGate('SELECT Part::Feature SUBELEMENT Vertex')");
+}
+
+
+//===========================================================================
+// Std_EdgeSelection
+//===========================================================================
+DEF_3DV_CMD(StdCmdEdgeSelection)
+
+StdCmdEdgeSelection::StdCmdEdgeSelection()
+  : Command("Std_EdgeSelection")
+{
+    sGroup        = "Standard-View";
+    sMenuText     = QT_TR_NOOP("Edge Selection");
+    sToolTipText  = QT_TR_NOOP("Select Edge(s)");
+    sWhatsThis    = "Std_EdgeSelection";
+    sStatusTip    = QT_TR_NOOP("Select Edge(s)");
+    sPixmap       = "edge-selection";
+    sAccel        = "E, S";
+    eType         = Alter3DView;
+}
+
+void StdCmdEdgeSelection::activated(int iMsg)
+{
+    Q_UNUSED(iMsg);
+    doCommand(Command::Gui,"Gui.Selection.addSelectionGate('SELECT Part::Feature SUBELEMENT Edge')");
+}
+
+
+//===========================================================================
+// Std_FaceSelection
+//===========================================================================
+DEF_3DV_CMD(StdCmdFaceSelection)
+
+StdCmdFaceSelection::StdCmdFaceSelection()
+  : Command("Std_FaceSelection")
+{
+    sGroup        = "Standard-View";
+    sMenuText     = QT_TR_NOOP("Face Selection");
+    sToolTipText  = QT_TR_NOOP("Select Face(s)");
+    sWhatsThis    = "Std_FaceSelection";
+    sStatusTip    = QT_TR_NOOP("Select Face(s)");
+    sPixmap       = "face-selection";
+    sAccel        = "F, S";
+    eType         = Alter3DView;
+}
+
+void StdCmdFaceSelection::activated(int iMsg)
+{
+    Q_UNUSED(iMsg);
+    doCommand(Command::Gui,"Gui.Selection.addSelectionGate('SELECT Part::Feature SUBELEMENT Face')");
+}
+
+
+
+//===========================================================================
+// Std_RemoveSelectionGate
+//===========================================================================
+DEF_3DV_CMD(StdCmdRemoveSelectionGate)
+
+StdCmdRemoveSelectionGate::StdCmdRemoveSelectionGate()
+  : Command("Std_RemoveSelectionGate")
+{
+    sGroup        = "Standard-View";
+    sMenuText     = QT_TR_NOOP("All selection filters cleared");
+    sToolTipText  = QT_TR_NOOP("All selection filters cleared");
+    sWhatsThis    = "Std_RemoveSelectionGate";
+    sStatusTip    = QT_TR_NOOP("All selection filters cleared");
+    sPixmap       = "clear-selection";
+    sAccel        = "C, S";
+    eType         = Alter3DView;
+}
+
+void StdCmdRemoveSelectionGate::activated(int iMsg)
+{
+    Q_UNUSED(iMsg);
+    doCommand(Command::Gui,"Gui.Selection.removeSelectionGate()");
+}
+
+
 //===========================================================================
 // Std_ViewIsometric
 //===========================================================================
@@ -3789,6 +3891,10 @@ void CreateViewStdCommands()
     rcCmdMgr.addCommand(new StdCmdViewRear());
     rcCmdMgr.addCommand(new StdCmdViewRight());
     rcCmdMgr.addCommand(new StdCmdViewTop());
+    rcCmdMgr.addCommand(new StdCmdVertexSelection());
+    rcCmdMgr.addCommand(new StdCmdEdgeSelection());
+    rcCmdMgr.addCommand(new StdCmdFaceSelection());
+    rcCmdMgr.addCommand(new StdCmdRemoveSelectionGate());
     rcCmdMgr.addCommand(new StdCmdViewIsometric());
     rcCmdMgr.addCommand(new StdCmdViewDimetric());
     rcCmdMgr.addCommand(new StdCmdViewTrimetric());
