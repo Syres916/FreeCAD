@@ -590,7 +590,9 @@ void StdWorkbench::setupContextMenu(const char* recipient, MenuItem* item) const
         measure->setCommand("Measure");
         *measure << "View_Measure_Toggle_All" << "View_Measure_Clear_All";
 
-        *item << "Std_ViewFitAll" << "Std_ViewFitSelection" << "Std_DrawStyle" << StdViews << measure
+        *item << "Std_ViewFitAll" << "Std_ViewFitSelection" << "Std_VertexSelection"
+              << "Std_EdgeSelection" << "Std_FaceSelection" << "Std_RemoveSelectionGate"
+              << "Std_DrawStyle" << StdViews << measure
               << "Separator" << "Std_ViewDockUndockFullscreen";
 
         if (Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0) {
