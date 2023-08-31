@@ -34,6 +34,8 @@
 # include <QMenu>
 #endif
 
+#include <Base/Parameter.h>
+#include "MainWindow.h"
 #include "SoFCColorBar.h"
 #include "SoFCColorGradient.h"
 #include "SoFCColorLegend.h"
@@ -128,8 +130,14 @@ float SoFCColorBarBase::getBounds(const SbVec2s& size, float& fMinX, float&fMinY
     float baseYValue = 4.0f;
     float barWidth = 0.5f;
 
+    ParameterGrp::handle hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("View");
+    bool NavCube = hGrp->GetBool("ShowNaviCube", true);
     // we want the color bar at the rightmost position, therefore we take 5 as base
-    fMinX = 5.0f * fRatio; // must be scaled with the ratio to assure it stays at the right
+    if (NavCube) {
+        fMinX = 4.5f * fRatio; // must be scaled accounting for the Navigation Cube
+    } else {
+        fMinX = 5.0f * fRatio; // must be scaled with the ratio to assure it stays at the right
+    }
     fMaxX = fMinX + barWidth;
     fMinY = -baseYValue;
     fMaxY = baseYValue; // bar has the height of almost whole window height
