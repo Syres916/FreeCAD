@@ -35,6 +35,7 @@
 # include <Inventor/nodes/SoTransparencyType.h>
 #endif
 
+#include <Base/Parameter.h>
 #include "SoFCColorGradient.h"
 #include "SoTextLabel.h"
 #include "DlgSettingsColorGradientImp.h"
@@ -99,20 +100,29 @@ void SoFCColorGradient::setMarkerLabel(const SoMFString& label)
         SbVec2f minPt = _bbox.getMin();
         float fStep = (maxPt[1] - minPt[1]) / ((float)num - 1);
         auto trans = new SoTransform;
+
+        ParameterGrp::handle hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("View");
+        int LabelTextSize = hGrp->GetInt("ColorBarLabelSize", 15);
+        App::Color LabelTextColor = App::Color((uint32_t) hGrp->GetUnsigned("ColorBarLabelTextColor", 0xffffffff));
+
+        auto textFont = new SoFont;
+        textFont->name.setValue("Helvetica,Arial,Times New Roman");
+        textFont->size.setValue(LabelTextSize);
         trans->translation.setValue(maxPt[0] + 0.1f, maxPt[1] - 0.05f + fStep, 0.0f);
         labels->addChild(trans);
-
+        labels->addChild(textFont);
         for (int i = 0; i < num; i++) {
             auto trans = new SoTransform;
             auto color = new SoBaseColor;
             auto text2 = new SoColorBarLabel;
 
             trans->translation.setValue(0, -fStep, 0);
-            color->rgb.setValue(0, 0, 0);
+            color->rgb.setValue(LabelTextColor.r,LabelTextColor.g,LabelTextColor.b);
             text2->string.setValue(label[i]);
             labels->addChild(trans);
             labels->addChild(color);
             labels->addChild(text2);
+            labels->addChild(textFont);
         }
     }
 
