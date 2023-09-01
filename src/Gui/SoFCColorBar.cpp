@@ -125,21 +125,15 @@ float SoFCColorBarBase::getBounds(const SbVec2s& size, float& fMinX, float&fMinY
     // The cam height is set in SoFCColorBarBase::getBoundingWidth to 10.
     // Therefore the normalized coordinates are in the range [-5, +5] x [-5ratio, +5ratio] if ratio > 1
     //  and [-5ratio, +5ratio] x [-5, +5] if ratio < 1.
-    // We don't want the whole height covered by the color bar (to have e.g space to the axis cross)
-    // thus we take as base 4.
-    float baseYValue = 4.0f;
+    // We don't want the whole height covered by the color bar (to have e.g space to the axis cross
+    // and the Navigation Cube) thus we take as base 3.25.
+    float baseYValue = 3.25f;
     float barWidth = 0.5f;
 
-    ParameterGrp::handle hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("View");
-    bool NavCube = hGrp->GetBool("ShowNaviCube", true);
-    // we want the color bar at the rightmost position, therefore we take 5 as base
-    if (NavCube) {
-        fMinX = 4.5f * fRatio; // must be scaled accounting for the Navigation Cube
-    } else {
-        fMinX = 5.0f * fRatio; // must be scaled with the ratio to assure it stays at the right
-    }
+    fMinX = 5.0f * fRatio; // must be scaled with the ratio to assure it stays at the right
+
     fMaxX = fMinX + barWidth;
-    fMinY = -baseYValue;
+    fMinY = -baseYValue - 0.6f; // Extend shortened bar towards axis cross
     fMaxY = baseYValue; // bar has the height of almost whole window height
 
     if (fRatio < 1.0f) {
