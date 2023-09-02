@@ -34,8 +34,6 @@
 # include <QMenu>
 #endif
 
-#include <Base/Parameter.h>
-#include "MainWindow.h"
 #include "SoFCColorBar.h"
 #include "SoFCColorGradient.h"
 #include "SoFCColorLegend.h"
