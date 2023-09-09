@@ -52,7 +52,6 @@ else:
 
 
 class CommandPathSanity:
-
     def resolveOutputPath(self, job):
         if job.PostProcessorOutputFile != "":
             filepath = job.PostProcessorOutputFile
@@ -83,7 +82,7 @@ class CommandPathSanity:
         if "%M" in filepath:
             pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Macro")
             M = pref.GetString("MacroPath", FreeCAD.getUserAppDataDir())
-            filepath = filepath.replace("%M", M+ os.path.sep)
+            filepath = filepath.replace("%M", M + os.path.sep)
 
         # strip out all substitutions related to output splitting
         for elem in ["%O", "%W", "%T", "%t", "%S"]:
@@ -136,11 +135,13 @@ class CommandPathSanity:
 
         if FreeCAD.GuiUp:
             currentCamera = FreeCADGui.ActiveDocument.ActiveView.getCameraType()
-            if currentCamera != 'Perspective':
+            if currentCamera != "Perspective":
                 FreeCADGui.SendMsgToActiveView("PerspectiveCamera")
                 FreeCADGui.updateGui()
                 time.sleep(1)
-                FreeCAD.Console.PrintLog("Path - Sanity - Changing to Perspective Camera temporarily\n")
+                FreeCAD.Console.PrintLog(
+                    "Path - Sanity - Changing to Perspective Camera temporarily\n"
+                )
         self.squawkData = {"items": []}
         obj = FreeCADGui.Selection.getSelectionEx()[0].Object
         self.outputpath = self.resolveOutputPath(obj)
@@ -150,12 +151,13 @@ class CommandPathSanity:
         if html is not None:
             webbrowser.open(html)
         if FreeCAD.GuiUp:
-            if currentCamera != 'Perspective':
+            if currentCamera != "Perspective":
                 FreeCADGui.SendMsgToActiveView("OrthographicCamera")
                 FreeCADGui.updateGui()
                 time.sleep(1)
-                FreeCAD.Console.PrintLog("Path - Sanity - Changing back to Orthographic Camera\n")
-
+                FreeCAD.Console.PrintLog(
+                    "Path - Sanity - Changing back to Orthographic Camera\n"
+                )
 
     def __makePicture(self, obj, imageName):
         """
@@ -197,7 +199,6 @@ class CommandPathSanity:
         for o in visible:
             o.Visibility = True
 
-
         return "{}_t.png".format(imagepath)
 
     def __report(self, data):
@@ -225,8 +226,6 @@ class CommandPathSanity:
 
         coolantLabel = translate("Path_Sanity", "Coolant")
         jobTotalLabel = translate("Path_Sanity", "TOTAL JOB")
-
-
 
         reportHtmlTemplate = """
 
@@ -328,7 +327,13 @@ Information</span></font></font></font></h2>
 """
 
         for key, val in b["bases"].items():
-            reportHtmlTemplate += "				<tr>\n					<td style='border: 1px solid #dedede; padding: 0.05cm'><p align='left' style='border: none; padding: 0cm'>\n						<font color='#000000'>" + key + "</font></p>\n					</td>\n					<td style='border: 1px solid #dedede; padding: 0.05cm'><p align='left' style='border: none; padding: 0cm'>						<font color='#000000'>" + val + "</font></p>\n					</td>\n				</tr>"
+            reportHtmlTemplate += (
+                "				<tr>\n					<td style='border: 1px solid #dedede; padding: 0.05cm'><p align='left' style='border: none; padding: 0cm'>\n						<font color='#000000'>"
+                + key
+                + "</font></p>\n					</td>\n					<td style='border: 1px solid #dedede; padding: 0.05cm'><p align='left' style='border: none; padding: 0cm'>						<font color='#000000'>"
+                + val
+                + "</font></p>\n					</td>\n				</tr>"
+            )
         reportHtmlTemplate += """
 			</table>
 			<p><br/>
@@ -452,7 +457,6 @@ Information</span></font></font></font></h2>
         # stockTable += "|*{}*|{}".format(xDimLabel, d["xLen"])
         # stockTable += "|*{}*|{}".format(yDimLabel, d["yLen"])
         # stockTable += "|*{}*|{}".format(zDimLabel, d["zLen"])
-
 
         offsetsLabel = translate("Path_Sanity", "Work Offsets")
         orderByLabel = translate("Path_Sanity", "Order By")
@@ -581,7 +585,7 @@ Stock</span></font></font></font></h2>
 		</td>
 		<td rowspan="4" style="border: 1px solid #dedede; padding: 0.05cm"><p align="left">
 			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='"""
-        reportHtmlTemplate += (d["stockImage"])
+        reportHtmlTemplate += d["stockImage"]
         reportHtmlTemplate += """' name="Image2" alt="stock" align="bottom" width="320" height="320" border="0"/>
 </span></font></p>
 		</td>
@@ -944,12 +948,6 @@ and Workholding</span></font></font></font></h2>
 </html>
 """
 
-
-
-
-
-
-
         reportTemplate = """
 = Setup Report for FreeCAD Job: {jobname}
 :toc:
@@ -1228,7 +1226,6 @@ and Workholding</span></font></font></font></h2>
             squawkTable=squawkTable,
         )
 
-
         # Save the report
 
         reportraw = self.outputpath + data["outputData"]["outputfilename"] + ".asciidoc"
@@ -1244,9 +1241,7 @@ and Workholding</span></font></font></font></h2>
         with codecs.open(reporthtml, encoding="utf-8", mode="w") as fd:
             fd.write(reportHtmlTemplate)
             fd.close()
-            FreeCAD.Console.PrintMessage(
-                "html file written to {}\n".format(reporthtml)
-            )
+            FreeCAD.Console.PrintMessage("html file written to {}\n".format(reporthtml))
 
         return reporthtml
 
@@ -1448,7 +1443,6 @@ and Workholding</span></font></font></font></h2>
 
             data["items"] = []
             for op in obj.Operations.Group:
-
                 oplabel = op.Label
                 ctime = op.CycleTime if hasattr(op, "CycleTime") else 0.0
                 cool = op.CoolantMode if hasattr(op, "CoolantMode") else "N/A"
@@ -1605,7 +1599,9 @@ and Workholding</span></font></font></font></h2>
                 data["linecount"] = str(0)
                 self.squawk("PathSanity", "The Job has not been post-processed")
             else:
-                data["filesize"] = str(os.path.getsize(obj.LastPostProcessOutput)/1000)
+                data["filesize"] = str(
+                    os.path.getsize(obj.LastPostProcessOutput) / 1000
+                )
                 data["linecount"] = str(
                     sum(1 for line in open(obj.LastPostProcessOutput))
                 )
