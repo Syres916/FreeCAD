@@ -37,6 +37,7 @@ from collections import Counter
 from datetime import datetime
 import codecs
 import os
+import time
 import webbrowser
 import subprocess
 from PySide.QtCore import QT_TRANSLATE_NOOP
@@ -51,6 +52,7 @@ else:
 
 
 class CommandPathSanity:
+
     def resolveOutputPath(self, job):
         if job.PostProcessorOutputFile != "":
             filepath = job.PostProcessorOutputFile
@@ -131,9 +133,14 @@ class CommandPathSanity:
 
     def Activated(self):
         # if everything is ok, execute
+
         if FreeCAD.GuiUp:
-            FreeCADGui.SendMsgToActiveView("PerspectiveCamera")
-            FreeCAD.activeDocument().recompute(None,True,True)
+            currentCamera = FreeCADGui.ActiveDocument.ActiveView.getCameraType()
+            if currentCamera != 'Perspective':
+                FreeCADGui.SendMsgToActiveView("PerspectiveCamera")
+                FreeCADGui.updateGui()
+                time.sleep(1)
+                FreeCAD.Console.PrintLog("Path - Sanity - Changing to Perspective Camera temporarily\n")
         self.squawkData = {"items": []}
         obj = FreeCADGui.Selection.getSelectionEx()[0].Object
         self.outputpath = self.resolveOutputPath(obj)
@@ -142,6 +149,13 @@ class CommandPathSanity:
         html = self.__report(data)
         if html is not None:
             webbrowser.open(html)
+        if FreeCAD.GuiUp:
+            if currentCamera != 'Perspective':
+                FreeCADGui.SendMsgToActiveView("OrthographicCamera")
+                FreeCADGui.updateGui()
+                time.sleep(1)
+                FreeCAD.Console.PrintLog("Path - Sanity - Changing back to Orthographic Camera\n")
+
 
     def __makePicture(self, obj, imageName):
         """
