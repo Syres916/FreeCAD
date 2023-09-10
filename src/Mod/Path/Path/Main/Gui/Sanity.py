@@ -138,7 +138,7 @@ class CommandPathSanity:
             if currentCamera != "Perspective":
                 FreeCADGui.SendMsgToActiveView("PerspectiveCamera")
                 FreeCADGui.updateGui()
-                time.sleep(2)
+                time.sleep(4)
                 FreeCAD.Console.PrintLog(
                     "Path - Sanity - Changing to Perspective Camera temporarily\n"
                 )
@@ -154,7 +154,7 @@ class CommandPathSanity:
             if currentCamera != "Perspective":
                 FreeCADGui.SendMsgToActiveView("OrthographicCamera")
                 FreeCADGui.updateGui()
-                time.sleep(2)
+                time.sleep(0.5)
                 FreeCAD.Console.PrintLog(
                     "Path - Sanity - Changing back to Orthographic Camera\n"
                 )
@@ -214,9 +214,8 @@ class CommandPathSanity:
         CustomerLabel = translate("Path_Sanity", "Customer")
         DesignerLabel = translate("Path_Sanity", "Designer")
 
-        d = data["designData"]
         b = data["baseData"]
-
+        d = data["designData"]
         jobname = d["JobLabel"]
 
         opLabel = translate("Path_Sanity", "Operation")
@@ -226,7 +225,8 @@ class CommandPathSanity:
 
         coolantLabel = translate("Path_Sanity", "Coolant")
         jobTotalLabel = translate("Path_Sanity", "TOTAL JOB")
-
+        d = data["toolData"]
+        toolLabel = translate("Path_Sanity", "Tool Number")
         reportHtmlTemplate = """
 
 <!DOCTYPE html>
@@ -259,7 +259,9 @@ class CommandPathSanity:
 </head>
 <body lang="en-GB" link="#000080" vlink="#800000" dir="ltr"><h1 class="western" style="font-variant: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm">
 <font color="#000000"><font face="Open Sans, DejaVu Sans, sans-serif">Setup
-Report for FreeCAD Job: Job</font></font></h1>
+Report for FreeCAD Job: """
+        reportHtmlTemplate += jobname
+        reportHtmlTemplate += """</font></font></h1>
 <div id="toc" dir="ltr"><p style="orphans: 2; widows: 2; margin-top: 0.21cm; margin-bottom: 0cm">
 	<br/>
 
@@ -281,12 +283,19 @@ Information</span></font></a></span></font></font></font></p>
 	Stock</span></span></span></span></font></font></span></font></span></a></p>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
 	<a href="#_tool_data"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">Tool
-	Data</span></span></span></font></font></span></font></span></a></p>
+	Data</span></span></span></font></font></span></font></span></a></p>"""
+        for key, value in d.items():
+            reportHtmlTemplate += """
 	<ul>
 		<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
-		<a href="#_tool_number_t2"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">Tool
-		Number: T2</span></span></span></font></font></span></font></span></a></p>
-	</ul>
+		<a href='#"""
+            reportHtmlTemplate += toolLabel + key
+            reportHtmlTemplate += """
+'><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+            reportHtmlTemplate += toolLabel + ": T" + key
+            reportHtmlTemplate += """</span></span></span></font></font></span></font></span></a></p>
+	</ul>"""
+        reportHtmlTemplate += """
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
 	<a href="#_output_gcode"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">Output
 	(Gcode)</span></span></span></font></font></span></font></span></a></p>
@@ -325,7 +334,7 @@ Information</span></font></font></font></h2>
 				<col width="175"/>
 
 """
-
+        d = data["designData"]
         for key, val in b["bases"].items():
             reportHtmlTemplate += (
                 "				<tr>\n					<td style='border: 1px solid #dedede; padding: 0.05cm'><p align='left' style='border: none; padding: 0cm'>\n						<font color='#000000'>"
@@ -415,7 +424,6 @@ Information</span></font></font></font></h2>
 	</tr>
 </table>"""
 
-        toolLabel = translate("Path_Sanity", "Tool Number")
         descriptionLabel = translate("Path_Sanity", "Description")
         manufLabel = translate("Path_Sanity", "Manufacturer")
         partNumberLabel = translate("Path_Sanity", "Part Number")
@@ -453,7 +461,7 @@ Information</span></font></font></font></h2>
 
         d = data["runData"]
         reportHtmlTemplate += """
-<h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_run_summary"></a>
+<p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_run_summary"></a>
 <span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">Run
 Summary</span></font></font></font></h2>"""
         for i in d["items"]:
@@ -528,7 +536,7 @@ Summary</span></font></font></font></h2>"""
 
         d = data["stockData"]
         reportHtmlTemplate += """
-<h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_rough_stock"></a>
+<p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_rough_stock"></a>
 <span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">Rough
 Stock</span></font></font></font></h2>
 <table cellpadding="2" cellspacing="2" bgcolor="#ffffff" style="background: #ffffff">
@@ -593,7 +601,7 @@ Stock</span></font></font></font></h2>
 </table>"""
         d = data["toolData"]
         reportHtmlTemplate += """
-<h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_tool_data"></a>
+<p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_tool_data"></a>
 <span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">ToolData</span></font></font></font></h2>"""
         for key, value in d.items():
             reportHtmlTemplate += """<h3 class='western' style='font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm'><a name='"""
@@ -622,7 +630,10 @@ Stock</span></font></font></font></h2>
 		</td>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left">
 			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='"""
-            reportHtmlTemplate += value["imagepath"]
+            try:
+                reportHtmlTemplate += value["imagepath"]
+            except:
+                pass
             reportHtmlTemplate += """' name="Image3" alt="2" align="bottom" width="135" height="135" border="0"/>
 </span></font></p>
 		</td>
@@ -757,7 +768,7 @@ Stock</span></font></font></font></h2>
 </table>"""
         d = data["outputData"]
         reportHtmlTemplate += """
-<h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_output_gcode"></a>
+<p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_output_gcode"></a>
 <span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">Output
 (Gcode)</span></font></font></font></h2>
 <table cellpadding="2" cellspacing="2" bgcolor="#ffffff" style="background: #ffffff">
@@ -876,7 +887,7 @@ Stock</span></font></font></font></h2>
 </table>"""
         d = data["fixtureData"]
         reportHtmlTemplate += """
-<h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_fixtures_and_workholding"></a>
+<p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_fixtures_and_workholding"></a>
 <span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">Fixtures
 and Workholding</span></font></font></font></h2>
 <table cellpadding="2" cellspacing="2" bgcolor="#ffffff" style="background: #ffffff">
@@ -919,8 +930,10 @@ and Workholding</span></font></font></font></h2>
 </span></font></p>
 		</td>
 	</tr>
-</table>
-<h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_squawks"></a>
+</table>"""
+        d = data["squawkData"]
+        reportHtmlTemplate += """
+<p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_squawks"></a>
 <span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">Squawks</span></font></font></font></h2>
 <table cellpadding="2" cellspacing="2" bgcolor="#ffffff" style="background: #ffffff">
 	<col width="350"/>
@@ -945,49 +958,33 @@ and Workholding</span></font></font></font></h2>
         reportHtmlTemplate += dateLabel
         reportHtmlTemplate += """</b></font></strong></p>
 		</td>
-	</tr>
+	</tr>"""
+        for i in d["items"]:
+            reportHtmlTemplate += """
 	<tr>
 		<td style="border: 1px solid #dedede; padding: 0.05cm">
 			<table cellpadding="2" cellspacing="2">
 				<tr>
-					<td style="border: none; padding: 0cm"></td>
 					<td style="border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm"><p>
-						<font color="#000000">The Job has not been post-processed</font></p>
+						<font color="#000000">"""
+            reportHtmlTemplate += str(i["squawkType"]) + " " + str(i["Note"])
+            reportHtmlTemplate += """</font></p>
 					</td>
 				</tr>
 			</table>
-			<p><br/>
-
-			</p>
 		</td>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%; border: none; padding: 0cm">
-			<font color="#000000">PathSanity</font></p>
+			<font color="#000000">"""
+            reportHtmlTemplate += i["Operator"]
+            reportHtmlTemplate += """</font></p>
 		</td>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%; border: none; padding: 0cm">
-			<font color="#000000">2023-09-09 11:43:57.772023</font></p>
+			<font color="#000000">"""
+            reportHtmlTemplate += i["Date"]
+            reportHtmlTemplate += """</font></p>
 		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid #dedede; padding: 0.05cm">
-			<table cellpadding="2" cellspacing="2">
-				<tr>
-					<td style="border: none; padding: 0cm"></td>
-					<td style="border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm"><p>
-						<font color="#000000">Consider Specifying the Stock Material</font></p>
-					</td>
-				</tr>
-			</table>
-			<p><br/>
-
-			</p>
-		</td>
-		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%; border: none; padding: 0cm">
-			<font color="#000000">PathSanity</font></p>
-		</td>
-		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%; border: none; padding: 0cm">
-			<font color="#000000">2023-09-09 11:43:57.772023</font></p>
-		</td>
-	</tr>
+	</tr>"""
+        reportHtmlTemplate += """
 </table>
 <p style="line-height: 100%; margin-bottom: 0cm"><br/>
 
