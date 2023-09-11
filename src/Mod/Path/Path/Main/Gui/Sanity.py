@@ -419,7 +419,8 @@ class CommandPathSanity:
 			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='
 """
         reportHtmlTemplate += b["baseimage"] + "'" + "name='Image" + str(imageCounter)
-        reportHtmlTemplate += "' alt='Base Object(s)' align='bottom' width='320' height='320' border='0'/>"
+        reportHtmlTemplate += "' alt='Base Object(s)' align='bottom'"
+        reportHtmlTemplate += " width='320' height='320' border='0'/>"
         imageCounter += 1
         reportHtmlTemplate += """
 </span></font></p>
@@ -872,7 +873,8 @@ class CommandPathSanity:
         d = data["outputData"]
         reportHtmlTemplate += """
 <p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_output_gcode"></a>
-<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
+<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">
+"""
         reportHtmlTemplate += OutputHeading + " (Gcode)"
         reportHtmlTemplate += """
 </span></font></font></font></h2>
@@ -993,7 +995,8 @@ class CommandPathSanity:
         d = data["fixtureData"]
         reportHtmlTemplate += """
 <p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_fixtures_and_workholding"></a>
-<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
+<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">
+"""
         reportHtmlTemplate += FixturesHeading
         reportHtmlTemplate += """
 </span></font></font></font></h2>
@@ -1033,8 +1036,10 @@ class CommandPathSanity:
         reportHtmlTemplate += """</font></p>
 		</td>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left">
-			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='"""
-        reportHtmlTemplate += d["datumImage"] + "'" + "name='Image" + str(imageCounter) + "' alt='origin t' align='bottom' width='320' height='320' border='0'/>"
+			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='
+"""
+        reportHtmlTemplate += d["datumImage"] + "'" + "name='Image" + str(imageCounter)
+        reportHtmlTemplate += "' alt='origin t' align='bottom' width='320' height='320' border='0'/>"
         imageCounter += 1
         reportHtmlTemplate += """
 </span></font></p>
@@ -1051,7 +1056,8 @@ class CommandPathSanity:
 
         reportHtmlTemplate += """
 <p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_squawks"></a>
-<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
+<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">
+"""
         reportHtmlTemplate += SquawksHeading
         reportHtmlTemplate += """
 </span></font></font></font></h2>
@@ -1094,7 +1100,9 @@ class CommandPathSanity:
                     + "' "
                     + " name='Image"
                     + str(imageCounter)
-                    + "' alt='TIP' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + "' alt='TIP' align='middle' width='32' height='32' border='0'/>"
+                    + "<td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf;"
+                    + " border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
             if str(i["squawkType"]) == "NOTE":
@@ -1104,7 +1112,9 @@ class CommandPathSanity:
                     + "' "
                     + " name='Image"
                     + str(imageCounter)
-                    + "' alt='NOTE' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + "' alt='NOTE' align='middle' width='32' height='32' border='0'/>"
+                    + "<td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf;"
+                    + " border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
             if str(i["squawkType"]) == "WARNING":
@@ -1114,7 +1124,9 @@ class CommandPathSanity:
                     + "' "
                     + " name='Image"
                     + str(imageCounter)
-                    + "' alt='WARNING' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + "' alt='WARNING' align='middle' width='32' height='32' border='0'/>"
+                    + "<td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf;"
+                    + " border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
             if str(i["squawkType"]) == "CAUTION":
@@ -1124,7 +1136,9 @@ class CommandPathSanity:
                     + "' "
                     + " name='Image"
                     + str(imageCounter)
-                    + "' alt='CAUTION' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + "' alt='CAUTION' align='middle' width='32' height='32' border='0'/>"
+                    + "<td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf;"
+                    + " border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
             imageCounter += 1
