@@ -142,6 +142,7 @@ class CommandPathSanity:
                 FreeCAD.Console.PrintLog(
                     "Path - Sanity - Changing to Perspective Camera temporarily\n"
                 )
+        FreeCADGui.addIconPath(":/icons")
         self.squawkData = {"items": []}
         obj = FreeCADGui.Selection.getSelectionEx()[0].Object
         self.outputpath = self.resolveOutputPath(obj)
@@ -243,17 +244,23 @@ class CommandPathSanity:
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<title></title>
-	<meta name="generator" content="LibreOffice 7.5.6.2 (Linux)"/>
-	<meta name="created" content="2023-09-09T12:13:21.606241779"/>
-	<meta name="changed" content="2023-09-09T12:16:07.963008547"/>
+	<title>Setup Report for FreeCAD Job: Path Special
+</title>
 	<style type="text/css">
+       /* Light mode */
+       :root {
+          --body-bg: #FFFFFF;
+          --body-color: #000000;
+       }
+
+        body { background: var(--body-bg); color: var(--body-color);}
 		@page { size: 21cm 29.7cm; margin: 2cm }
 		p { line-height: 115%; margin-bottom: 0.25cm; background: transparent }
 		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
-		h1.western { font-family: "Liberation Serif", serif; font-size: 32pt; font-weight: bold }
-		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 32pt; font-weight: bold }
-		h1.ctl { font-family: "Lohit Devanagari"; font-size: 32pt; font-weight: bold }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: normal }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: normal }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: normal }
+        .ToC { font-size: 20pt; color: #7a2518 }
 		h2 { margin-top: 0.35cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
 		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
 		h2.cjk { font-family: "Noto Serif CJK SC"; font-size: 18pt; font-weight: bold }
@@ -267,7 +274,7 @@ class CommandPathSanity:
 		a:link { color: #000080; text-decoration: underline }
 	</style>
 </head>
-<body lang="en-GB" link="#000080" vlink="#800000" dir="ltr"><h1 class="western" style="font-variant: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm">
+<body><h1 class="western">
 <font color="#000000"><font face="Open Sans, DejaVu Sans, sans-serif">"""
         reportHtmlTemplate += Title + ": " + jobname
         reportHtmlTemplate += """
@@ -277,30 +284,34 @@ class CommandPathSanity:
 
 	</p>
 	<div id="toctitle" dir="ltr"><p style="font-variant: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0.21cm; margin-bottom: 0cm">
-		<span style="display: inline-block; border: none; padding: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 18pt"><font color="#7a2518">"""
+		<span class="ToC "style="display: inline-block; border: none; padding: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif">"""
         reportHtmlTemplate += ToC
         reportHtmlTemplate += """
 </span></font></font></p>
 	</div>
 </div>
 <p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal">
-<span style="display: inline-block; border: none; padding: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><font color="#ba3925"><a href="#_part_information"><font color="#2156a5"><span style="text-decoration: none">"""
+<span style="display: inline-block; border: none; padding: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt">
+<font color="#ba3925"><a href="#_part_information"><font color="#2156a5"><span style="text-decoration: none">"""
         reportHtmlTemplate += PartInfoHeading
         reportHtmlTemplate += """
 </span></font></a></span></font></font></font></p>
 <ul>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
-	<a href="#_run_summary"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+	<a href="#_run_summary"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
         reportHtmlTemplate += RunSumHeading
         reportHtmlTemplate += """
 </span></span></span></font></font></span></font></span></a></p>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
-	<span style="display: inline-block; border: none; padding: 0cm"><span style="font-variant: normal"><font color="#1d4b8f"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><a href="#_rough_stock">"""
+	<span style="display: inline-block; border: none; padding: 0cm"><span style="font-variant: normal"><font color="#1d4b8f"><span style="text-decoration: none">
+<font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><a href="#_rough_stock">"""
         reportHtmlTemplate += RoughStkHeading
         reportHtmlTemplate += """
 </span></span></span></span></font></font></span></font></span></a></p>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
-	<a href="#_tool_data"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+	<a href="#_tool_data"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
         reportHtmlTemplate += ToolDataHeading
         reportHtmlTemplate += """
 </span></span></span></font></font></span></font></span></a></p>"""
@@ -311,23 +322,32 @@ class CommandPathSanity:
 		<a href='#"""
             reportHtmlTemplate += toolLabel + key + "'<"
             reportHtmlTemplate += """
-<span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
-            reportHtmlTemplate += toolLabel + ": T" + key + "</span></span></span></font></font></span></font></span></a></p>"
+<span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+            reportHtmlTemplate += (
+                toolLabel
+                + ": T"
+                + key
+                + "</span></span></span></font></font></span></font></span></a></p>"
+            )
             reportHtmlTemplate += """
 	</ul>"""
         reportHtmlTemplate += """
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
-	<a href="#_output_gcode"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+	<a href="#_output_gcode"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
         reportHtmlTemplate += OutputHeading + " (Gcode)"
         reportHtmlTemplate += """
 </span></span></span></font></font></span></font></span></a></p>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
-	<a href="#_fixtures_and_workholding"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+	<a href="#_fixtures_and_workholding"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
         reportHtmlTemplate += FixturesHeading
         reportHtmlTemplate += """
 </span></span></span></font></font></span></font></span></a></p>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
-	<a href="#_squawks"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+	<a href="#_squawks"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
         reportHtmlTemplate += SquawksHeading
         reportHtmlTemplate += """
 </span></span></span></font></font></span></font></span></a></p>
@@ -642,6 +662,8 @@ class CommandPathSanity:
 	</tr>
 </table>"""
         d = data["toolData"]
+        # In order to make tool images unique start at 10
+        ToolCount = 10
         reportHtmlTemplate += """
 <p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_tool_data"></a>
 <span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
@@ -682,7 +704,12 @@ class CommandPathSanity:
                 reportHtmlTemplate += value["imagepath"]
             except:
                 pass
-            reportHtmlTemplate += """' name="Image3" alt="2" align="bottom" width="135" height="135" border="0"/>
+            reportHtmlTemplate += (
+                "' name='Image"
+                + str(ToolCount)
+                + "' alt='2' align='bottom' width='135' height='135' border='0'/>"
+            )
+            reportHtmlTemplate += """
 </span></font></p>
 		</td>
 	</tr>
@@ -754,6 +781,7 @@ class CommandPathSanity:
 		<td colspan="2" style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="border: none; padding: 0cm">
 			<font color="#000000">"""
             reportHtmlTemplate += value["diameter"]
+            ToolCount += 1
             reportHtmlTemplate += """</font></p>
 		</td>
 	</tr>
@@ -984,6 +1012,15 @@ class CommandPathSanity:
 	</tr>
 </table>"""
         d = data["squawkData"]
+        TIPIcon = FreeCAD.getHomePath() + "Mod/Path/Path/Main/Gui/Sanity_Bulb.svg"
+        NOTEIcon = FreeCAD.getHomePath() + "Mod/Path/Path/Main/Gui/Sanity_Note.svg"
+        WARNINGIcon = (
+            FreeCAD.getHomePath() + "Mod/Path/Path/Main/Gui/Sanity_Warning.svg"
+        )
+        CAUTIONIcon = FreeCAD.getHomePath() + "Mod/Path/Path/Main/Gui/Sanity_Stop.svg"
+
+        # need to make the image ref unique so starting at 100 (to take into account number of possible tool images)
+        SquawkCount = 100
         reportHtmlTemplate += """
 <p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_squawks"></a>
 <span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
@@ -1022,7 +1059,47 @@ class CommandPathSanity:
 				<tr>
 					<td style="border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm"><p>
 						<font color="#000000">"""
-            reportHtmlTemplate += str(i["squawkType"]) + " " + str(i["Note"])
+            if str(i["squawkType"]) == "TIP":
+                reportHtmlTemplate += (
+                    "<img src='"
+                    + TIPIcon
+                    + "' "
+                    + " name='Image"
+                    + str(SquawkCount)
+                    + "' alt='TIP' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + str(i["Note"])
+                )
+            if str(i["squawkType"]) == "NOTE":
+                reportHtmlTemplate += (
+                    "<img src='"
+                    + NOTEIcon
+                    + "' "
+                    + " name='Image"
+                    + str(SquawkCount)
+                    + "' alt='NOTE' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + str(i["Note"])
+                )
+            if str(i["squawkType"]) == "WARNING":
+                reportHtmlTemplate += (
+                    "<img src='"
+                    + WARNINGIcon
+                    + "' "
+                    + " name='Image"
+                    + str(SquawkCount)
+                    + "' alt='WARNING' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + str(i["Note"])
+                )
+            if str(i["squawkType"]) == "CAUTION":
+                reportHtmlTemplate += (
+                    "<img src='"
+                    + CAUTIONIcon
+                    + "' "
+                    + " name='Image"
+                    + str(SquawkCount)
+                    + "' alt='CAUTION' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + str(i["Note"])
+                )
+            SquawkCount += 1
             reportHtmlTemplate += """</font></p>
 					</td>
 				</tr>
@@ -1449,10 +1526,11 @@ class CommandPathSanity:
                 if not hasattr(TC.Tool, "BitBody"):
                     self.squawk(
                         "PathSanity",
-                        translate("Path_Sanity", "Tool number {} is a legacy tool. Legacy tools not \
-                        supported by Path-Sanity").format(
-                            TC.ToolNumber
-                        ),
+                        translate(
+                            "Path_Sanity",
+                            "Tool number {} is a legacy tool. Legacy tools not \
+                        supported by Path-Sanity",
+                        ).format(TC.ToolNumber),
                         squawkType="WARNING",
                     )
                     continue  # skip old-style tools
@@ -1461,7 +1539,9 @@ class CommandPathSanity:
                 if bitshape not in ["", TC.Tool.BitShape]:
                     self.squawk(
                         "PathSanity",
-                        translate("Path_Sanity", "Tool number {} used by multiple tools").format(TC.ToolNumber),
+                        translate(
+                            "Path_Sanity", "Tool number {} used by multiple tools"
+                        ).format(TC.ToolNumber),
                         squawkType="CAUTION",
                     )
                 tooldata["bitShape"] = TC.Tool.BitShape
@@ -1487,7 +1567,9 @@ class CommandPathSanity:
                 if TC.SpindleSpeed == 0.0:
                     self.squawk(
                         "PathSanity",
-                        translate("Path_Sanity", "Tool Controller '{}' has no spindlespeed").format(TC.Label),
+                        translate(
+                            "Path_Sanity", "Tool Controller '{}' has no spindlespeed"
+                        ).format(TC.Label),
                         squawkType="WARNING",
                     )
 
@@ -1513,7 +1595,9 @@ class CommandPathSanity:
                     tooldata.setdefault("ops", [])
                     self.squawk(
                         "PathSanity",
-                        translate("Path_Sanity", "Tool Controller '{}' is not used").format(TC.Label),
+                        translate(
+                            "Path_Sanity", "Tool Controller '{}' is not used"
+                        ).format(TC.Label),
                         squawkType="WARNING",
                     )
 
@@ -1697,7 +1781,10 @@ class CommandPathSanity:
             if obj.LastPostProcessOutput == "":
                 data["filesize"] = str(0.0)
                 data["linecount"] = str(0)
-                self.squawk("PathSanity", translate("Path_Sanity", "The Job has not been post-processed"))
+                self.squawk(
+                    "PathSanity",
+                    translate("Path_Sanity", "The Job has not been post-processed"),
+                )
             else:
                 data["filesize"] = str(
                     os.path.getsize(obj.LastPostProcessOutput) / 1000
