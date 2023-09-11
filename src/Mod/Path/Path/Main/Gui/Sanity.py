@@ -1031,7 +1031,7 @@ class CommandPathSanity:
 	</tr>
 	<tr>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="border: none; padding: 0cm">
-			<font color="#000000">"""
+			<strong><font color="#000000">"""
         reportHtmlTemplate += datumLabel
         reportHtmlTemplate += """</font></p>
 		</td>
