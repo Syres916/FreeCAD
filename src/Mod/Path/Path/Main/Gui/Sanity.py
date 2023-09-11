@@ -238,6 +238,7 @@ class CommandPathSanity:
         jobTotalLabel = translate("Path_Sanity", "TOTAL JOB")
         d = data["toolData"]
         toolLabel = translate("Path_Sanity", "Tool Number")
+        imageCounter = 1
         reportHtmlTemplate = """
 
 <!DOCTYPE html>
@@ -284,7 +285,8 @@ class CommandPathSanity:
 
 	</p>
 	<div id="toctitle" dir="ltr"><p style="font-variant: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0.21cm; margin-bottom: 0cm">
-		<span class="ToC "style="display: inline-block; border: none; padding: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif">"""
+		<span class="ToC "style="display: inline-block; border: none; padding: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif">
+"""
         reportHtmlTemplate += ToC
         reportHtmlTemplate += """
 </span></font></font></p>
@@ -292,26 +294,30 @@ class CommandPathSanity:
 </div>
 <p style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal">
 <span style="display: inline-block; border: none; padding: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt">
-<font color="#ba3925"><a href="#_part_information"><font color="#2156a5"><span style="text-decoration: none">"""
+<font color="#ba3925"><a href="#_part_information"><font color="#2156a5"><span style="text-decoration: none">
+"""
         reportHtmlTemplate += PartInfoHeading
         reportHtmlTemplate += """
 </span></font></a></span></font></font></font></p>
 <ul>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
 	<a href="#_run_summary"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
-<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+"""
         reportHtmlTemplate += RunSumHeading
         reportHtmlTemplate += """
 </span></span></span></font></font></span></font></span></a></p>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
 	<span style="display: inline-block; border: none; padding: 0cm"><span style="font-variant: normal"><font color="#1d4b8f"><span style="text-decoration: none">
-<font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><a href="#_rough_stock">"""
+<font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal"><a href="#_rough_stock">
+"""
         reportHtmlTemplate += RoughStkHeading
         reportHtmlTemplate += """
 </span></span></span></span></font></font></span></font></span></a></p>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
 	<a href="#_tool_data"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
-<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+"""
         reportHtmlTemplate += ToolDataHeading
         reportHtmlTemplate += """
 </span></span></span></font></font></span></font></span></a></p>"""
@@ -323,7 +329,8 @@ class CommandPathSanity:
             reportHtmlTemplate += toolLabel + key + "'<"
             reportHtmlTemplate += """
 <span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
-<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+"""
             reportHtmlTemplate += (
                 toolLabel
                 + ": T"
@@ -335,19 +342,22 @@ class CommandPathSanity:
         reportHtmlTemplate += """
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
 	<a href="#_output_gcode"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
-<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+"""
         reportHtmlTemplate += OutputHeading + " (Gcode)"
         reportHtmlTemplate += """
 </span></span></span></font></font></span></font></span></a></p>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
 	<a href="#_fixtures_and_workholding"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
-<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+"""
         reportHtmlTemplate += FixturesHeading
         reportHtmlTemplate += """
 </span></span></span></font></font></span></font></span></a></p>
 	<li><p style="line-height: 133%; orphans: 2; widows: 2; margin-bottom: 0cm; border: none; padding: 0cm">
 	<a href="#_squawks"><span style="font-variant: normal"><font color="#2156a5"><span style="text-decoration: none"><font face="Open Sans, DejaVu Sans, sans-serif">
-<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">"""
+<font size="3" style="font-size: 12pt"><span style="letter-spacing: normal"><span style="font-style: normal"><span style="font-weight: normal">
+"""
         reportHtmlTemplate += SquawksHeading
         reportHtmlTemplate += """
 </span></span></span></font></font></span></font></span></a></p>
@@ -358,7 +368,8 @@ class CommandPathSanity:
 
 </p>
 <h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal"><a name="_part_information"></a>
-<span style="display: inline-block; border: none; padding: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
+<span style="display: inline-block; border: none; padding: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">
+"""
         reportHtmlTemplate += PartInfoHeading
         reportHtmlTemplate += """
 </span></font></font></font></h2>
@@ -406,9 +417,9 @@ class CommandPathSanity:
 		</td>
 		<td rowspan="7" style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%">
 			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='"""
-        reportHtmlTemplate += b["baseimage"] + "'"
+        reportHtmlTemplate += b["baseimage"] + "'" + "name='Image" + str(imageCounter) + "' alt='Base Object(s)' align='bottom' width='320' height='320' border='0'/>"
+        imageCounter += 1
         reportHtmlTemplate += """
- name="Image1" alt="Base Object(s)" align="bottom" width="320" height="320" border="0"/>
 </span></font></p>
 		</td>
 	</tr>
@@ -419,7 +430,9 @@ class CommandPathSanity:
         reportHtmlTemplate += """</b></font></strong></p>
 		</td>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%; border: none; padding: 0cm">
-			<font color="#000000">1 of 1</font></p>
+			<font color="#000000">"""
+        reportHtmlTemplate += d["Sequence"]
+        reportHtmlTemplate += """</font></p>
 		</td>
 	</tr>
 	<tr>
@@ -460,7 +473,9 @@ class CommandPathSanity:
 	</tr>
 	<tr>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%; border: none; padding: 0cm">
-			<strong><font color="#000000"><b>Last Save Date</b></font></strong></p>
+			<strong><font color="#000000"><b>"""
+        reportHtmlTemplate += LastSaveLabel
+        reportHtmlTemplate += """</b></font></strong></p>
 		</td>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%; border: none; padding: 0cm">
 			<font color="#000000">"""
@@ -470,7 +485,9 @@ class CommandPathSanity:
 	</tr>
 	<tr>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%; border: none; padding: 0cm">
-			<strong><font color="#000000"><b>Customer</b></font></strong></p>
+			<strong><font color="#000000"><b>"""
+        reportHtmlTemplate += CustomerLabel
+        reportHtmlTemplate += """</b></font></strong></p>
 		</td>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%; border: none; padding: 0cm">
 			<font color="#000000">"""
@@ -613,14 +630,15 @@ class CommandPathSanity:
         reportHtmlTemplate += """
 </b></font></strong></p>
 		</td>
-		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="border: none; padding: 0cm">
-			<font color="#000000">Not Specified</font></p>
-		</td>
+		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%; border: none; padding: 0cm">
+			<font color="#000000">"""
+        reportHtmlTemplate += d["material"] + "</font></p>"
+        reportHtmlTemplate += """
 		<td rowspan="4" style="border: 1px solid #dedede; padding: 0.05cm"><p align="left">
 			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='"""
-        reportHtmlTemplate += d["stockImage"] + "'"
+        reportHtmlTemplate += d["stockImage"] + "'" + "name='Image" + str(imageCounter) + "' alt='stock' align='bottom' width='320' height='320' border='0'/>"
+        imageCounter += 1
         reportHtmlTemplate += """
- name="Image2" alt="stock" align="bottom" width="320" height="320" border="0"/>
 </span></font></p>
 		</td>
 	</tr>
@@ -662,8 +680,6 @@ class CommandPathSanity:
 	</tr>
 </table>"""
         d = data["toolData"]
-        # In order to make tool images unique start at 10
-        ToolCount = 10
         reportHtmlTemplate += """
 <p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_tool_data"></a>
 <span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
@@ -706,7 +722,7 @@ class CommandPathSanity:
                 pass
             reportHtmlTemplate += (
                 "' name='Image"
-                + str(ToolCount)
+                + str(imageCounter)
                 + "' alt='2' align='bottom' width='135' height='135' border='0'/>"
             )
             reportHtmlTemplate += """
@@ -781,7 +797,7 @@ class CommandPathSanity:
 		<td colspan="2" style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="border: none; padding: 0cm">
 			<font color="#000000">"""
             reportHtmlTemplate += value["diameter"]
-            ToolCount += 1
+            imageCounter += 1
             reportHtmlTemplate += """</font></p>
 		</td>
 	</tr>
@@ -995,18 +1011,21 @@ class CommandPathSanity:
 		</td>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="border: none; padding: 0cm">
 			<font color="#000000">"""
-        reportHtmlTemplate += datumLabel
+        reportHtmlTemplate += d["orderBy"]
         reportHtmlTemplate += """</font></p>
 		</td>
 	</tr>
 	<tr>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="border: none; padding: 0cm">
-			<strong><font color="#000000"><b>Part Datum</b></font></strong></p>
+			<font color="#000000">"""
+        reportHtmlTemplate += datumLabel
+        reportHtmlTemplate += """</font></p>
 		</td>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left">
 			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='"""
-        reportHtmlTemplate += d["datumImage"]
-        reportHtmlTemplate += """' name="Image4" alt="origin t" align="bottom" width="320" height="320" border="0"/>
+        reportHtmlTemplate += d["datumImage"] + "'" + "name='Image" + str(imageCounter) + "' alt='origin t' align='bottom' width='320' height='320' border='0'/>"
+        imageCounter += 1
+        reportHtmlTemplate += """
 </span></font></p>
 		</td>
 	</tr>
@@ -1019,8 +1038,6 @@ class CommandPathSanity:
         )
         CAUTIONIcon = FreeCAD.getHomePath() + "Mod/Path/Path/Main/Gui/Sanity_Stop.svg"
 
-        # need to make the image ref unique so starting at 100 (to take into account number of possible tool images)
-        SquawkCount = 100
         reportHtmlTemplate += """
 <p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_squawks"></a>
 <span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
@@ -1065,7 +1082,7 @@ class CommandPathSanity:
                     + TIPIcon
                     + "' "
                     + " name='Image"
-                    + str(SquawkCount)
+                    + str(imageCounter)
                     + "' alt='TIP' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
@@ -1075,7 +1092,7 @@ class CommandPathSanity:
                     + NOTEIcon
                     + "' "
                     + " name='Image"
-                    + str(SquawkCount)
+                    + str(imageCounter)
                     + "' alt='NOTE' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
@@ -1085,7 +1102,7 @@ class CommandPathSanity:
                     + WARNINGIcon
                     + "' "
                     + " name='Image"
-                    + str(SquawkCount)
+                    + str(imageCounter)
                     + "' alt='WARNING' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
@@ -1095,11 +1112,11 @@ class CommandPathSanity:
                     + CAUTIONIcon
                     + "' "
                     + " name='Image"
-                    + str(SquawkCount)
+                    + str(imageCounter)
                     + "' alt='CAUTION' align='middle' width='32' height='32' border='0'/><td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf; border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
-            SquawkCount += 1
+            imageCounter += 1
             reportHtmlTemplate += """</font></p>
 					</td>
 				</tr>
