@@ -1039,7 +1039,8 @@ class CommandPathSanity:
 			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='
 """
         reportHtmlTemplate += d["datumImage"] + "'" + "name='Image" + str(imageCounter)
-        reportHtmlTemplate += "' alt='origin t' align='bottom' width='320' height='320' border='0'/>"
+        reportHtmlTemplate += "' alt='origin t' align='bottom'"
+        reportHtmlTemplate += " width='320' height='320' border='0'/>"
         imageCounter += 1
         reportHtmlTemplate += """
 </span></font></p>
@@ -1101,8 +1102,12 @@ class CommandPathSanity:
                     + " name='Image"
                     + str(imageCounter)
                     + "' alt='TIP' align='middle' width='32' height='32' border='0'/>"
-                    + "<td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf;"
-                    + " border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + "<td style='border-top: none; border-bottom: none;"
+                    + " border-left: 1px solid #dddddf;"
+                    + " border-right: none; padding-top: 0cm;"
+                    + " padding-bottom: 0cm;"
+                    + " padding-left: 0.05cm;"
+                    + " padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
             if str(i["squawkType"]) == "NOTE":
@@ -1113,8 +1118,12 @@ class CommandPathSanity:
                     + " name='Image"
                     + str(imageCounter)
                     + "' alt='NOTE' align='middle' width='32' height='32' border='0'/>"
-                    + "<td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf;"
-                    + " border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + "<td style='border-top: none; border-bottom: none;"
+                    + " border-left: 1px solid #dddddf;"
+                    + " border-right: none; padding-top: 0cm;"
+                    + " padding-bottom: 0cm;"
+                    + " padding-left: 0.05cm;"
+                    + " padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
             if str(i["squawkType"]) == "WARNING":
@@ -1125,8 +1134,12 @@ class CommandPathSanity:
                     + " name='Image"
                     + str(imageCounter)
                     + "' alt='WARNING' align='middle' width='32' height='32' border='0'/>"
-                    + "<td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf;"
-                    + " border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + "<td style='border-top: none; border-bottom: none;"
+                    + " border-left: 1px solid #dddddf;"
+                    + " border-right: none; padding-top: 0cm;"
+                    + " padding-bottom: 0cm;"
+                    + " padding-left: 0.05cm;"
+                    + " padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
             if str(i["squawkType"]) == "CAUTION":
@@ -1137,8 +1150,12 @@ class CommandPathSanity:
                     + " name='Image"
                     + str(imageCounter)
                     + "' alt='CAUTION' align='middle' width='32' height='32' border='0'/>"
-                    + "<td style='border-top: none; border-bottom: none; border-left: 1px solid #dddddf;"
-                    + " border-right: none; padding-top: 0cm; padding-bottom: 0cm; padding-left: 0.05cm; padding-right: 0cm'><p>"
+                    + "<td style='border-top: none; border-bottom: none;"
+                    + " border-left: 1px solid #dddddf;"
+                    + " border-right: none; padding-top: 0cm;"
+                    + " padding-bottom: 0cm;"
+                    + " padding-left: 0.05cm;"
+                    + " padding-right: 0cm'><p>"
                     + str(i["Note"])
                 )
             imageCounter += 1
