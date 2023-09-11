@@ -416,8 +416,10 @@ class CommandPathSanity:
 			</p>
 		</td>
 		<td rowspan="7" style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="line-height: 160%">
-			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='"""
-        reportHtmlTemplate += b["baseimage"] + "'" + "name='Image" + str(imageCounter) + "' alt='Base Object(s)' align='bottom' width='320' height='320' border='0'/>"
+			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='
+"""
+        reportHtmlTemplate += b["baseimage"] + "'" + "name='Image" + str(imageCounter)
+        reportHtmlTemplate += "' alt='Base Object(s)' align='bottom' width='320' height='320' border='0'/>"
         imageCounter += 1
         reportHtmlTemplate += """
 </span></font></p>
@@ -535,7 +537,8 @@ class CommandPathSanity:
         d = data["runData"]
         reportHtmlTemplate += """
 <p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_run_summary"></a>
-<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
+<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">
+"""
         reportHtmlTemplate += RunSumHeading
         reportHtmlTemplate += """
 </span></font></font></font></h2>"""
@@ -612,7 +615,8 @@ class CommandPathSanity:
         d = data["stockData"]
         reportHtmlTemplate += """
 <p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_rough_stock"></a>
-<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
+<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">
+"""
         reportHtmlTemplate += RoughStkHeading
         reportHtmlTemplate += """
 </span></font></font></font></h2>
@@ -635,8 +639,10 @@ class CommandPathSanity:
         reportHtmlTemplate += d["material"] + "</font></p>"
         reportHtmlTemplate += """
 		<td rowspan="4" style="border: 1px solid #dedede; padding: 0.05cm"><p align="left">
-			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='"""
-        reportHtmlTemplate += d["stockImage"] + "'" + "name='Image" + str(imageCounter) + "' alt='stock' align='bottom' width='320' height='320' border='0'/>"
+			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='
+"""
+        reportHtmlTemplate += d["stockImage"] + "'" + "name='Image" + str(imageCounter)
+        reportHtmlTemplate += "' alt='stock' align='bottom' width='320' height='320' border='0'/>"
         imageCounter += 1
         reportHtmlTemplate += """
 </span></font></p>
@@ -682,17 +688,20 @@ class CommandPathSanity:
         d = data["toolData"]
         reportHtmlTemplate += """
 <p><h2 class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm"><a name="_tool_data"></a>
-<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">"""
+<span style="display: inline-block; border-top: 1px solid #e7e7e9; border-bottom: none; border-left: none; border-right: none; padding-top: 0.05cm; padding-bottom: 0cm; padding-left: 0cm; padding-right: 0cm"><font face="Open Sans, DejaVu Sans, sans-serif"><font size="3" style="font-size: 20pt"><font color="#ba3925">
+"""
         reportHtmlTemplate += ToolDataHeading
         reportHtmlTemplate += """
 </span></font></font></font></h2>"""
         for key, value in d.items():
             reportHtmlTemplate += """
-<h3 class='western' style='font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm'><a name='"""
+<h3 class='western' style='font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 120%; orphans: 2; widows: 2; margin-top: 0cm; margin-bottom: 0cm; border: none; padding: 0cm'><a name='
+"""
             reportHtmlTemplate += toolLabel + key
             reportHtmlTemplate += "'>"
             reportHtmlTemplate += """
-</a><span style='display: inline-block; border: none; padding: 0cm'><font face='Open Sans, DejaVu Sans, sans-serif'><font size='3' style='font-size: 16pt'><font color='#ba3925'>"""
+</a><span style='display: inline-block; border: none; padding: 0cm'><font face='Open Sans, DejaVu Sans, sans-serif'><font size='3' style='font-size: 16pt'><font color='#ba3925'>
+"""
             reportHtmlTemplate += toolLabel + ": T" + key
             reportHtmlTemplate += """</span></font></font></font></h3>"""
             reportHtmlTemplate += """
@@ -712,10 +721,12 @@ class CommandPathSanity:
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left" style="border: none; padding: 0cm">
 			<font color="#000000">"""
             reportHtmlTemplate += value["description"]
-            reportHtmlTemplate += """</font></p>
+            reportHtmlTemplate += """
+</font></p>
 		</td>
 		<td style="border: 1px solid #dedede; padding: 0.05cm"><p align="left">
-			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='"""
+			<span style="display: inline-block; border: none; padding: 0cm"><font color="#000000"><img src='
+"""
             try:
                 reportHtmlTemplate += value["imagepath"]
             except:
