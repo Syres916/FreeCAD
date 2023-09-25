@@ -729,10 +729,12 @@ void MainWindow::notifyTasksDockWidget()
         }
         QDockWidget* tasksdw = mw->findChild<QDockWidget*>(QString::fromLatin1("Tasks"));
         if (!tasksdw) {
+            Base::Console().Log("MainWindow::notifyTasksDockWidget Tasks QDockWidget not avilable\n");
             return;
         }
         QDockWidget* modeldw = mw->findChild<QDockWidget*>(QString::fromLatin1("Model"));
         if (!modeldw) {
+            Base::Console().Log("MainWindow::notifyTasksDockWidget Model QDockWidget not avilable\n");
             return;
         }
         mw->tabifyDockWidget(modeldw, tasksdw);
