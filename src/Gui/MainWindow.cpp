@@ -705,6 +705,36 @@ void MainWindow::closeActiveWindow ()
     d->mdiArea->closeActiveSubWindow();
 }
 
+void MainWindow::notifyTasksDockWidget()
+{
+    QMessageBox msgBox(this);
+    msgBox.setIcon(QMessageBox::Warning);
+    msgBox.setWindowTitle(tr("Tasks Dock Widget Seperation"));
+    msgBox.setText(tr("Do you want the Tasks to be seperated from the Combo View"
+                      " or stay tabulated as in previous versions?"));
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    auto buttonY = msgBox.button(QMessageBox::Yes);
+    buttonY->setText(tr("Seperated"));
+    auto buttonN = msgBox.button(QMessageBox::No);
+    buttonN->setText(tr("Tabulated"));
+    msgBox.adjustSize(); // Silence warnings from Qt on Windows
+    switch (msgBox.exec())
+    {
+    case QMessageBox::Yes:
+        break;
+    case QMessageBox::No:
+        Gui::MainWindow* mw = Gui::getMainWindow();
+        if (!mw) {
+            return;
+        }
+        QDockWidget* tasksdw = mw->findChild<QDockWidget*>(QString::fromLatin1("Tasks"));
+        QDockWidget* modeldw = mw->findChild<QDockWidget*>(QString::fromLatin1("Model"));
+        mw->tabifyDockWidget(modeldw, tasksdw);
+        modeldw->raise();
+        break;
+    }
+}
+
 int MainWindow::confirmSave(const char *docName, QWidget *parent, bool addCheckbox) {
     QMessageBox box(parent?parent:this);
     box.setIcon(QMessageBox::Question);
@@ -1483,6 +1513,14 @@ void MainWindow::delayedStartup()
 
     if (hGrp->GetBool("RecoveryEnabled", true)) {
         Application::Instance->checkForPreviousCrashes();
+    }
+
+    ParameterGrp::handle group = App::GetApplication().GetUserParameter().
+            GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("View");
+    bool askTasksPreference = group->GetBool("NotifyTasksDockWidget", true);
+    if (askTasksPreference) {
+        notifyTasksDockWidget();
+        group->SetBool("NotifyTasksDockWidget", false);
     }
 }
 
