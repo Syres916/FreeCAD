@@ -728,7 +728,13 @@ void MainWindow::notifyTasksDockWidget()
             return;
         }
         QDockWidget* tasksdw = mw->findChild<QDockWidget*>(QString::fromLatin1("Tasks"));
+        if (!tasksdw) {
+            return;
+        }
         QDockWidget* modeldw = mw->findChild<QDockWidget*>(QString::fromLatin1("Model"));
+        if (!modeldw) {
+            return;
+        }
         mw->tabifyDockWidget(modeldw, tasksdw);
         modeldw->raise();
         break;
