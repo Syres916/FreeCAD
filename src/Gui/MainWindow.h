@@ -227,6 +227,10 @@ public Q_SLOTS:
     /**
      * Closes all document window.
      */
+    void notifyTasksDockWidget();
+    /**
+     * One off message box request to keep Tasks panel separated or tabulated.
+     */
     bool closeAllDocuments (bool close=true);
     /** Pop up a message box asking for saving document
      */
