@@ -709,12 +709,12 @@ void MainWindow::notifyTasksDockWidget()
 {
     QMessageBox msgBox(this);
     msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setWindowTitle(tr("Tasks Dock Widget Seperation"));
-    msgBox.setText(tr("Do you want the Tasks to be seperated from the Combo View"
+    msgBox.setWindowTitle(tr("Tasks Dock Widget Separation"));
+    msgBox.setText(tr("Do you want the Tasks to be separated from the Combo View"
                       " or stay tabulated as in previous versions?"));
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     auto buttonY = msgBox.button(QMessageBox::Yes);
-    buttonY->setText(tr("Seperated"));
+    buttonY->setText(tr("Separated"));
     auto buttonN = msgBox.button(QMessageBox::No);
     buttonN->setText(tr("Tabulated"));
     msgBox.adjustSize(); // Silence warnings from Qt on Windows
