@@ -1781,7 +1781,9 @@ if FreeCAD.GuiUp:
         else:
             get_working_plane()
 
-    def _view_observer_callback():
+    def _view_observer_callback(sub_win):
+        if sub_win is None:
+            return
         view = gui_utils.get_3d_view()
         if view is None:
             return
@@ -1797,9 +1799,19 @@ if FreeCAD.GuiUp:
     def _view_observer_start():
         mw = FreeCADGui.getMainWindow()
         mdi = mw.findChild(QtWidgets.QMdiArea)
+        try:
+            mdi.subWindowActivated.disconnect(_view_observer_callback)
+        except Exception:
+            pass
         mdi.subWindowActivated.connect(_view_observer_callback)
 
-    _view_observer_start()
+    def _view_observer_stop():
+        mw = FreeCADGui.getMainWindow()
+        mdi = mw.findChild(QtWidgets.QMdiArea)
+        try:
+            mdi.subWindowActivated.disconnect(_view_observer_callback)
+        except Exception:
+            pass
 
 
 # Compatibility function (V0.22, 2023):
