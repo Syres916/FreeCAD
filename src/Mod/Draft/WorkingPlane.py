@@ -1803,6 +1803,7 @@ if FreeCAD.GuiUp:
             mdi.subWindowActivated.disconnect(_view_observer_callback)
         except Exception:
             pass
+        _view_observer_callback(mdi.activeSubWindow())  # Trigger initial update.
         mdi.subWindowActivated.connect(_view_observer_callback)
 
     def _view_observer_stop():
