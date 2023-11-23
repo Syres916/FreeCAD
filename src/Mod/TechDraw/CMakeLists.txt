@@ -21,6 +21,7 @@ set(TechDraw_ToolsScripts
     TechDrawTools/CommandMoveView.py
     TechDrawTools/CommandShareView.py
     TechDrawTools/CommandAxoLengthDimension.py
+    TechDrawTools/CommandFillTemplateFields.py
     TechDrawTools/CommandHoleShaftFit.py
     TechDrawTools/TaskMoveView.py
     TechDrawTools/TaskShareView.py
