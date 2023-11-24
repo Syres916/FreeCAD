@@ -394,6 +394,103 @@ const char circleLine15_marker[CIRCLE_LINE15_WIDTH * CIRCLE_LINE15_HEIGHT + 1] =
 "   xxxxxxxxxx  "
 "     xxxxxx    "};
 
+//CIRCLE_LINE_20_20
+const int CIRCLE_LINE20_WIDTH = 20;
+const int CIRCLE_LINE20_HEIGHT = 20;
+const char circleLine20_marker[CIRCLE_LINE20_WIDTH * CIRCLE_LINE20_HEIGHT + 1] = {
+"                    "
+"        xxxxx       "
+"      xxxxxxxxx     "
+"     xx       xx    "
+"    xx         xx   "
+"   xx           xx  "
+"  xx             xx "
+"  xx             xx "
+"  xx             xx "
+" xx               xx"
+" xx               xx"
+" xx               xx"
+"  xx             xx "
+"  xx             xx "
+"  xx             xx "
+"   xx           xx  "
+"    xx         xx   "
+"     xx       xx    "
+"      xxxxxxxxx     "
+"        xxxxx       "};
+
+
+
+//CIRCLE_LINE_25_25
+const int CIRCLE_LINE25_WIDTH = 25;
+const int CIRCLE_LINE25_HEIGHT = 25;
+const char circleLine25_marker[CIRCLE_LINE25_WIDTH * CIRCLE_LINE25_HEIGHT + 1] = {
+"                         "
+"         xxxxxxx         "
+"       xxxxxxxxxxx       "
+"     xxx         xxx     "
+"    xx             xx    "
+"   xx               xx   "
+"  xx                 xx  "
+"  xx                 xx  "
+" xx                   xx "
+" xx                   xx "
+" xx                   xx "
+"xx                     xx"
+"xx                     xx"
+"xx                     xx"
+"xx                     xx"
+" xx                   xx "
+" xx                   xx "
+" xx                   xx "
+"  xx                 xx  "
+"  xx                 xx  "
+"   xx               xx   "
+"    xx             xx    "
+"     xxx         xxx     "
+"       xxxxxxxxxxx       "
+"         xxxxxxx         "};
+
+
+
+
+//CIRCLE_LINE_30_30
+const int CIRCLE_LINE30_WIDTH = 30;
+const int CIRCLE_LINE30_HEIGHT = 30;
+const char circleLine30_marker[CIRCLE_LINE30_WIDTH * CIRCLE_LINE30_HEIGHT + 1] = {
+"                              "
+"            xxxxxx            "
+"         xxxxxxxxxxxx         "
+"       xxx          xxx       "
+"      xx              xx      "
+"    xx                  xx    "
+"    xx                  xx    "
+"   xx                    xx   "
+"  xx                      xx  "
+"  xx                      xx  "
+" xx                        xx "
+" xx                        xx "
+" xx                        xx "
+"xx                          xx"
+"xx                          xx"
+"xx                          xx"
+"xx                          xx"
+"xx                          xx"
+" xx                        xx "
+" xx                        xx "
+" xx                        xx "
+"  xx                      xx  "
+"  xx                      xx  "
+"   xx                    xx   "
+"    xx                  xx    "
+"    xx                  xx    "
+"      xx              xx      "
+"       xxx          xxx       "
+"         xxxxxxxxxxxx         "
+"            xxxxxx            "};
+
+
+
 //CIRCLE_FILLED_11_11
 const int CIRCLE_FILLED11_WIDTH = 11;
 const int CIRCLE_FILLED11_HEIGHT = 11;
@@ -450,6 +547,101 @@ const char circleFilled15_marker[CIRCLE_FILLED15_WIDTH * CIRCLE_FILLED15_HEIGHT 
 "   xxxxxxxxxx  "
 "     xxxxxx    "};
 
+
+//CIRCLE_FILLED_20_20
+const int CIRCLE_FILLED20_WIDTH = 20;
+const int CIRCLE_FILLED20_HEIGHT = 20;
+const char circleFilled20_marker[CIRCLE_FILLED20_WIDTH * CIRCLE_FILLED20_HEIGHT + 1] = {
+"                    "
+"        xxxxx       "
+"      xxxxxxxxx     "
+"     xxxxxxxxxxx    "
+"    xxxxxxxxxxxxx   "
+"   xxxxxxxxxxxxxxx  "
+"  xxxxxxxxxxxxxxxxx "
+"  xxxxxxxxxxxxxxxxx "
+"  xxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxx"
+" xxxxxxxxxxxxxxxxxxx"
+" xxxxxxxxxxxxxxxxxxx"
+"  xxxxxxxxxxxxxxxxx "
+"  xxxxxxxxxxxxxxxxx "
+"  xxxxxxxxxxxxxxxxx "
+"   xxxxxxxxxxxxxxx  "
+"    xxxxxxxxxxxxx   "
+"     xxxxxxxxxxx    "
+"      xxxxxxxxx     "
+"        xxxxx       "};
+
+
+//CIRCLE_FILLED_25_25
+const int CIRCLE_FILLED25_WIDTH = 25;
+const int CIRCLE_FILLED25_HEIGHT = 25;
+const char circleFilled25_marker[CIRCLE_FILLED25_WIDTH * CIRCLE_FILLED25_HEIGHT + 1] = {
+"                         "
+"         xxxxxxx         "
+"       xxxxxxxxxxx       "
+"     xxxxxxxxxxxxxxx     "
+"    xxxxxxxxxxxxxxxxx    "
+"   xxxxxxxxxxxxxxxxxxx   "
+"  xxxxxxxxxxxxxxxxxxxxx  "
+"  xxxxxxxxxxxxxxxxxxxxx  "
+" xxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxx "
+"xxxxxxxxxxxxxxxxxxxxxxxxx"
+"xxxxxxxxxxxxxxxxxxxxxxxxx"
+"xxxxxxxxxxxxxxxxxxxxxxxxx"
+"xxxxxxxxxxxxxxxxxxxxxxxxx"
+" xxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxx "
+"  xxxxxxxxxxxxxxxxxxxxx  "
+"  xxxxxxxxxxxxxxxxxxxxx  "
+"   xxxxxxxxxxxxxxxxxxx   "
+"    xxxxxxxxxxxxxxxxx    "
+"     xxxxxxxxxxxxxxx     "
+"       xxxxxxxxxxx       "
+"         xxxxxxx         "};
+
+
+//CIRCLE_FILLED_30_30
+const int CIRCLE_FILLED30_WIDTH = 30;
+const int CIRCLE_FILLED30_HEIGHT = 30;
+const char circleFilled30_marker[CIRCLE_FILLED30_WIDTH * CIRCLE_FILLED30_HEIGHT + 1] = {
+"                              "
+"            xxxxxx            "
+"         xxxxxxxxxxxx         "
+"       xxxxxxxxxxxxxxxx       "
+"      xxxxxxxxxxxxxxxxxx      "
+"    xxxxxxxxxxxxxxxxxxxxxx    "
+"    xxxxxxxxxxxxxxxxxxxxxx    "
+"   xxxxxxxxxxxxxxxxxxxxxxxx   "
+"  xxxxxxxxxxxxxxxxxxxxxxxxxx  "
+"  xxxxxxxxxxxxxxxxxxxxxxxxxx  "
+" xxxxxxxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxxxxxxx "
+"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+" xxxxxxxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxxxxxxx "
+"  xxxxxxxxxxxxxxxxxxxxxxxxxx  "
+"  xxxxxxxxxxxxxxxxxxxxxxxxxx  "
+"   xxxxxxxxxxxxxxxxxxxxxxxx   "
+"    xxxxxxxxxxxxxxxxxxxxxx    "
+"    xxxxxxxxxxxxxxxxxxxxxx    "
+"      xxxxxxxxxxxxxxxxxx      "
+"       xxxxxxxxxxxxxxxx       "
+"         xxxxxxxxxxxx         "
+"            xxxxxx            "};
+
+
+
 std::map<MarkerBitmaps::Marker, int> MarkerBitmaps::markerIndex;
 
 void
@@ -503,6 +695,9 @@ MarkerBitmaps::initClass()
     createBitmap("CIRCLE_LINE", 11, 11, 11, circleLine11_marker);
     createBitmap("CIRCLE_LINE", 13, 13, 13, circleLine13_marker);
     createBitmap("CIRCLE_LINE", 15, 15, 15, circleLine15_marker);
+    createBitmap("CIRCLE_LINE", 20, 20, 20, circleLine20_marker);
+    createBitmap("CIRCLE_LINE", 25, 25, 25, circleLine25_marker);
+    createBitmap("CIRCLE_LINE", 30, 30, 30, circleLine30_marker);
 
     // the built-in bitmaps of Coin
     markerIndex [std::make_pair("CIRCLE_LINE", 9)] = SoMarkerSet::CIRCLE_LINE_9_9;
@@ -512,6 +707,9 @@ MarkerBitmaps::initClass()
     createBitmap("CIRCLE_FILLED", 11, 11, 11, circleFilled11_marker);
     createBitmap("CIRCLE_FILLED", 13, 13, 13, circleFilled13_marker);
     createBitmap("CIRCLE_FILLED", 15, 15, 15, circleFilled15_marker);
+    createBitmap("CIRCLE_FILLED", 20, 20, 20, circleFilled20_marker);
+    createBitmap("CIRCLE_FILLED", 25, 25, 25, circleFilled25_marker);
+    createBitmap("CIRCLE_FILLED", 30, 30, 30, circleFilled30_marker);
 
     // the built-in bitmaps of Coin
     markerIndex [std::make_pair("CIRCLE_FILLED", 9)] = SoMarkerSet::CIRCLE_FILLED_9_9;
