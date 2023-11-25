@@ -114,6 +114,94 @@ const char diamondFilled15_marker[DIAMOND_FILLED15_WIDTH * DIAMOND_FILLED15_HEIG
 "      xxxx     "
 "       xx      "};
 
+
+//DIAMOND_FILLED_20_20
+const int DIAMOND_FILLED20_WIDTH = 20;
+const int DIAMOND_FILLED20_HEIGHT = 20;
+const char diamondFilled20_marker[DIAMOND_FILLED20_WIDTH * DIAMOND_FILLED20_HEIGHT + 1] = {
+"               "
+"       xx      "
+"      xxxx     "
+"     xxxxxx    "
+"    xxxxxxxx   "
+"   xxxxxxxxxx  "
+"  xxxxxxxxxxxx "
+" xxxxxxxxxxxxxx"
+" xxxxxxxxxxxxxx"
+"  xxxxxxxxxxxx "
+"   xxxxxxxxxx  "
+"    xxxxxxxx   "
+"     xxxxxx    "
+"      xxxx     "
+"       xx      "};
+
+//DIAMOND_FILLED_25_25
+const int DIAMOND_FILLED25_WIDTH = 25;
+const int DIAMOND_FILLED25_HEIGHT = 25;
+const char diamondFilled25_marker[DIAMOND_FILLED25_WIDTH * DIAMOND_FILLED25_HEIGHT + 1] = {
+"                         "
+"           xxx           "
+"          xxxxx          "
+"         xxxxxxx         "
+"        xxxxxxxxx        "
+"       xxxxxxxxxxx       "
+"      xxxxxxxxxxxxx      "
+"     xxxxxxxxxxxxxxx     "
+"    xxxxxxxxxxxxxxxxx    "
+"   xxxxxxxxxxxxxxxxxxx   "
+"  xxxxxxxxxxxxxxxxxxxxx  "
+" xxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxx "
+"  xxxxxxxxxxxxxxxxxxxxx  "
+"   xxxxxxxxxxxxxxxxxxx   "
+"    xxxxxxxxxxxxxxxxx    "
+"     xxxxxxxxxxxxxxx     "
+"      xxxxxxxxxxxxx      "
+"       xxxxxxxxxxx       "
+"        xxxxxxxxx        "
+"         xxxxxxx         "
+"          xxxxx          "
+"           xxx           "};
+
+
+//DIAMOND_FILLED_30_30
+const int DIAMOND_FILLED30_WIDTH = 30;
+const int DIAMOND_FILLED30_HEIGHT = 30;
+const char diamondFilled30_marker[DIAMOND_FILLED30_WIDTH * DIAMOND_FILLED30_HEIGHT + 1] = {
+"                              "
+"              xxx             "
+"             xxxxx            "
+"            xxxxxxx           "
+"           xxxxxxxxx          "
+"          xxxxxxxxxxx         "
+"         xxxxxxxxxxxxx        "
+"        xxxxxxxxxxxxxxx       "
+"       xxxxxxxxxxxxxxxxx      "
+"      xxxxxxxxxxxxxxxxxxx     "
+"     xxxxxxxxxxxxxxxxxxxxx    "
+"    xxxxxxxxxxxxxxxxxxxxxxx   "
+"   xxxxxxxxxxxxxxxxxxxxxxxxx  "
+"  xxxxxxxxxxxxxxxxxxxxxxxxxxx "
+" xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+" xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+"  xxxxxxxxxxxxxxxxxxxxxxxxxxx "
+"   xxxxxxxxxxxxxxxxxxxxxxxxx  "
+"    xxxxxxxxxxxxxxxxxxxxxxx   "
+"     xxxxxxxxxxxxxxxxxxxxx    "
+"      xxxxxxxxxxxxxxxxxxx     "
+"       xxxxxxxxxxxxxxxxx      "
+"        xxxxxxxxxxxxxxx       "
+"         xxxxxxxxxxxxx        "
+"          xxxxxxxxxxx         "
+"           xxxxxxxxx          "
+"            xxxxxxx           "
+"             xxxxx            "
+"              xxx             "
+"                              "};
+
+
 //CROSS_11_11
 const int CROSS11_WIDTH = 11;
 const int CROSS11_HEIGHT = 11;
@@ -232,35 +320,35 @@ const int CROSS30_WIDTH = 30;
 const int CROSS30_HEIGHT = 30;
 const char cross30_marker[CROSS30_WIDTH * CROSS30_HEIGHT + 1] = {
 "                              "
-" xx                         xx"
-"  xx                       xx "
-"   xx                     xx  "
-"    xx                   xx   "
-"     xx                 xx    "
-"      xx               xx     "
-"       xx             xx      "
-"        xx           xx       "
-"         xx         xx        "
-"          xx       xx         "
-"           xx     xx          "
-"            xx   xx           "
-"             xx xx            "
-"              xxxx            "
-"               xx             "
-"              xxxx            "
-"             xx xx            "
-"            xx   xx           "
-"           xx     xx          "
-"          xx       xx         "
-"         xx         xx        "
-"        xx           xx       "
-"       xx             xx      "
-"      xx               xx     "
-"     xx                 xx    "
-"    xx                   xx   "
-"   xx                     xx  "
-"  xx                       xx "
-" xx                         xx"};
+" xxx                       xxx"
+"  xxx                     xxx "
+"   xxx                   xxx  "
+"    xxx                 xxx   "
+"     xxx               xxx    "
+"      xxx             xxx     "
+"       xxx           xxx      "
+"        xxx         xxx       "
+"         xxx       xxx        "
+"          xxx     xxx         "
+"           xxx   xxx          "
+"            xxx xxx           "
+"             xxxxx            "
+"              xxx             "
+"              xxx             "
+"              xxx             "
+"             xxxxx            "
+"            xxx xxx           "
+"           xxx   xxx          "
+"          xxx     xxx         "
+"         xxx       xxx        "
+"        xxx         xxx       "
+"       xxx           xxx      "
+"      xxx             xxx     "
+"     xxx               xxx    "
+"    xxx                 xxx   "
+"   xxx                   xxx  "
+"  xxx                     xxx "
+" xxx                       xxx"};
 
 
 
@@ -319,6 +407,97 @@ const char plus15_marker[PLUS15_WIDTH * PLUS15_HEIGHT + 1] = {
     "       xx      "
     "       xx      "
     "       xx      "};
+
+
+//PLUS_20_20
+const int PLUS20_WIDTH = 20;
+const int PLUS20_HEIGHT = 20;
+const char plus20_marker[PLUS20_WIDTH * PLUS20_HEIGHT + 1] = {
+    "                    "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    " xxxxxxxxxxxxxxxxxxx"
+    " xxxxxxxxxxxxxxxxxxx"
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "
+    "          xx        "};
+
+//PLUS_25_25
+const int PLUS25_WIDTH = 25;
+const int PLUS25_HEIGHT = 25;
+const char plus25_marker[PLUS25_WIDTH * PLUS25_HEIGHT + 1] = {
+    "                         "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    " xxxxxxxxxxxxxxxxxxxxxxxx"
+    " xxxxxxxxxxxxxxxxxxxxxxxx"
+    " xxxxxxxxxxxxxxxxxxxxxxxx"
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "
+    "            xxx          "};
+
+//PLUS_30_30
+const int PLUS30_WIDTH = 30;
+const int PLUS30_HEIGHT = 30;
+const char plus30_marker[PLUS30_WIDTH * PLUS30_HEIGHT + 1] = {
+    "                              "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    " xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    " xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    " xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "
+    "              xxx             "};
 
 //SQUARE_LINE_11_11
 const int SQUARE_LINE11_WIDTH = 11;
