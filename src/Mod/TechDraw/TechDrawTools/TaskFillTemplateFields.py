@@ -32,6 +32,7 @@ from PySide.QtGui import QLineEdit, QCheckBox
 import FreeCAD as App
 import FreeCADGui as Gui
 import datetime
+from datetime import date
 import csv
 import codecs
 import os.path
@@ -44,14 +45,23 @@ CompanyChkLst = []
 LicenseChkLst = []
 CreatedDateChkLst = []
 LastModifiedDateChkLst = []
-listofkeys = ['CreatedByChkLst', 'ScaleChkLst', 'LabelChkLst', 'CommentChkLst', 'CompanyChkLst', 'LicenseChkLst', 'CreatedDateChkLst', 'LastModifiedDateChkLst']
+listofkeys = [
+    "CreatedByChkLst",
+    "ScaleChkLst",
+    "LabelChkLst",
+    "CommentChkLst",
+    "CompanyChkLst",
+    "LicenseChkLst",
+    "CreatedDateChkLst",
+    "LastModifiedDateChkLst",
+]
 
 
 """Run the following code when the command is activated (button press)."""
 file_path = App.getResourceDir() + "Mod/TechDraw/CSVdata/FillTemplateFields.csv"
 
 if os.path.exists(file_path):
-    with codecs.open(file_path, encoding='utf-8') as fp:
+    with codecs.open(file_path, encoding="utf-8") as fp:
         reader = csv.DictReader(fp)
         if listofkeys == reader.fieldnames:
             for row in reader:
@@ -65,15 +75,15 @@ if os.path.exists(file_path):
                 LastModifiedDateChkLst.append(row["LastModifiedDateChkLst"])
         else:
             errorMsg = QtCore.QT_TRANSLATE_NOOP(
-                    "Techdraw_FillTemplateFields",
-                    " file does not contain the correct field names therefore exiting",
-                )
+                "Techdraw_FillTemplateFields",
+                " file does not contain the correct field names therefore exiting",
+            )
             App.Console.PrintError(file_path + errorMsg + "\n")
 else:
     errorMsg = QtCore.QT_TRANSLATE_NOOP(
-            "Techdraw_FillTemplateFields",
-            " file has not been found therefore exiting",
-        )
+        "Techdraw_FillTemplateFields",
+        " file has not been found therefore exiting",
+    )
     App.Console.PrintError(file_path + errorMsg + "\n")
 
 keyLst = []
@@ -83,7 +93,11 @@ class TaskFillTemplateFields:
     def __init__(self):
         objs = App.ActiveDocument.Objects
         for obj in objs:
-            if obj.TypeId == "TechDraw::DrawPage" and os.path.exists(file_path) and listofkeys == reader.fieldnames:
+            if (
+                obj.TypeId == "TechDraw::DrawPage"
+                and os.path.exists(file_path)
+                and listofkeys == reader.fieldnames
+            ):
                 self.page = obj
                 if obj.Views == []:
                     msgBox = QtGui.QMessageBox()
@@ -115,12 +129,16 @@ class TaskFillTemplateFields:
                 self.dialog = QtGui.QDialog()
                 self.dialog.resize(1050, 400)
                 self.dialog.setWindowTitle(
-                    QtCore.QT_TRANSLATE_NOOP("TechDraw_FillTemplateFields", "Fill Template Fields in ")
+                    QtCore.QT_TRANSLATE_NOOP(
+                        "TechDraw_FillTemplateFields", "Fill Template Fields in "
+                    )
                     + self.page.Label
                 )
                 self.dialog.move(400, 200)
                 self.la = QtGui.QGridLayout(self.dialog)
-                updateCb = QtCore.QT_TRANSLATE_NOOP("TechDraw_FillTemplateFields", "Update")
+                updateCb = QtCore.QT_TRANSLATE_NOOP(
+                    "TechDraw_FillTemplateFields", "Update"
+                )
                 updateTxt = (
                     "                                                       ==>>"
                 )
@@ -251,7 +269,8 @@ class TaskFillTemplateFields:
                         self.cb7.clicked.connect(self.on_cb7_clicked)
                         try:
                             dt = datetime.datetime.strptime(
-                                App.ActiveDocument.LastModifiedDate, "%Y-%m-%dT%H:%M:%SZ"
+                                App.ActiveDocument.LastModifiedDate,
+                                "%Y-%m-%dT%H:%M:%SZ",
                             )
                             if value == "MM/DD/YYYY":
                                 self.s7.setText(
@@ -266,7 +285,14 @@ class TaskFillTemplateFields:
                                     "{0}/{1}/{2}".format(dt.day, dt.month, dt.year)
                                 )
                         except ValueError:
-                            App.Console.PrintLog("DateTime format not recognised: " + App.ActiveDocument.LastModifiedDate + "\n")
+                            App.Console.PrintLog(
+                                "DateTime format not recognised: "
+                                + App.ActiveDocument.LastModifiedDate
+                                + "\n"
+                            )
+                            self.s7.setText(
+                                "{0}/{1}/{2}".format(date.today().day, date.today().month, date.today().year)
+                            )
                     if str(key).lower() in CreatedDateChkLst:
                         t8 = QtGui.QLabel(value)
                         self.la.addWidget(t8, 7, 0)
@@ -288,24 +314,33 @@ class TaskFillTemplateFields:
                                 App.ActiveDocument.CreationDate, "%Y-%m-%dT%H:%M:%SZ"
                             )
                             if value == "MM/DD/YYYY":
-                                self.s7.setText(
+                                self.s8.setText(
                                     "{0}/{1}/{2}".format(dt.month, dt.day, dt.year)
                                 )
                             elif value == "YYYY-MM-DD":
-                                self.s7.setText(
+                                self.s8.setText(
                                     "{0}-{1}-{2}".format(dt.year, dt.month, dt.day)
                                 )
                             else:
-                                self.s7.setText(
+                                self.s8.setText(
                                     "{0}/{1}/{2}".format(dt.day, dt.month, dt.year)
                                 )
                         except ValueError:
-                            App.Console.PrintLog("DateTime format not recognised: " + App.ActiveDocument.LastModifiedDate + "\n")
+                            App.Console.PrintLog(
+                                "DateTime format not recognised: "
+                                + App.ActiveDocument.LastModifiedDate
+                                + "\n"
+                            )
+                            self.s8.setText(
+                                "{0}/{1}/{2}".format(date.today().day, date.today().month, date.today().year)
+                            )
                 if len(keyLst) > 1:
-                    self.cbAll = QtGui.QCheckBox(QtCore.QT_TRANSLATE_NOOP(
-                        "TechDraw_FillTemplateFields",
-                        "Update All",
-                    ))
+                    self.cbAll = QtGui.QCheckBox(
+                        QtCore.QT_TRANSLATE_NOOP(
+                            "TechDraw_FillTemplateFields",
+                            "Update All",
+                        )
+                    )
                     self.cbAll.setChecked(QtCore.Qt.Checked)
                     self.la.addWidget(self.cbAll, 8, 1)
                     self.cbAll.clicked.connect(self.on_cbAll_clicked)
