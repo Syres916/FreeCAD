@@ -23,8 +23,8 @@
 __title__ = "TechDrawTools.CommandFillTemplateFields"
 __author__ = "Syres"
 __url__ = "https://www.freecad.org"
-__version__ = "00.01"
-__date__ = "2023/11/23"
+__version__ = "00.02"
+__date__ = "2023/12/07"
 
 from PySide.QtCore import QT_TRANSLATE_NOOP
 
@@ -35,6 +35,7 @@ import csv
 import os.path
 
 import TechDrawTools
+
 
 class CommandFillTemplateFields:
     """Use document info to populate the template fields."""
@@ -63,14 +64,31 @@ class CommandFillTemplateFields:
             objs = App.ActiveDocument.Objects
             for obj in objs:
                 if obj.TypeId == "TechDraw::DrawPage":
-                    file_path = App.getResourceDir() + "Mod/TechDraw/CSVdata/FillTemplateFields.csv"
+                    file_path = (
+                        App.getResourceDir()
+                        + "Mod/TechDraw/CSVdata/FillTemplateFields.csv"
+                    )
                     if os.path.exists(file_path):
-                        listofkeys = ['CreatedByChkLst', 'ScaleChkLst', 'LabelChkLst', 'CommentChkLst', 'CompanyChkLst', 'LicenseChkLst', 'CreatedDateChkLst', 'LastModifiedDateChkLst']
-                        with codecs.open(file_path, encoding='utf-8') as fp:
+                        listofkeys = [
+                            "CreatedByChkLst",
+                            "ScaleChkLst",
+                            "LabelChkLst",
+                            "CommentChkLst",
+                            "CompanyChkLst",
+                            "LicenseChkLst",
+                            "CreatedDateChkLst",
+                            "LastModifiedDateChkLst",
+                        ]
+                        with codecs.open(file_path, encoding="utf-8") as fp:
                             reader = csv.DictReader(fp)
                             page = obj
                             texts = page.Template.EditableTexts
-                            if texts and os.path.exists(file_path) and listofkeys == reader.fieldnames and obj.Views != []:
+                            if (
+                                texts
+                                and os.path.exists(file_path)
+                                and listofkeys == reader.fieldnames
+                                and obj.Views != []
+                            ):
                                 return True
         else:
             return False
