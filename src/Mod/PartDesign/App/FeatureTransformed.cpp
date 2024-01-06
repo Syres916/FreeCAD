@@ -311,6 +311,14 @@ App::DocumentObjectExecReturn *Transformed::execute()
         Base::Console().Log("FeatureTransformed: Running Legacy Transformed\n");
         rejectedLegacy.clear();
 
+        // create an untransformed copy of the support shape
+        Part::TopoShape supportShape(supportTopShape);
+
+        gp_Trsf trsfInv = supportShape.getShape().Location().Transformation().Inverted();
+
+        supportShape.setTransform(Base::Matrix4D());
+        TopoDS_Shape support = supportShape.getShape();
+
         typedef std::set<std::vector<gp_Trsf>::const_iterator> trsf_it;
         typedef std::map<App::DocumentObject*, trsf_it> rej_it_map;
         rej_it_map nointersect_trsfms;
@@ -444,12 +452,12 @@ App::DocumentObjectExecReturn *Transformed::execute()
 
         int solidLegacyCount = countSolids(support);
         if (solidLegacyCount > 1) {
-            Base::Console().Warning("TransformedLegacy: Result has multiple solids. Only keeping the first.\n");
+            Base::Console().Warning(
+                "TransformedLegacy: Result has multiple solids. Only keeping the first.\n");
         }
         this->Shape.setValue(getSolid(support));  // picking the first solid
         if (rejectedLegacy.size() > 0) {
-            return new App::DocumentObjectExecReturn(
-                "TransformedLegacy: Transformation failed");
+            return new App::DocumentObjectExecReturn("TransformedLegacy: Transformation failed");
         }
 
         return App::DocumentObject::StdReturn;
