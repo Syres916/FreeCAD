@@ -210,9 +210,9 @@ App::DocumentObjectExecReturn *Transformed::execute()
 
     supportShape.setTransform(Base::Matrix4D());
     TopoDS_Shape support = supportShape.getShape();
+    bool fndPlane = false;
 
-    auto getTransformedCompShape = [&](const auto& origShape)
-    {
+    auto getTransformedCompShape = [&](const auto& origShape) {
         TopTools_ListOfShape shapeTools;
         std::vector<TopoDS_Shape> shapes;
 
@@ -222,13 +222,13 @@ App::DocumentObjectExecReturn *Transformed::execute()
         ++transformIter;
 
         for (; transformIter != transformations.end(); ++transformIter) {
-            // Make an explicit copy of the shape because the "true" parameter to BRepBuilderAPI_Transform
-            // seems to be pretty broken
+            // Make an explicit copy of the shape because the "true" parameter to
+            // BRepBuilderAPI_Transform seems to be pretty broken
             BRepBuilderAPI_Copy copy(origShape);
 
             TopoDS_Shape shape = copy.Shape();
 
-            BRepBuilderAPI_Transform mkTrf(shape, *transformIter, false); // No need to copy, now
+            BRepBuilderAPI_Transform mkTrf(shape, *transformIter, false);  // No need to copy, now
             if (!mkTrf.IsDone()) {
                 throw Base::CADKernelError(QT_TRANSLATE_NOOP("Exception", "Transformation failed"));
             }
@@ -237,8 +237,9 @@ App::DocumentObjectExecReturn *Transformed::execute()
             shapes.emplace_back(shape);
         }
 
-        for (const auto& shape : shapes)
+        for (const auto& shape : shapes) {
             shapeTools.Append(shape);
+        }
 
         return shapeTools;
     };
@@ -248,13 +249,11 @@ App::DocumentObjectExecReturn *Transformed::execute()
     // Original separately. This way it is easier to discover what feature causes a fuse/cut
     // to fail. The downside is that performance suffers when there are many originals. But it seems
     // safe to assume that in most cases there are few originals and many transformations
-    for (auto original : originals)
-    {
+    for (auto original : originals) {
         // Extract the original shape and determine whether to cut or to fuse
         Part::TopoShape fuseShape;
         Part::TopoShape cutShape;
 
-        bool fndPlane(false);
         // Base::Console().Warning("Unknown feature type %s!\n",
         //                        (original->getTypeId().getName()));
         auto result = (static_cast<PartDesign::ProfileBased*>(original))->getVerifiedSketch(true);
@@ -264,22 +263,29 @@ App::DocumentObjectExecReturn *Transformed::execute()
             }
         }
         catch (Standard_Failure&) {
-            fndPlane(true); // Found a non-sketch profile
+            fndPlane = true;  // Found a non-sketch profile
         }
 
         if (original->isDerivedFrom<PartDesign::FeatureAddSub>()) {
             PartDesign::FeatureAddSub* feature = static_cast<PartDesign::FeatureAddSub*>(original);
             feature->getAddSubShape(fuseShape, cutShape);
-            if (fuseShape.isNull() && cutShape.isNull())
-                return new App::DocumentObjectExecReturn(QT_TRANSLATE_NOOP("Exception", "Shape of additive/subtractive feature is empty"));
+            if (fuseShape.isNull() && cutShape.isNull()) {
+                return new App::DocumentObjectExecReturn(
+                    QT_TRANSLATE_NOOP("Exception",
+                                      "Shape of additive/subtractive feature is empty"));
+            }
             gp_Trsf trsf = feature->getLocation().Transformation().Multiplied(trsfInv);
-            if (!fuseShape.isNull())
+            if (!fuseShape.isNull()) {
                 fuseShape = fuseShape.makeTransform(trsf);
-            if (!cutShape.isNull())
+            }
+            if (!cutShape.isNull()) {
                 cutShape = cutShape.makeTransform(trsf);
+            }
         }
         else {
-            return new App::DocumentObjectExecReturn(QT_TRANSLATE_NOOP("Exception", "Only additive and subtractive features can be transformed"));
+            return new App::DocumentObjectExecReturn(
+                QT_TRANSLATE_NOOP("Exception",
+                                  "Only additive and subtractive features can be transformed"));
         }
 
         TopoDS_Shape current = support;
@@ -293,7 +299,8 @@ App::DocumentObjectExecReturn *Transformed::execute()
                 mkBool->SetTools(shapeTools);
                 mkBool->Build();
                 if (!mkBool->IsDone()) {
-                    return new App::DocumentObjectExecReturn(QT_TRANSLATE_NOOP("Exception", "Boolean operation failed"));
+                    return new App::DocumentObjectExecReturn(
+                        QT_TRANSLATE_NOOP("Exception", "Boolean operation failed"));
                 }
                 current = mkBool->Shape();
             }
@@ -308,19 +315,20 @@ App::DocumentObjectExecReturn *Transformed::execute()
                 mkBool->SetTools(shapeTools);
                 mkBool->Build();
                 if (!mkBool->IsDone()) {
-                    return new App::DocumentObjectExecReturn(QT_TRANSLATE_NOOP("Exception", "Boolean operation failed"));
+                    return new App::DocumentObjectExecReturn(
+                        QT_TRANSLATE_NOOP("Exception", "Boolean operation failed"));
                 }
                 current = mkBool->Shape();
             }
         }
 
-        support = current; // Use result of this operation for fuse/cut of next original
+        support = current;  // Use result of this operation for fuse/cut of next original
     }
 
     support = refineShapeIfActive(support);
 
     int solidCount = countSolids(support);
-    if (solidCount > 1 && fndPlane) {
+    if ((solidCount > 1) && (fndPlane)) {
         Base::Console().Log("FeatureTransformed: Running Legacy Transformed\n");
         rejectedLegacy.clear();
 
@@ -364,7 +372,8 @@ App::DocumentObjectExecReturn *Transformed::execute()
             }
 
             std::vector<gp_Trsf>::const_iterator transformIter = transformations.begin();
-            ++transformIter;  // Skip first transformation, which is always the identity transformation
+            ++transformIter;  // Skip first transformation, which is always the identity
+                              // transformation
             for (; transformIter != transformations.end(); ++transformIter) {
                 // Make an explicit copy of the shape because the "true" parameter to
                 // BRepBuilderAPI_Transform seems to be pretty broken
@@ -376,7 +385,9 @@ App::DocumentObjectExecReturn *Transformed::execute()
                         "TransformedLegacy: Linked shape object is empty");
                 }
 
-                BRepBuilderAPI_Transform mkTrf(shape, *transformIter, false);  // No need to copy, now
+                BRepBuilderAPI_Transform mkTrf(shape,
+                                               *transformIter,
+                                               false);  // No need to copy, now
                 if (!mkTrf.IsDone()) {
                     return new App::DocumentObjectExecReturn(
                         "TransformedLegacy: Transformation failed",
@@ -475,7 +486,7 @@ App::DocumentObjectExecReturn *Transformed::execute()
 
         return App::DocumentObject::StdReturn;
     }
-    else if (solidCount > 1 && !fndPlane) {
+    else if ((solidCount > 1) && (!fndPlane)) {
         Base::Console().Warning(
             "Transformed: Result has multiple solids. Only keeping the first.\n");
     }
@@ -506,8 +517,9 @@ TopoDS_Shape Transformed::refineShapeIfActive(const TopoDS_Shape& oldShape) cons
     return oldShape;
 }
 
-void Transformed::divideTools(const std::vector<TopoDS_Shape> &toolsIn, std::vector<TopoDS_Shape> &individualsOut,
-                              TopoDS_Compound &compoundOut) const
+void Transformed::divideTools(const std::vector<TopoDS_Shape>& toolsIn,
+                              std::vector<TopoDS_Shape>& individualsOut,
+                              TopoDS_Compound& compoundOut) const
 {
     using ShapeBoundPair = std::pair<TopoDS_Shape, Bnd_Box>;
     using PairList = std::list<ShapeBoundPair>;
@@ -527,16 +539,16 @@ void Transformed::divideTools(const std::vector<TopoDS_Shape> &toolsIn, std::vec
     BRep_Builder builder;
     builder.MakeCompound(compoundOut);
 
-    while(!pairList.empty()) {
+    while (!pairList.empty()) {
         PairVector currentGroup;
         currentGroup.push_back(pairList.front());
         pairList.pop_front();
         PairList::iterator it = pairList.begin();
-        while(it != pairList.end()) {
+        while (it != pairList.end()) {
             PairVector::const_iterator groupIt;
             bool found(false);
             for (groupIt = currentGroup.begin(); groupIt != currentGroup.end(); ++groupIt) {
-                if (!(*it).second.IsOut((*groupIt).second)) {//touching means is out.
+                if (!(*it).second.IsOut((*groupIt).second)) {  // touching means is out.
                     found = true;
                     break;
                 }
@@ -544,7 +556,7 @@ void Transformed::divideTools(const std::vector<TopoDS_Shape> &toolsIn, std::vec
             if (found) {
                 currentGroup.push_back(*it);
                 pairList.erase(it);
-                it=pairList.begin();
+                it = pairList.begin();
                 continue;
             }
             ++it;
@@ -555,8 +567,9 @@ void Transformed::divideTools(const std::vector<TopoDS_Shape> &toolsIn, std::vec
         }
         else {
             PairVector::const_iterator groupIt;
-            for (groupIt = currentGroup.begin(); groupIt != currentGroup.end(); ++groupIt)
+            for (groupIt = currentGroup.begin(); groupIt != currentGroup.end(); ++groupIt) {
                 individualsOut.push_back((*groupIt).first);
+            }
         }
     }
 }
@@ -567,10 +580,11 @@ TopoDS_Shape Transformed::getRemainingSolids(const TopoDS_Shape& shape)
     TopoDS_Compound compShape;
     builder.MakeCompound(compShape);
 
-    if (shape.IsNull())
+    if (shape.IsNull()) {
         Standard_Failure::Raise("Shape is null");
+    }
     TopExp_Explorer xp;
-    xp.Init(shape,TopAbs_SOLID);
+    xp.Init(shape, TopAbs_SOLID);
     xp.Next();  // skip the first
 
     for (; xp.More(); xp.Next()) {
@@ -580,4 +594,4 @@ TopoDS_Shape Transformed::getRemainingSolids(const TopoDS_Shape& shape)
     return TopoDS_Shape(std::move(compShape));
 }
 
-}
+}  // namespace PartDesign
