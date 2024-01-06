@@ -308,13 +308,158 @@ App::DocumentObjectExecReturn *Transformed::execute()
 
     int solidCount = countSolids(support);
     if (solidCount > 1) {
-        Base::Console().Warning("Transformed: Result has multiple solids. Only keeping the first.\n");
+        Base::Console().Log("FeatureTransformed: Running Legacy Transformed\n");
+        rejectedLegacy.clear();
+
+        typedef std::set<std::vector<gp_Trsf>::const_iterator> trsf_it;
+        typedef std::map<App::DocumentObject*, trsf_it> rej_it_map;
+        rej_it_map nointersect_trsfms;
+
+        for (std::vector<App::DocumentObject*>::const_iterator o = originals.begin();
+             o != originals.end();
+             ++o) {
+            // Extract the original shape and determine whether to cut or to fuse
+            TopoDS_Shape shape;
+            Part::TopoShape fuseShape;
+            Part::TopoShape cutShape;
+            if ((*o)->getTypeId().isDerivedFrom(PartDesign::FeatureAddSub::getClassTypeId())) {
+                PartDesign::FeatureAddSub* feature = static_cast<PartDesign::FeatureAddSub*>(*o);
+                feature->getAddSubShape(fuseShape, cutShape);
+                if (fuseShape.isNull() && cutShape.isNull()) {
+                    return new App::DocumentObjectExecReturn(
+                        "TransformedLegacy: Shape of addsub feature is empty");
+                }
+                gp_Trsf trsf = feature->getLocation().Transformation().Multiplied(trsfInv);
+                if (!fuseShape.isNull()) {
+                    fuseShape = fuseShape.makeTransform(trsf);
+                }
+                if (!cutShape.isNull()) {
+                    cutShape = cutShape.makeTransform(trsf);
+                }
+            }
+            else {
+                return new App::DocumentObjectExecReturn(
+                    "TransformedLegacy: Only additive and subtractive features can be Transformed");
+            }
+
+            std::vector<gp_Trsf>::const_iterator transformIter = transformations.begin();
+            ++transformIter;  // Skip first transformation, which is always the identity transformation
+            for (; transformIter != transformations.end(); ++transformIter) {
+                // Make an explicit copy of the shape because the "true" parameter to
+                // BRepBuilderAPI_Transform seems to be pretty broken
+                BRepBuilderAPI_Copy copy(fuseShape.isNull() ? cutShape.getShape()
+                                                            : fuseShape.getShape());
+                shape = copy.Shape();
+                if (shape.IsNull()) {
+                    return new App::DocumentObjectExecReturn(
+                        "TransformedLegacy: Linked shape object is empty");
+                }
+
+                BRepBuilderAPI_Transform mkTrf(shape, *transformIter, false);  // No need to copy, now
+                if (!mkTrf.IsDone()) {
+                    return new App::DocumentObjectExecReturn(
+                        "TransformedLegacy: Transformation failed",
+                        (*o));
+                }
+
+                shape = mkTrf.Shape();
+                try {
+                    TopoDS_Shape current = support;
+
+                    if (!fuseShape.isNull()) {
+                        BRepAlgoAPI_Fuse mkFuse(current, shape);
+                        if (!mkFuse.IsDone()) {
+                            return new App::DocumentObjectExecReturn(
+                                "TransformedLegacy: Fusion with support failed",
+                                *o);
+                        }
+
+                        if (Part::TopoShape(current).countSubShapes(TopAbs_SOLID)
+                            != Part::TopoShape(mkFuse.Shape()).countSubShapes(TopAbs_SOLID)) {
+                            nointersect_trsfms[*o].insert(transformIter);
+                            continue;
+                        }
+                        // we have to get the solids (fuse sometimes creates compounds)
+                        current = this->getSolid(mkFuse.Shape());
+                        // lets check if the result is a solid
+                        if (current.IsNull()) {
+                            return new App::DocumentObjectExecReturn(
+                                "TransformedLegacy: Resulting shape is not a solid",
+                                *o);
+                        }
+
+                        if (!cutShape.isNull()) {
+                            BRepBuilderAPI_Copy copy(cutShape.getShape());
+                            shape = copy.Shape();
+                            if (shape.IsNull()) {
+                                return new App::DocumentObjectExecReturn(
+                                    "TransformedLegacy: Linked shape object is empty");
+                            }
+
+                            BRepBuilderAPI_Transform mkTrf(shape,
+                                                           *transformIter,
+                                                           false);  // No need to copy, now
+                            if (!mkTrf.IsDone()) {
+                                return new App::DocumentObjectExecReturn(
+                                    "TransformedLegacy: failed",
+                                    (*o));
+                            }
+                            shape = mkTrf.Shape();
+                        }
+                    }
+                    if (!cutShape.isNull()) {
+                        BRepAlgoAPI_Cut mkCut(current, shape);
+                        if (!mkCut.IsDone()) {
+                            return new App::DocumentObjectExecReturn(
+                                "TransformedLegacy: Cut out of support failed",
+                                *o);
+                        }
+                        current = mkCut.Shape();
+                    }
+                    support =
+                        current;  // Use result of this operation for fuse/cut of next original
+                }
+                catch (Standard_Failure& e) {
+                    // Note: Ignoring this failure is probably pointless because if the intersection
+                    // check fails, the later fuse operation of the transformation result will also
+                    // fail
+
+                    std::string msg("TransformedLegacy:  Intersection check failed");
+                    if (e.GetMessageString() != NULL) {
+                        msg += std::string(": '") + e.GetMessageString() + "'";
+                    }
+                    return new App::DocumentObjectExecReturn(msg.c_str());
+                }
+            }
+        }
+        support = refineShapeIfActive(support);
+
+        for (rej_it_map::const_iterator it = nointersect_trsfms.begin();
+             it != nointersect_trsfms.end();
+             ++it) {
+            for (trsf_it::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2) {
+                rejectedLegacy[it->first].push_back(**it2);
+            }
+        }
+
+        int solidLegacyCount = countSolids(support);
+        if (solidLegacyCount > 1) {
+            Base::Console().Warning("TransformedLegacy: Result has multiple solids. Only keeping the first.\n");
+        }
+        this->Shape.setValue(getSolid(support));  // picking the first solid
+        if (rejectedLegacy.size() > 0) {
+            return new App::DocumentObjectExecReturn(
+                "TransformedLegacy: Transformation failed");
+        }
+
+        return App::DocumentObject::StdReturn;
     }
+    else {
+        this->Shape.setValue(getSolid(support));  // picking the first solid
+        rejected = getRemainingSolids(support);
 
-    this->Shape.setValue(getSolid(support));  // picking the first solid
-    rejected = getRemainingSolids(support);
-
-    return App::DocumentObject::StdReturn;
+        return App::DocumentObject::StdReturn;
+    }
 }
 
 TopoDS_Shape Transformed::refineShapeIfActive(const TopoDS_Shape& oldShape) const
