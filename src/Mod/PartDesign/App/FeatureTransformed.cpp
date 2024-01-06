@@ -254,15 +254,14 @@ App::DocumentObjectExecReturn *Transformed::execute()
         Part::TopoShape fuseShape;
         Part::TopoShape cutShape;
 
-        // Base::Console().Warning("Unknown feature type %s!\n",
-        //                        (original->getTypeId().getName()));
+        // Base::Console().Log("Unknown feature type %s!\n", (original->getTypeId().getName()));
         auto result = (static_cast<PartDesign::ProfileBased*>(original))->getVerifiedSketch(true);
-        try {
-            if (result) {
-                result->getTypeId().getName();
-            }
+
+        if ((fndPlane == false) && (strcmp(result->getTypeId().getName(), "") == 0)) {
+            // Base::Console().Log("%s\n", result->getTypeId().getName());
+            continue;
         }
-        catch (Standard_Failure&) {
+        else {
             fndPlane = true;  // Found a non-sketch profile
         }
 
@@ -328,7 +327,7 @@ App::DocumentObjectExecReturn *Transformed::execute()
     support = refineShapeIfActive(support);
 
     int solidCount = countSolids(support);
-    if ((solidCount > 1) && (fndPlane)) {
+    if ((solidCount > 1) && (fndPlane == true)) {
         Base::Console().Log("FeatureTransformed: Running Legacy Transformed\n");
         rejectedLegacy.clear();
 
@@ -486,9 +485,14 @@ App::DocumentObjectExecReturn *Transformed::execute()
 
         return App::DocumentObject::StdReturn;
     }
-    else if ((solidCount > 1) && (!fndPlane)) {
+    else if ((solidCount > 1) && (fndPlane == false)) {
         Base::Console().Warning(
             "Transformed: Result has multiple solids. Only keeping the first.\n");
+
+        this->Shape.setValue(getSolid(support));  // picking the first solid
+        rejected = getRemainingSolids(support);
+
+        return App::DocumentObject::StdReturn;
     }
     else {
         this->Shape.setValue(getSolid(support));  // picking the first solid
