@@ -211,6 +211,7 @@ App::DocumentObjectExecReturn *Transformed::execute()
     supportShape.setTransform(Base::Matrix4D());
     TopoDS_Shape support = supportShape.getShape();
     bool fndPlane = false;
+    const char* featureName = nullptr;
 
     auto getTransformedCompShape = [&](const auto& origShape) {
         TopTools_ListOfShape shapeTools;
@@ -262,11 +263,12 @@ App::DocumentObjectExecReturn *Transformed::execute()
         }
         if (fndSketchOrPlane == nullptr) {}
         else {
-            const char* objTypeName = fndSketchOrPlane->getTypeId().getName();
-            if (objTypeName == nullptr) {}
+            const char* profileTypeName = fndSketchOrPlane->getTypeId().getName();
+            if (profileTypeName == nullptr) {}
             else {
-                if (strcmp(objTypeName, "PartDesign::Plane") == 0) {
+                if (strcmp(profileTypeName, "PartDesign::Plane") == 0) {
                     fndPlane = true;
+                    featureName = original->getTypeId().getName();
                 }
             }
         }
@@ -329,9 +331,10 @@ App::DocumentObjectExecReturn *Transformed::execute()
         support = current;  // Use result of this operation for fuse/cut of next original
     }
     support = refineShapeIfActive(support);
-
     int solidCount = countSolids(support);
-    if (fndPlane == true && solidCount > 1) {
+    if (fndPlane == true && featureName != nullptr
+        && (strcmp(featureName, "PartDesign::Pocket") == 0) && solidCount > 1) {
+
         Base::Console().Log("FeatureTransformed: Running Legacy Transformed\n");
         rejectedLegacy.clear();
 
@@ -486,7 +489,6 @@ App::DocumentObjectExecReturn *Transformed::execute()
         if (rejectedLegacy.size() > 0) {
             return new App::DocumentObjectExecReturn("TransformedLegacy: Transformation failed");
         }
-
         return App::DocumentObject::StdReturn;
     }
     else if (fndPlane == false && solidCount > 1) {
