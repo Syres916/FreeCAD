@@ -254,7 +254,6 @@ App::DocumentObjectExecReturn *Transformed::execute()
         // Extract the original shape and determine whether to cut or to fuse
         Part::TopoShape fuseShape;
         Part::TopoShape cutShape;
-        TopoDS_Shape shape;
 
         App::DocumentObject* fndSketchOrPlane = nullptr;
         if (!originals.empty() && original->isDerivedFrom<PartDesign::ProfileBased>()) {
