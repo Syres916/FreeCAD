@@ -253,18 +253,23 @@ App::DocumentObjectExecReturn *Transformed::execute()
         // Extract the original shape and determine whether to cut or to fuse
         Part::TopoShape fuseShape;
         Part::TopoShape cutShape;
+        TopoDS_Shape shape;
 
-        // Base::Console().Log("Unknown feature type %s!\n", (original->getTypeId().getName()));
-        auto result = (static_cast<PartDesign::ProfileBased*>(original))->getVerifiedSketch(true);
-
-        if ((fndPlane == false) && (strcmp(result->getTypeId().getName(), "") == 0)) {
-            // Base::Console().Log("%s\n", result->getTypeId().getName());
-            continue;
+        App::DocumentObject* fndSketchOrPlane = nullptr;
+        if (!originals.empty() && original->isDerivedFrom<PartDesign::ProfileBased>()) {
+            fndSketchOrPlane =
+                (static_cast<PartDesign::ProfileBased*>(original))->getVerifiedObject(true);
         }
+        if (fndSketchOrPlane == nullptr) {}
         else {
-            fndPlane = true;  // Found a non-sketch profile
+            const char* objTypeName = fndSketchOrPlane->getTypeId().getName();
+            if (objTypeName == nullptr) {}
+            else {
+                if (strcmp(objTypeName, "PartDesign::Plane") == 0) {
+                    fndPlane = true;
+                }
+            }
         }
-
         if (original->isDerivedFrom<PartDesign::FeatureAddSub>()) {
             PartDesign::FeatureAddSub* feature = static_cast<PartDesign::FeatureAddSub*>(original);
             feature->getAddSubShape(fuseShape, cutShape);
@@ -323,11 +328,10 @@ App::DocumentObjectExecReturn *Transformed::execute()
 
         support = current;  // Use result of this operation for fuse/cut of next original
     }
-
     support = refineShapeIfActive(support);
 
     int solidCount = countSolids(support);
-    if ((solidCount > 1) && (fndPlane == true)) {
+    if (fndPlane == true && solidCount > 1) {
         Base::Console().Log("FeatureTransformed: Running Legacy Transformed\n");
         rejectedLegacy.clear();
 
@@ -485,17 +489,16 @@ App::DocumentObjectExecReturn *Transformed::execute()
 
         return App::DocumentObject::StdReturn;
     }
-    else if ((solidCount > 1) && (fndPlane == false)) {
+    else if (fndPlane == false && solidCount > 1) {
         Base::Console().Warning(
             "Transformed: Result has multiple solids. Only keeping the first.\n");
-
         this->Shape.setValue(getSolid(support));  // picking the first solid
         rejected = getRemainingSolids(support);
 
         return App::DocumentObject::StdReturn;
     }
     else {
-        this->Shape.setValue(getSolid(support));  // picking the first solid
+        this->Shape.setValue(getSolid(support));
         rejected = getRemainingSolids(support);
 
         return App::DocumentObject::StdReturn;
