@@ -350,15 +350,17 @@ App::DocumentObjectExecReturn *Transformed::execute()
         typedef std::map<App::DocumentObject*, trsf_it> rej_it_map;
         rej_it_map nointersect_trsfms;
 
-        for (std::vector<App::DocumentObject*>::const_iterator o = originals.begin();
-             o != originals.end();
-             ++o) {
+        for (std::vector<App::DocumentObject*>::const_iterator original = originals.begin();
+             original != originals.end();
+             ++original) {
             // Extract the original shape and determine whether to cut or to fuse
             TopoDS_Shape shape;
             Part::TopoShape fuseShape;
             Part::TopoShape cutShape;
-            if ((*o)->getTypeId().isDerivedFrom(PartDesign::FeatureAddSub::getClassTypeId())) {
-                PartDesign::FeatureAddSub* feature = static_cast<PartDesign::FeatureAddSub*>(*o);
+            if ((*original)->getTypeId().isDerivedFrom(
+                    PartDesign::FeatureAddSub::getClassTypeId())) {
+                PartDesign::FeatureAddSub* feature =
+                    static_cast<PartDesign::FeatureAddSub*>(*original);
                 feature->getAddSubShape(fuseShape, cutShape);
                 if (fuseShape.isNull() && cutShape.isNull()) {
                     return new App::DocumentObjectExecReturn(
@@ -397,7 +399,7 @@ App::DocumentObjectExecReturn *Transformed::execute()
                 if (!mkTrf.IsDone()) {
                     return new App::DocumentObjectExecReturn(
                         "TransformedLegacy: Transformation failed",
-                        (*o));
+                        (*original));
                 }
 
                 shape = mkTrf.Shape();
@@ -409,12 +411,12 @@ App::DocumentObjectExecReturn *Transformed::execute()
                         if (!mkFuse.IsDone()) {
                             return new App::DocumentObjectExecReturn(
                                 "TransformedLegacy: Fusion with support failed",
-                                *o);
+                                *original);
                         }
 
                         if (Part::TopoShape(current).countSubShapes(TopAbs_SOLID)
                             != Part::TopoShape(mkFuse.Shape()).countSubShapes(TopAbs_SOLID)) {
-                            nointersect_trsfms[*o].insert(transformIter);
+                            nointersect_trsfms[*original].insert(transformIter);
                             continue;
                         }
                         // we have to get the solids (fuse sometimes creates compounds)
@@ -423,7 +425,7 @@ App::DocumentObjectExecReturn *Transformed::execute()
                         if (current.IsNull()) {
                             return new App::DocumentObjectExecReturn(
                                 "TransformedLegacy: Resulting shape is not a solid",
-                                *o);
+                                *original);
                         }
 
                         if (!cutShape.isNull()) {
@@ -440,7 +442,7 @@ App::DocumentObjectExecReturn *Transformed::execute()
                             if (!mkTrf.IsDone()) {
                                 return new App::DocumentObjectExecReturn(
                                     "TransformedLegacy: failed",
-                                    (*o));
+                                    (*original));
                             }
                             shape = mkTrf.Shape();
                         }
@@ -450,7 +452,7 @@ App::DocumentObjectExecReturn *Transformed::execute()
                         if (!mkCut.IsDone()) {
                             return new App::DocumentObjectExecReturn(
                                 "TransformedLegacy: Cut out of support failed",
-                                *o);
+                                *original);
                         }
                         current = mkCut.Shape();
                     }
