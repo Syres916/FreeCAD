@@ -36,12 +36,6 @@ class TestMultiTransformLegacy(unittest.TestCase):
     def testMultiTransform(self):
         self.Body = self.Doc.addObject("PartDesign::Body", "Body")
         self.Body_Group = []
-        self.Body.ViewObject.AngularDeflection = 28.5
-        self.Body.ViewObject.Deviation = 0.50
-        self.Body.ViewObject.DiffuseColor = [(0.80, 0.80, 0.80, 0.00)]
-        self.Body.ViewObject.LineColor = (0.10, 0.10, 0.10, 0.00)
-        self.Body.ViewObject.LineColorArray = [(0.10, 0.10, 0.10, 0.00)]
-        self.Body.ViewObject.ShapeColor = (0.80, 0.80, 0.80, 0.00)
         self.Sketch = self.Doc.addObject("Sketcher::SketchObject", "Sketch")
         self.geo0 = self.Sketch.addGeometry(
             Part.LineSegment(
@@ -90,11 +84,6 @@ class TestMultiTransformLegacy(unittest.TestCase):
         self.Sketch.MapMode = "FlatFace"
         self.Sketch.Support = [(self.Doc.XY_Plane, (""))]
         self.Sketch.Visibility = False
-        self.Sketch.ViewObject.AngularDeflection = 28.5
-        self.Sketch.ViewObject.Deviation = 0.50
-        self.Sketch.ViewObject.DiffuseColor = [(0.80, 0.80, 0.80, 0.00)]
-        self.Sketch.ViewObject.ShapeColor = (0.80, 0.80, 0.80, 0.00)
-        self.Sketch.ViewObject.Visibility = False
         self.Body_Group.append(self.Sketch)
         self.Sketch001 = self.Doc.addObject("Sketcher::SketchObject", "Sketch001")
         self.geo0 = self.Sketch001.addGeometry(
@@ -142,11 +131,6 @@ class TestMultiTransformLegacy(unittest.TestCase):
         )
         self.Sketch001.Support = [(self.Doc.YZ_Plane, (""))]
         self.Sketch001.Visibility = False
-        self.Sketch001.ViewObject.AngularDeflection = 28.5
-        self.Sketch001.ViewObject.Deviation = 0.50
-        self.Sketch001.ViewObject.DiffuseColor = [(0.80, 0.80, 0.80, 0.00)]
-        self.Sketch001.ViewObject.ShapeColor = (0.80, 0.80, 0.80, 0.00)
-        self.Sketch001.ViewObject.Visibility = False
         self.Body_Group.append(self.Sketch001)
 
         self.Pad = self.Doc.addObject("PartDesign::Pad", "Pad")
@@ -155,12 +139,6 @@ class TestMultiTransformLegacy(unittest.TestCase):
         self.Pad.Profile = (self.Sketch, [])
         self.Pad.Visibility = False
         self.Body_Group.append(self.Pad)
-        self.Pad.ViewObject.AngularDeflection = 28.5
-        self.Pad.ViewObject.Deviation = 0.50
-        self.Pad.ViewObject.DiffuseColor = [(0.80, 0.80, 0.80, 0.00)]
-        self.Pad.ViewObject.LineColor = (0.10, 0.10, 0.10, 0.00)
-        self.Pad.ViewObject.LineColorArray = [(0.10, 0.10, 0.10, 0.00)]
-        self.Pad.ViewObject.ShapeColor = (0.80, 0.80, 0.80, 0.00)
         self.Pad.ViewObject.Visibility = False
 
         self.Pocket = self.Doc.addObject("PartDesign::Pocket", "Pocket")
@@ -226,36 +204,18 @@ class TestMultiTransformLegacy(unittest.TestCase):
         self.Pocket001.Type = "ThroughAll"
         self.Pocket001.Visibility = False
         self.Body_Group.append(self.Pocket001)
-        self.Pocket001.ViewObject.AngularDeflection = 28.5
-        self.Pocket001.ViewObject.Deviation = 0.50
-        self.Pocket001.ViewObject.DiffuseColor = [(0.80, 0.80, 0.80, 0.00)]
-        self.Pocket001.ViewObject.LineColor = (0.10, 0.10, 0.10, 0.00)
-        self.Pocket001.ViewObject.LineColorArray = [(0.10, 0.10, 0.10, 0.00)]
-        self.Pocket001.ViewObject.ShapeColor = (0.80, 0.80, 0.80, 0.00)
         self.Pocket001.ViewObject.Visibility = False
 
         self.Mirrored = self.Doc.addObject("PartDesign::Mirrored", "Mirrored")
         self.Mirrored.MirrorPlane = (self.Doc.YZ_Plane, [""])
         self.Mirrored.Visibility = False
         self.Body_Group.append(self.Mirrored)
-        self.Mirrored.ViewObject.AngularDeflection = 28.5
-        self.Mirrored.ViewObject.Deviation = 0.50
-        self.Mirrored.ViewObject.DiffuseColor = [(0.80, 0.80, 0.80, 0.00)]
-        self.Mirrored.ViewObject.LineColor = (0.10, 0.10, 0.10, 0.00)
-        self.Mirrored.ViewObject.LineColorArray = [(0.10, 0.10, 0.10, 0.00)]
-        self.Mirrored.ViewObject.ShapeColor = (0.80, 0.80, 0.80, 0.00)
         self.Mirrored.ViewObject.Visibility = False
 
         self.Mirrored001 = self.Doc.addObject("PartDesign::Mirrored", "Mirrored001")
         self.Mirrored001.MirrorPlane = (self.Doc.XZ_Plane, [""])
         self.Mirrored001.Visibility = False
         self.Body_Group.append(self.Mirrored001)
-        self.Mirrored001.ViewObject.AngularDeflection = 28.5
-        self.Mirrored001.ViewObject.Deviation = 0.50
-        self.Mirrored001.ViewObject.DiffuseColor = [(0.80, 0.80, 0.80, 0.00)]
-        self.Mirrored001.ViewObject.LineColor = (0.10, 0.10, 0.10, 0.00)
-        self.Mirrored001.ViewObject.LineColorArray = [(0.10, 0.10, 0.10, 0.00)]
-        self.Mirrored001.ViewObject.ShapeColor = (0.80, 0.80, 0.80, 0.00)
         self.Mirrored001.ViewObject.Visibility = False
 
         self.MultiTransform = self.Doc.addObject(
@@ -265,13 +225,6 @@ class TestMultiTransformLegacy(unittest.TestCase):
         self.MultiTransform.Originals = [self.Pad, self.Pocket, self.Pocket001]
         self.MultiTransform.Transformations = [self.Mirrored, self.Mirrored001]
         self.Body_Group.append(self.MultiTransform)
-        self.MultiTransform.ViewObject.AngularDeflection = 28.5
-        self.MultiTransform.ViewObject.Deviation = 0.50
-        self.MultiTransform.ViewObject.DiffuseColor = [(0.80, 0.80, 0.80, 0.00)]
-        self.MultiTransform.ViewObject.LineColor = (0.10, 0.10, 0.10, 0.00)
-        self.MultiTransform.ViewObject.LineColorArray = [(0.10, 0.10, 0.10, 0.00)]
-        self.MultiTransform.ViewObject.ShapeColor = (0.80, 0.80, 0.80, 0.00)
-
         self.Body.Group = self.Body_Group
         self.Body.Tip = self.MultiTransform
         self.MultiTransform.Refine = True
