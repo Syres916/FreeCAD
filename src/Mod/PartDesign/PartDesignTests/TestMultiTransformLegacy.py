@@ -139,7 +139,6 @@ class TestMultiTransformLegacy(unittest.TestCase):
         self.Pad.Profile = (self.Sketch, [])
         self.Pad.Visibility = False
         self.Body_Group.append(self.Pad)
-        self.Pad.ViewObject.Visibility = False
 
         self.Pocket = self.Doc.addObject("PartDesign::Pocket", "Pocket")
         self.Pocket.AllowMultiFace = False
@@ -150,13 +149,6 @@ class TestMultiTransformLegacy(unittest.TestCase):
         self.Pocket.Type = "ThroughAll"
         self.Pocket.Visibility = False
         self.Body_Group.append(self.Pocket)
-        self.Pocket.ViewObject.AngularDeflection = 28.5
-        self.Pocket.ViewObject.Deviation = 0.50
-        self.Pocket.ViewObject.DiffuseColor = [(0.80, 0.80, 0.80, 0.00)]
-        self.Pocket.ViewObject.LineColor = (0.10, 0.10, 0.10, 0.00)
-        self.Pocket.ViewObject.LineColorArray = [(0.10, 0.10, 0.10, 0.00)]
-        self.Pocket.ViewObject.ShapeColor = (0.80, 0.80, 0.80, 0.00)
-        self.Pocket.ViewObject.Visibility = False
 
         self.DatumPoint = self.Doc.addObject("PartDesign::Point", "DatumPoint")
         self.DatumPoint.MapMode = "OnEdge"
@@ -173,7 +165,6 @@ class TestMultiTransformLegacy(unittest.TestCase):
         self.DatumPoint.Support = [(self.Pocket, ("Edge10"))]
         self.Body_Group.append(self.DatumPoint)
         self.DatumPoint.Visibility = False
-        self.DatumPoint.ViewObject.Visibility = False
 
         self.DatumPlane = self.Doc.addObject("PartDesign::Plane", "DatumPlane")
         self.DatumPlane.Length = 131.30239095262064
@@ -194,7 +185,6 @@ class TestMultiTransformLegacy(unittest.TestCase):
         self.DatumPlane.Visibility = False
         self.DatumPlane.Width = 138.78827744889375
         self.Body_Group.append(self.DatumPlane)
-        self.DatumPlane.ViewObject.Visibility = False
 
         self.Pocket001 = self.Doc.addObject("PartDesign::Pocket", "Pocket001")
         self.Pocket001.BaseFeature = self.Pocket
@@ -204,19 +194,16 @@ class TestMultiTransformLegacy(unittest.TestCase):
         self.Pocket001.Type = "ThroughAll"
         self.Pocket001.Visibility = False
         self.Body_Group.append(self.Pocket001)
-        self.Pocket001.ViewObject.Visibility = False
 
         self.Mirrored = self.Doc.addObject("PartDesign::Mirrored", "Mirrored")
         self.Mirrored.MirrorPlane = (self.Doc.YZ_Plane, [""])
         self.Mirrored.Visibility = False
         self.Body_Group.append(self.Mirrored)
-        self.Mirrored.ViewObject.Visibility = False
 
         self.Mirrored001 = self.Doc.addObject("PartDesign::Mirrored", "Mirrored001")
         self.Mirrored001.MirrorPlane = (self.Doc.XZ_Plane, [""])
         self.Mirrored001.Visibility = False
         self.Body_Group.append(self.Mirrored001)
-        self.Mirrored001.ViewObject.Visibility = False
 
         self.MultiTransform = self.Doc.addObject(
             "PartDesign::MultiTransform", "MultiTransform"
@@ -230,12 +217,12 @@ class TestMultiTransformLegacy(unittest.TestCase):
         self.MultiTransform.Refine = True
         self.Doc.recompute()
 
-        self.Doc.XY_Plane.ViewObject.Visibility = False
-        self.Doc.XZ_Plane.ViewObject.Visibility = False
-        self.Doc.YZ_Plane.ViewObject.Visibility = False
-        self.Doc.X_Axis.ViewObject.Visibility = False
-        self.Doc.Y_Axis.ViewObject.Visibility = False
-        self.Doc.Z_Axis.ViewObject.Visibility = False
+        self.Doc.XY_Plane.Visibility = False
+        self.Doc.XZ_Plane.Visibility = False
+        self.Doc.YZ_Plane.Visibility = False
+        self.Doc.X_Axis.Visibility = False
+        self.Doc.Y_Axis.Visibility = False
+        self.Doc.Z_Axis.Visibility = False
 
         self.assertAlmostEqual(self.MultiTransform.Shape.Volume, 101086.27728525076)
         self.assertEqual(len(self.MultiTransform.Shape.Faces), 9)
