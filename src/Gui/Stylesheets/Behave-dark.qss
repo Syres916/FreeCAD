@@ -328,8 +328,8 @@ QGroupBox::indicator:unchecked {
 Tooltip
 ==================================================================================================*/
 QToolTip {
-    color: #1e1e1e;
-    background-color: #b4b4b4;
+    color: #61D29D;
+    background-color: #2C333D;
     /*opacity: 90%; doesn't correctly work */
     padding: 4px;
     border-radius: 3px; /* has no effect */
