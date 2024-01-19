@@ -1481,6 +1481,9 @@ QComboBox QAbstractItemView {
     margin: 0px -1px 0px 0px; /* hack for Mac... try it on Windows and Linux */
 }
 
+QComboBox:checked {
+  color: #bebebe;
+}
 
 /*==================================================================================================
 Push button
