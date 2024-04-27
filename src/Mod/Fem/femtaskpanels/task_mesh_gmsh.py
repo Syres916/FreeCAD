@@ -43,7 +43,7 @@ import FreeCADGui
 import FemGui
 from femobjects import mesh_gmsh
 from femtools.femutils import is_of_type
-from femtools.femutils import getColour
+from femtools.femutils import getOutputWinColor
 
 
 class _TaskPanel:
@@ -153,17 +153,28 @@ class _TaskPanel:
         index_order = self.form.cb_order.findText(self.order)
         self.form.cb_order.setCurrentIndex(index_order)
 
-    def console_log(self, message="", colour_type=None):
+    def console_log(self, message="", outputwin_color_type=None):
         self.console_message_gmsh = self.console_message_gmsh + (
-            '<font color="{}">{:4.1f}:</font> '
-            .format(getColour('Logging'), time.time() - self.Start)
+            '<font color="{}">{:4.1f}:</font> '.format(
+                getOutputWinColor("Logging"), time.time() - self.Start
+            )
         )
-        if colour_type:
-            self.console_message_gmsh += '<font color="{}">{}</font><br>'.format(getColour(colour_type), message)
+        if outputwin_color_type:
+            if (
+                outputwin_color_type == "#00AA00"
+            ):  # Success is not part of output window parameters
+                self.console_message_gmsh += '<font color="{}">{}</font><br>'.format(
+                    outputwin_color_type, message
+                )
+            else:
+                self.console_message_gmsh += '<font color="{}">{}</font><br>'.format(
+                    getOutputWinColor(outputwin_color_type), message
+                )
         else:
-            self.console_message_gmsh += message + '<br>'
+            self.console_message_gmsh += message + "<br>"
         self.form.te_output.setText(self.console_message_gmsh)
         self.form.te_output.moveCursor(QtGui.QTextCursor.End)
+
     def update_timer_text(self):
         # FreeCAD.Console.PrintMessage("timer1\n")
         if self.gmsh_runs:
@@ -235,11 +246,11 @@ class _TaskPanel:
         if error:
             FreeCAD.Console.PrintWarning("Gmsh had warnings:\n")
             FreeCAD.Console.PrintWarning("{}\n".format(error))
-            self.console_log("Gmsh had warnings ...")
+            self.console_log("Gmsh had warnings ...", "Warning")
             self.console_log(error, "Error")
         else:
             FreeCAD.Console.PrintMessage("Clean run of Gmsh\n")
-            self.console_log("Clean run of Gmsh")
+            self.console_log("Clean run of Gmsh", "#00AA00")
         self.console_log("Gmsh done!")
         self.form.l_time.setText("Time: {0:4.1f}: ".format(time.time() - self.Start))
         self.Timer.stop()
