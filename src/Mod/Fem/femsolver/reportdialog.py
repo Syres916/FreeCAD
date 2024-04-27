@@ -31,7 +31,7 @@ __url__ = "https://www.freecad.org"
 # it is a Gui only module and should only be imported in Gui mode
 # thus no guard is needed
 from PySide import QtGui
-from femtools.femutils import getColour
+from femtools.femutils import getOutputWinColor
 
 
 ERROR_COLOR = "Error"
@@ -72,7 +72,9 @@ class ReportDialog(QtGui.QDialog):
             text += "%s<br>" % self._getColoredLine(line, ERROR_COLOR)
         return text
 
-    def _getColoredLine(self, text, color_type):
-        return '<font color="{}">{}</font>'.format(getColour(color_type), text)
+    def _getColoredLine(self, text, outputwin_color_type):
+        return '<font color="{}">{}</font>'.format(
+            getOutputWinColor(outputwin_color_type), text
+        )
 
 ##  @}
