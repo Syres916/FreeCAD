@@ -409,9 +409,11 @@ def expandParentObject():
             tree.expandItem(item)
 
 
-def getColour(type):
-    """ 
-    type: 'Error', 'Warning', 'Logging', 'Text' 
+def getOutputWinColor(type):
     """
-    col_int = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/OutputWindow").GetUnsigned('color'+type)
-    return '#{:08X}'.format(col_int)[:-2]
+    type: 'Error', 'Warning', 'Logging', 'Text'
+    """
+    col_int = FreeCAD.ParamGet(
+        "User parameter:BaseApp/Preferences/OutputWindow"
+    ).GetUnsigned("color" + type)
+    return "#{:08X}".format(col_int)[:-2]
