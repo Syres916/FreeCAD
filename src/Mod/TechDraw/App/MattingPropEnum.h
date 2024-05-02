@@ -33,9 +33,6 @@
 namespace TechDraw
 {
 
-enum MattingType { CircleMattingStyle = 0,
-                 SquareMattingStyle};
-
 class TechDrawExport MattingPropEnum {
     Q_DECLARE_TR_FUNCTIONS(TechDraw::MattingPropEnum)
 
