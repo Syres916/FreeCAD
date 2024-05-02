@@ -25,12 +25,15 @@
 #ifndef _PreComp_
 # include <sstream>
 
-# include <QBitmap>
-# include <QComboBox>
-# include <QMessageBox>
-# include <QPointF>
-# include <QRectF>
-# include <QString>
+#include <QBitmap>
+#include <QColor>
+#include <QComboBox>
+#include <QMessageBox>
+#include <QPalette>
+#include <QPixmap>
+#include <QPointF>
+#include <QRectF>
+#include <QString>
 
 # include <BRepAdaptor_Surface.hxx>
 # include <BRepLProp_SLProps.hxx>
@@ -76,11 +79,41 @@ using namespace TechDraw;
 void DrawGuiUtil::loadArrowBox(QComboBox* qcb)
 {
     qcb->clear();
+    QPalette qcbPal = qcb->palette();
+    QColor textColor = qcbPal.color(QPalette::WindowText);
+    auto curStyleSheet =
+        App::GetApplication()
+            .GetParameterGroupByPath("User parameter:BaseApp/Preferences/MainWindow")
+            ->GetASCII("StyleSheet", "None");
+    // normalize stylesheet name
+    auto normalizeCurStyleSheet = [](std::string str) {
+        std::transform(str.begin(), str.end(), str.begin(), [](unsigned char ch) {
+            return ch == ' ' ? '_' : std::tolower(ch);
+        });
+        return str;
+    };
+    std::string styleSheetName = normalizeCurStyleSheet(curStyleSheet);
+    bool darkSS = false;
+    if (styleSheetName.find("dark") != std::string::npos) {
+        darkSS = true;
+    }
     int i = 0;
     for (; i < ArrowPropEnum::ArrowCount; i++) {
-        qcb->addItem(QCoreApplication::translate("ArrowPropEnum", ArrowPropEnum::ArrowTypeEnums[i]));
+        qcb->addItem(
+            QCoreApplication::translate("ArrowPropEnum", ArrowPropEnum::ArrowTypeEnums[i]));
         QIcon itemIcon(QString::fromUtf8(ArrowPropEnum::ArrowTypeIcons[i].c_str()));
-        qcb->setItemIcon(i, itemIcon);
+        if (darkSS) {
+            QSize iconSize(48, 48);
+            QPixmap originalPix = itemIcon.pixmap(iconSize, QIcon::Mode::Normal, QIcon::State::On);
+            QPixmap filler(iconSize);
+            filler.fill(QColor(textColor));
+            filler.setMask(originalPix.createMaskFromColor(Qt::black, Qt::MaskOutColor));
+            QIcon itemUpdatedIcon(filler);
+            qcb->setItemIcon(i, itemUpdatedIcon);
+        }
+        else {
+            qcb->setItemIcon(i, itemIcon);
+        }
     }
 }
 
@@ -100,16 +133,19 @@ void DrawGuiUtil::loadLineStyleChoices(QComboBox* combo, LineGenerator* generato
     std::vector<std::string> choices;
     if (generator) {
         choices = generator->getLoadedDescriptions();
-    } else {
+    }
+    else {
         choices = LineGenerator::getLineDescriptions();
     }
+    QPalette comboPal = combo->palette();
+    QColor textColor = comboPal.color(QPalette::WindowText);
 
-    int itemNumber{0};
+    int itemNumber {0};
     for (auto& entry : choices) {
         QString qentry = Base::Tools::fromStdString(entry);
         combo->addItem(qentry);
         if (generator) {
-            combo->setItemIcon(itemNumber, iconForLine(itemNumber + 1, generator));
+            combo->setItemIcon(itemNumber, iconForLine(itemNumber + 1, generator, textColor));
         }
         itemNumber++;
     }
@@ -117,15 +153,17 @@ void DrawGuiUtil::loadLineStyleChoices(QComboBox* combo, LineGenerator* generato
 
 
 //! make an icon that shows a sample of lineNumber in the current line standard
-QIcon DrawGuiUtil::iconForLine(size_t lineNumber, TechDraw::LineGenerator* generator)
+QIcon DrawGuiUtil::iconForLine(size_t lineNumber,
+                               TechDraw::LineGenerator* generator,
+                               QColor textColor)
 {
-//    Base::Console().Message("DGU::iconForLine(lineNumber: %d)\n", lineNumber);
-    constexpr int iconSize{64};
-    constexpr int borderSize{4};
-    constexpr double iconLineWeight{1.0};
-    size_t lineCount{4};
+    //    Base::Console().Message("DGU::iconForLine(lineNumber: %d)\n", lineNumber);
+    constexpr int iconSize {64};
+    constexpr int borderSize {4};
+    constexpr double iconLineWeight {1.0};
+    size_t lineCount {4};
     double maxLineLength = iconSize - borderSize * 2.0;
-    QBitmap bitmap{iconSize, iconSize};
+    QBitmap bitmap {iconSize, iconSize};
     bitmap.clear();
 
     QPainter painter(&bitmap);
@@ -134,12 +172,42 @@ QIcon DrawGuiUtil::iconForLine(size_t lineNumber, TechDraw::LineGenerator* gener
     linePen.setCapStyle(Qt::FlatCap);
     linePen.setColor(Qt::color1);
 
+    QSize lineIconSize(iconSize, iconSize);
+
+    auto curStyleSheet =
+        App::GetApplication()
+            .GetParameterGroupByPath("User parameter:BaseApp/Preferences/MainWindow")
+            ->GetASCII("StyleSheet", "None");
+    // normalize stylesheet name
+    auto normalizeCurStyleSheet = [](std::string str) {
+        std::transform(str.begin(), str.end(), str.begin(), [](unsigned char ch) {
+            return ch == ' ' ? '_' : std::tolower(ch);
+        });
+        return str;
+    };
+    std::string styleSheetName = normalizeCurStyleSheet(curStyleSheet);
+    bool darkSS = false;
+    if (styleSheetName.find("dark") != std::string::npos) {
+        darkSS = true;
+    }
+
     // handle simple case of continuous line
     if (linePen.style() == Qt::SolidLine) {
         linePen.setWidthF(iconLineWeight * lineCount);
         painter.setPen(linePen);
         painter.drawLine(borderSize, iconSize / 2, iconSize - borderSize, iconSize / 2);
-        return QIcon{bitmap};
+        if (darkSS) {
+            QIcon lineItemIcon(bitmap);
+            QPixmap originalLinePix =
+                lineItemIcon.pixmap(lineIconSize, QIcon::Mode::Normal, QIcon::State::On);
+            QPixmap filler(lineIconSize);
+            filler.fill(QColor(textColor));
+            filler.setMask(originalLinePix.createMaskFromColor(Qt::black, Qt::MaskOutColor));
+            return QIcon(filler);
+        }
+        else {
+            return QIcon(bitmap);
+        }
     }
 
     // dashed line
@@ -149,11 +217,22 @@ QIcon DrawGuiUtil::iconForLine(size_t lineNumber, TechDraw::LineGenerator* gener
     size_t iLine = 0;
     // draw multiple lines to stretch the line vertically without horizontal
     // distortion
-    for ( ; iLine < lineCount; iLine++){
+    for (; iLine < lineCount; iLine++) {
         painter.drawLine(borderSize, yHeight, maxLineLength, yHeight);
         yHeight += iconLineWeight;
     }
-    return QIcon{bitmap};
+    if (darkSS) {
+        QIcon lineItemIcon(bitmap);
+        QPixmap originalLinePix =
+            lineItemIcon.pixmap(lineIconSize, QIcon::Mode::Normal, QIcon::State::On);
+        QPixmap filler(lineIconSize);
+        filler.fill(QColor(textColor));
+        filler.setMask(originalLinePix.createMaskFromColor(Qt::black, Qt::MaskOutColor));
+        return QIcon(filler);
+    }
+    else {
+        return QIcon(bitmap);
+    }
 }
 
 
