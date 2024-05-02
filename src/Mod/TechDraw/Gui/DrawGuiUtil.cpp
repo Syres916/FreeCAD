@@ -61,7 +61,9 @@
 #include <Inventor/SbVec3f.h>
 
 #include <Mod/TechDraw/App/ArrowPropEnum.h>
+#include <Mod/TechDraw/App/BalloonPropEnum.h>
 #include <Mod/TechDraw/App/LineNameEnum.h>
+#include <Mod/TechDraw/App/MattingPropEnum.h>
 #include <Mod/TechDraw/App/DrawPage.h>
 #include <Mod/TechDraw/App/DrawUtil.h>
 #include <Mod/TechDraw/App/DrawViewPart.h>
@@ -85,18 +87,9 @@ void DrawGuiUtil::loadArrowBox(QComboBox* qcb)
         App::GetApplication()
             .GetParameterGroupByPath("User parameter:BaseApp/Preferences/MainWindow")
             ->GetASCII("StyleSheet", "None");
-    // normalize stylesheet name
-    auto normalizeCurStyleSheet = [](std::string str) {
-        std::transform(str.begin(), str.end(), str.begin(), [](unsigned char ch) {
-            return ch == ' ' ? '_' : std::tolower(ch);
-        });
-        return str;
-    };
-    std::string styleSheetName = normalizeCurStyleSheet(curStyleSheet);
-    bool darkSS = false;
-    if (styleSheetName.find("dark") != std::string::npos) {
-        darkSS = true;
-    }
+
+    bool darkSS = isStyleSheetDark(curStyleSheet);
+
     int i = 0;
     for (; i < ArrowPropEnum::ArrowCount; i++) {
         qcb->addItem(
@@ -104,15 +97,67 @@ void DrawGuiUtil::loadArrowBox(QComboBox* qcb)
         QIcon itemIcon(QString::fromUtf8(ArrowPropEnum::ArrowTypeIcons[i].c_str()));
         if (darkSS) {
             QSize iconSize(48, 48);
-            QPixmap originalPix = itemIcon.pixmap(iconSize, QIcon::Mode::Normal, QIcon::State::On);
-            QPixmap filler(iconSize);
-            filler.fill(QColor(textColor));
-            filler.setMask(originalPix.createMaskFromColor(Qt::black, Qt::MaskOutColor));
-            QIcon itemUpdatedIcon(filler);
+            QIcon itemUpdatedIcon(maskBlackPixels(itemIcon, iconSize, textColor));
             qcb->setItemIcon(i, itemUpdatedIcon);
         }
         else {
             qcb->setItemIcon(i, itemIcon);
+        }
+    }
+}
+
+void DrawGuiUtil::loadBalloonShapeBox(QComboBox* qballooncb)
+{
+    qballooncb->clear();
+    QPalette qballooncbPal = qballooncb->palette();
+    QColor textColor = qballooncbPal.color(QPalette::WindowText);
+    auto curStyleSheet =
+        App::GetApplication()
+            .GetParameterGroupByPath("User parameter:BaseApp/Preferences/MainWindow")
+            ->GetASCII("StyleSheet", "None");
+
+    bool darkSS = isStyleSheetDark(curStyleSheet);
+
+    int i = 0;
+    for (; i < BalloonPropEnum::BalloonCount; i++) {
+        qballooncb->addItem(
+            QCoreApplication::translate("BalloonPropEnum", BalloonPropEnum::BalloonTypeEnums[i]));
+        QIcon itemIcon(QString::fromUtf8(BalloonPropEnum::BalloonTypeIcons[i].c_str()));
+        if (darkSS) {
+            QSize iconSize(48, 48);
+            QIcon itemUpdatedIcon(maskBlackPixels(itemIcon, iconSize, textColor));
+            qballooncb->setItemIcon(i, itemUpdatedIcon);
+        }
+        else {
+            qballooncb->setItemIcon(i, itemIcon);
+        }
+    }
+}
+
+void DrawGuiUtil::loadMattingStyleBox(QComboBox* qmattingcb)
+{
+    qmattingcb->clear();
+    QPalette qmattingcbPal = qmattingcb->palette();
+    QColor textColor = qmattingcbPal.color(QPalette::WindowText);
+    auto curStyleSheet =
+        App::GetApplication()
+            .GetParameterGroupByPath("User parameter:BaseApp/Preferences/MainWindow")
+            ->GetASCII("StyleSheet", "None");
+
+    bool darkSS = isStyleSheetDark(curStyleSheet);
+
+    int i = 0;
+    for (; i < MattingPropEnum::MattingCount; i++) {
+        qmattingcb->addItem(
+            QCoreApplication::translate("MattingPropEnum", MattingPropEnum::MattingTypeEnums[i]));
+        QIcon itemIcon(QString::fromUtf8(MattingPropEnum::MattingTypeIcons[i].c_str()));
+        if (darkSS) {
+            QSize iconSize(48, 48);
+            QIcon itemUpdatedIcon(maskBlackPixels(itemIcon, iconSize, textColor));
+            qmattingcb->setItemIcon(i, itemUpdatedIcon);
+        }
+        else {
+            qmattingcb->setItemIcon(i, itemIcon);
         }
     }
 }
@@ -178,18 +223,8 @@ QIcon DrawGuiUtil::iconForLine(size_t lineNumber,
         App::GetApplication()
             .GetParameterGroupByPath("User parameter:BaseApp/Preferences/MainWindow")
             ->GetASCII("StyleSheet", "None");
-    // normalize stylesheet name
-    auto normalizeCurStyleSheet = [](std::string str) {
-        std::transform(str.begin(), str.end(), str.begin(), [](unsigned char ch) {
-            return ch == ' ' ? '_' : std::tolower(ch);
-        });
-        return str;
-    };
-    std::string styleSheetName = normalizeCurStyleSheet(curStyleSheet);
-    bool darkSS = false;
-    if (styleSheetName.find("dark") != std::string::npos) {
-        darkSS = true;
-    }
+
+    bool darkSS = isStyleSheetDark(curStyleSheet);
 
     // handle simple case of continuous line
     if (linePen.style() == Qt::SolidLine) {
@@ -198,12 +233,7 @@ QIcon DrawGuiUtil::iconForLine(size_t lineNumber,
         painter.drawLine(borderSize, iconSize / 2, iconSize - borderSize, iconSize / 2);
         if (darkSS) {
             QIcon lineItemIcon(bitmap);
-            QPixmap originalLinePix =
-                lineItemIcon.pixmap(lineIconSize, QIcon::Mode::Normal, QIcon::State::On);
-            QPixmap filler(lineIconSize);
-            filler.fill(QColor(textColor));
-            filler.setMask(originalLinePix.createMaskFromColor(Qt::black, Qt::MaskOutColor));
-            return QIcon(filler);
+            return QIcon(maskBlackPixels(lineItemIcon, lineIconSize, textColor));
         }
         else {
             return QIcon(bitmap);
@@ -223,12 +253,7 @@ QIcon DrawGuiUtil::iconForLine(size_t lineNumber,
     }
     if (darkSS) {
         QIcon lineItemIcon(bitmap);
-        QPixmap originalLinePix =
-            lineItemIcon.pixmap(lineIconSize, QIcon::Mode::Normal, QIcon::State::On);
-        QPixmap filler(lineIconSize);
-        filler.fill(QColor(textColor));
-        filler.setMask(originalLinePix.createMaskFromColor(Qt::black, Qt::MaskOutColor));
-        return QIcon(filler);
+        return QIcon(maskBlackPixels(lineItemIcon, lineIconSize, textColor));
     }
     else {
         return QIcon(bitmap);
@@ -240,7 +265,7 @@ QIcon DrawGuiUtil::iconForLine(size_t lineNumber,
 // validate helper routines
 //===========================================================================
 
-//find a page in Selection, Document or CurrentWindow.
+// find a page in Selection, Document or CurrentWindow.
 TechDraw::DrawPage* DrawGuiUtil::findPage(Gui::Command* cmd, bool findAny)
 {
     //    Base::Console().Message("DGU::findPage()\n");
@@ -249,26 +274,27 @@ TechDraw::DrawPage* DrawGuiUtil::findPage(Gui::Command* cmd, bool findAny)
     auto docs = App::GetApplication().getDocuments();
 
     if (findAny) {
-        //find a page in any open document
+        // find a page in any open document
         std::vector<App::DocumentObject*> foundPageObjects;
-        //no page found in the usual places, but we have been asked to search all
-        //open documents for a page.
+        // no page found in the usual places, but we have been asked to search all
+        // open documents for a page.
         auto docsAll = App::GetApplication().getDocuments();
         for (auto& doc : docsAll) {
             auto docPages = doc->getObjectsOfType(TechDraw::DrawPage::getClassTypeId());
             if (docPages.empty()) {
-                //this open document has no TD pages
+                // this open document has no TD pages
                 continue;
             }
             foundPageObjects.insert(foundPageObjects.end(), docPages.begin(), docPages.end());
         }
         if (foundPageObjects.empty()) {
-            QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No page found"),
+            QMessageBox::warning(Gui::getMainWindow(),
+                                 QObject::tr("No page found"),
                                  QObject::tr("No Drawing Pages available."));
             return nullptr;
         }
         else if (foundPageObjects.size() > 1) {
-            //multiple pages available, ask for help
+            // multiple pages available, ask for help
             for (auto obj : foundPageObjects) {
                 std::string name = obj->getNameInDocument();
                 names.push_back(name);
@@ -283,25 +309,26 @@ TechDraw::DrawPage* DrawGuiUtil::findPage(Gui::Command* cmd, bool findAny)
             }
         }
         else {
-            //only 1 page found
+            // only 1 page found
             return static_cast<TechDraw::DrawPage*>(foundPageObjects.front());
         }
     }
 
-    //check Selection for a page
+    // check Selection for a page
     std::vector<App::DocumentObject*> selPages =
         cmd->getSelection().getObjectsOfType(TechDraw::DrawPage::getClassTypeId());
     if (selPages.empty()) {
-        //no page in selection, try this document
+        // no page in selection, try this document
         auto docPages = cmd->getDocument()->getObjectsOfType(TechDraw::DrawPage::getClassTypeId());
         if (docPages.empty()) {
-            //we are only to look in this document, and there is no page in this document
-            QMessageBox::warning(Gui::getMainWindow(), QObject::tr("No page found"),
+            // we are only to look in this document, and there is no page in this document
+            QMessageBox::warning(Gui::getMainWindow(),
+                                 QObject::tr("No page found"),
                                  QObject::tr("No Drawing Pages in document."));
             return nullptr;
         }
         else if (docPages.size() > 1) {
-            //multiple pages in document, use active page if there is one
+            // multiple pages in document, use active page if there is one
             Gui::MainWindow* w = Gui::getMainWindow();
             Gui::MDIView* mv = w->activeWindow();
             MDIViewPage* mvp = dynamic_cast<MDIViewPage*>(mv);
@@ -327,12 +354,12 @@ TechDraw::DrawPage* DrawGuiUtil::findPage(Gui::Command* cmd, bool findAny)
             }
         }
         else {
-            //only 1 page in document - use it
+            // only 1 page in document - use it
             return static_cast<TechDraw::DrawPage*>(docPages.front());
         }
     }
     else if (selPages.size() > 1) {
-        //multiple pages in selection
+        // multiple pages in selection
         for (auto obj : selPages) {
             std::string name = obj->getNameInDocument();
             names.push_back(name);
@@ -347,11 +374,11 @@ TechDraw::DrawPage* DrawGuiUtil::findPage(Gui::Command* cmd, bool findAny)
         }
     }
     else {
-        //exactly 1 page in selection, use it
+        // exactly 1 page in selection, use it
         return static_cast<TechDraw::DrawPage*>(selPages.front());
     }
 
-    //we can not actually reach this point.
+    // we can not actually reach this point.
     return nullptr;
 }
 
@@ -362,8 +389,8 @@ bool DrawGuiUtil::isDraftObject(App::DocumentObject* obj)
         dynamic_cast<App::PropertyPythonObject*>(obj->getPropertyByName("Proxy"));
 
     if (proxy) {
-        //if no proxy, can not be Draft obj
-        //if has proxy, might be Draft obj
+        // if no proxy, can not be Draft obj
+        // if has proxy, might be Draft obj
         std::stringstream ss;
         Py::Object proxyObj = proxy->getValue();
         Base::PyGILStateLocker lock;
@@ -380,7 +407,7 @@ bool DrawGuiUtil::isDraftObject(App::DocumentObject* obj)
             }
         }
         catch (Py::Exception&) {
-            Base::PyException e;// extract the Python error text
+            Base::PyException e;  // extract the Python error text
             e.ReportException();
             result = false;
         }
@@ -395,8 +422,8 @@ bool DrawGuiUtil::isArchObject(App::DocumentObject* obj)
         dynamic_cast<App::PropertyPythonObject*>(obj->getPropertyByName("Proxy"));
 
     if (proxy) {
-        //if no proxy, can not be Arch obj
-        //if has proxy, might be Arch obj
+        // if no proxy, can not be Arch obj
+        // if has proxy, might be Arch obj
         Py::Object proxyObj = proxy->getValue();
         std::stringstream ss;
         Base::PyGILStateLocker lock;
@@ -404,14 +431,14 @@ bool DrawGuiUtil::isArchObject(App::DocumentObject* obj)
             if (proxyObj.hasAttr("__module__")) {
                 Py::String mod(proxyObj.getAttr("__module__"));
                 ss << (std::string)mod;
-                //does this have to be an ArchSection, or can it be any Arch object?
+                // does this have to be an ArchSection, or can it be any Arch object?
                 if (ss.str().find("Arch") != std::string::npos) {
                     result = true;
                 }
             }
         }
         catch (Py::Exception&) {
-            Base::PyException e;// extract the Python error text
+            Base::PyException e;  // extract the Python error text
             e.ReportException();
             result = false;
         }
@@ -426,8 +453,8 @@ bool DrawGuiUtil::isArchSection(App::DocumentObject* obj)
         dynamic_cast<App::PropertyPythonObject*>(obj->getPropertyByName("Proxy"));
 
     if (proxy) {
-        //if no proxy, can not be Arch obj
-        //if has proxy, might be Arch obj
+        // if no proxy, can not be Arch obj
+        // if has proxy, might be Arch obj
         Py::Object proxyObj = proxy->getValue();
         std::stringstream ss;
         Base::PyGILStateLocker lock;
@@ -435,14 +462,14 @@ bool DrawGuiUtil::isArchSection(App::DocumentObject* obj)
             if (proxyObj.hasAttr("__module__")) {
                 Py::String mod(proxyObj.getAttr("__module__"));
                 ss << (std::string)mod;
-                //does this have to be an ArchSection, or can it be other Arch objects?
+                // does this have to be an ArchSection, or can it be other Arch objects?
                 if (ss.str().find("ArchSectionPlane") != std::string::npos) {
                     result = true;
                 }
             }
         }
         catch (Py::Exception&) {
-            Base::PyException e;// extract the Python error text
+            Base::PyException e;  // extract the Python error text
             e.ReportException();
             result = false;
         }
@@ -453,24 +480,24 @@ bool DrawGuiUtil::isArchSection(App::DocumentObject* obj)
 bool DrawGuiUtil::needPage(Gui::Command* cmd, bool findAny)
 {
     if (findAny) {
-        //look for any page in any open document
+        // look for any page in any open document
         auto docsAll = App::GetApplication().getDocuments();
         for (auto& doc : docsAll) {
             auto docPages = doc->getObjectsOfType(TechDraw::DrawPage::getClassTypeId());
             if (docPages.empty()) {
-                //this open document has no TD pages
+                // this open document has no TD pages
                 continue;
             }
             else {
-                //found at least 1 page
+                // found at least 1 page
                 return true;
             }
         }
-        //did not find any pages
+        // did not find any pages
         return false;
     }
 
-    //need a Document and a Page
+    // need a Document and a Page
     if (cmd->hasActiveDocument()) {
         auto drawPageType(TechDraw::DrawPage::getClassTypeId());
         auto selPages = cmd->getDocument()->getObjectsOfType(drawPageType);
@@ -508,7 +535,10 @@ void DrawGuiUtil::dumpRectF(const char* text, const QRectF& r)
     double right = r.right();
     double top = r.top();
     double bottom = r.bottom();
-    Base::Console().Message("Extents: L: %.3f, R: %.3f, T: %.3f, B: %.3f\n", left, right, top,
+    Base::Console().Message("Extents: L: %.3f, R: %.3f, T: %.3f, B: %.3f\n",
+                            left,
+                            right,
+                            top,
                             bottom);
     Base::Console().Message("Size: W: %.3f H: %.3f\n", r.width(), r.height());
     Base::Console().Message("Centre: (%.3f, %.3f)\n", r.center().x(), r.center().y());
@@ -523,13 +553,13 @@ void DrawGuiUtil::dumpPointF(const char* text, const QPointF& p)
 std::pair<Base::Vector3d, Base::Vector3d> DrawGuiUtil::get3DDirAndRot()
 {
     std::pair<Base::Vector3d, Base::Vector3d> result;
-    Base::Vector3d viewDir(0.0, -1.0, 0.0); //default to front
-    Base::Vector3d viewUp(0.0, 0.0, 1.0);   //default to top
-    Base::Vector3d viewRight(1.0, 0.0, 0.0);//default to right
+    Base::Vector3d viewDir(0.0, -1.0, 0.0);   // default to front
+    Base::Vector3d viewUp(0.0, 0.0, 1.0);     // default to top
+    Base::Vector3d viewRight(1.0, 0.0, 0.0);  // default to right
     std::list<Gui::MDIView*> mdis = Gui::Application::Instance->activeDocument()->getMDIViews();
     Gui::View3DInventor* view;
     Gui::View3DInventorViewer* viewer = nullptr;
-    for (auto& m : mdis) {//find the 3D viewer
+    for (auto& m : mdis) {  // find the 3D viewer
         view = dynamic_cast<Gui::View3DInventor*>(m);
         if (view) {
             viewer = view->getViewer();
@@ -555,7 +585,7 @@ std::pair<Base::Vector3d, Base::Vector3d> DrawGuiUtil::get3DDirAndRot()
     double dvecY = roundToDigits(dvec[1], digits);
     double dvecZ = roundToDigits(dvec[2], digits);
     viewDir = Base::Vector3d(dvecX, dvecY, dvecZ);
-    viewDir = viewDir * (-1.0);// Inventor dir is opposite TD projection dir
+    viewDir = viewDir * (-1.0);  // Inventor dir is opposite TD projection dir
 
     SbVec3f upvec = viewer->getUpDirection();
     double upvecX = roundToDigits(upvec[0], digits);
@@ -574,7 +604,7 @@ std::pair<Base::Vector3d, Base::Vector3d> DrawGuiUtil::getProjDirFromFace(App::D
 {
     std::pair<Base::Vector3d, Base::Vector3d> d3Dirs = get3DDirAndRot();
     std::pair<Base::Vector3d, Base::Vector3d> dirs;
-    dirs.first = Base::Vector3d(0.0, 0.0, 1.0);//set a default
+    dirs.first = Base::Vector3d(0.0, 0.0, 1.0);  // set a default
     dirs.second = Base::Vector3d(1.0, 0.0, 0.0);
     Base::Vector3d projDir, rotVec;
     projDir = d3Dirs.first;
@@ -620,17 +650,17 @@ double DrawGuiUtil::roundToDigits(double original, int digits)
 }
 
 // Returns true if the item or any of its descendants is selected
-bool DrawGuiUtil::isSelectedInTree(QGraphicsItem *item)
+bool DrawGuiUtil::isSelectedInTree(QGraphicsItem* item)
 {
     if (item) {
         if (item->isSelected()) {
             return true;
         }
 
-        for (QGraphicsItem *child : item->childItems()) {
-           if (isSelectedInTree(child)) {
-               return true;
-           }
+        for (QGraphicsItem* child : item->childItems()) {
+            if (isSelectedInTree(child)) {
+                return true;
+            }
         }
     }
 
@@ -638,13 +668,40 @@ bool DrawGuiUtil::isSelectedInTree(QGraphicsItem *item)
 }
 
 // Selects or deselects the item and all its descendants
-void DrawGuiUtil::setSelectedTree(QGraphicsItem *item, bool selected)
+void DrawGuiUtil::setSelectedTree(QGraphicsItem* item, bool selected)
 {
     if (item) {
         item->setSelected(selected);
 
-        for (QGraphicsItem *child : item->childItems()) {
+        for (QGraphicsItem* child : item->childItems()) {
             setSelectedTree(child, selected);
         }
     }
+}
+
+
+bool DrawGuiUtil::isStyleSheetDark(std::string curStyleSheet)
+{
+    // normalize stylesheet name
+    auto normalizeCurStyleSheet = [](std::string str) {
+        std::transform(str.begin(), str.end(), str.begin(), [](unsigned char ch) {
+            return ch == ' ' ? '_' : std::tolower(ch);
+        });
+        return str;
+    };
+    std::string styleSheetName = normalizeCurStyleSheet(curStyleSheet);
+    if (styleSheetName.find("dark") != std::string::npos) {
+        return true;
+    }
+    return false;
+}
+
+
+QIcon DrawGuiUtil::maskBlackPixels(QIcon itemIcon, QSize iconSize, QColor textColor)
+{
+    QPixmap originalPix = itemIcon.pixmap(iconSize, QIcon::Mode::Normal, QIcon::State::On);
+    QPixmap filler(iconSize);
+    filler.fill(QColor(textColor));
+    filler.setMask(originalPix.createMaskFromColor(Qt::black, Qt::MaskOutColor));
+    return filler;
 }
