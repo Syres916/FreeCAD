@@ -44,6 +44,8 @@
 #include <Mod/Part/App/PartFeature.h>
 #include <Mod/Part/App/TopoShape.h>
 
+#include <Mod/Sketch/Gui/Utils.h>
+
 #include <Mod/Measure/App/Measurement.h>
 
 #include "QuickMeasure.h"
