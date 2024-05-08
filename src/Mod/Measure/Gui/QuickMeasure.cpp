@@ -44,8 +44,6 @@
 #include <Mod/Part/App/PartFeature.h>
 #include <Mod/Part/App/TopoShape.h>
 
-#include <Mod/Sketch/Gui/Utils.h>
-
 #include <Mod/Measure/App/Measurement.h>
 
 #include "QuickMeasure.h"
@@ -74,9 +72,6 @@ void QuickMeasure::onSelectionChanged(const Gui::SelectionChanges& msg)
     if (!doc) {
         return;
     }
-    if (isSketchInEdit(doc)) {
-        return;
-    }
 
     measurement->clear();
 
@@ -91,7 +86,10 @@ void QuickMeasure::onSelectionChanged(const Gui::SelectionChanges& msg)
         }
         else {
             for (auto& subName : subNames) {
-                measurement->addReference3D(obj, subName);
+                if (subName == "H_Axis" || subName == "V_Axis" || subName == "RootPoint") {}
+                else {
+                    measurement->addReference3D(obj, subName);
+                }
             }
         }
     }
