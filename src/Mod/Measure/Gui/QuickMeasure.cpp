@@ -68,8 +68,13 @@ void QuickMeasure::onSelectionChanged(const Gui::SelectionChanges& msg)
         return;
     }
     
-    Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    if (!doc) { return; }
+    Gui::Document *doc = Gui::Application::Instance->activeDocument();
+    if (!doc) {
+        return;
+    }
+    if (isSketchInEdit(doc)) {
+        return;
+    }
 
     measurement->clear();
 
