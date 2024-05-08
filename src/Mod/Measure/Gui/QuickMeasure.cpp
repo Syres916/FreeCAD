@@ -161,3 +161,4 @@ void QuickMeasure::print(const QString& message)
 
 
 #include "moc_QuickMeasure.cpp"
+
