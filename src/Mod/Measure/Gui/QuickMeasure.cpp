@@ -68,8 +68,10 @@ void QuickMeasure::onSelectionChanged(const Gui::SelectionChanges& msg)
         return;
     }
     
-    Gui::Document* doc = Gui::Application::Instance->activeDocument();
-    if (!doc) { return; }
+    Gui::Document *doc = Gui::Application::Instance->activeDocument();
+    if (!doc) {
+        return;
+    }
 
     measurement->clear();
 
@@ -84,7 +86,10 @@ void QuickMeasure::onSelectionChanged(const Gui::SelectionChanges& msg)
         }
         else {
             for (auto& subName : subNames) {
-                measurement->addReference3D(obj, subName);
+                if (subName == "H_Axis" || subName == "V_Axis" || subName == "RootPoint") {}
+                else {
+                    measurement->addReference3D(obj, subName);
+                }
             }
         }
     }
