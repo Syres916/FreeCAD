@@ -22,6 +22,7 @@
 # **************************************************************************/
 
 import FreeCAD
+import os.path
 
 
 def _remove_from_list(prefs, pref_name):
@@ -49,6 +50,12 @@ class StartMigrator2024:
     def run_migration(self):
         if self.migration_2024_complete:
             # Refuse to run if it's already been done
+            return
+        if not os.path.isfile(
+            FreeCAD.getUserConfigDir() + "system.cfg"
+        ) and not os.path.isfile(FreeCAD.getUserConfigDir() + "user.cfg"):
+            # it must be a new user therefore just set the Migrated Boolean
+            self._mark_complete()
             return
         FreeCAD.Console.PrintMessage("Migrating Start Workbench to Start command... ")
         self._update_startup_flags()
