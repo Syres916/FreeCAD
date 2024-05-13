@@ -147,7 +147,7 @@ App::Material ViewProviderGeometryObject::getUserDefinedMaterial()
         mat.diffuseColor = App::Color(red, green, blue);
     }
     else {
-        // Color = (204, 204, 230) = 3435980543UL
+        // Color = (140, 140, 179) = 0x8C8CB300
         getColor("DefaultShapeColor", mat.diffuseColor);
     }
 
