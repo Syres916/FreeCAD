@@ -55,7 +55,7 @@ public:
     FC_VIEW_PARAM(DefaultLinkColor,unsigned long,Unsigned,0x66FFFF00) \
     FC_VIEW_PARAM(DefaultShapeLineColor,unsigned long,Unsigned,421075455UL) \
     FC_VIEW_PARAM(DefaultShapeVertexColor,unsigned long,Unsigned,421075455UL) \
-    FC_VIEW_PARAM(DefaultShapeColor,unsigned long,Unsigned,0xCCCCCC00) \
+    FC_VIEW_PARAM(DefaultShapeColor,unsigned long,Unsigned,0x8C8CB000) \
     FC_VIEW_PARAM(DefaultShapeTransparency,int,Int,0)        \
     FC_VIEW_PARAM(DefaultShapeLineWidth,int,Int,2) \
     FC_VIEW_PARAM(DefaultShapePointSize,int,Int,2) \
