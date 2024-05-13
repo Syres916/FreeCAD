@@ -42,9 +42,9 @@
           </property>
           <property name="color">
            <color>
-            <red>204</red>
-            <green>204</green>
-            <blue>230</blue>
+            <red>140</red>
+            <green>140</green>
+            <blue>179</blue>
            </color>
           </property>
           <property name="prefEntry" stdset="0">
@@ -157,9 +157,9 @@
           </property>
           <property name="color">
            <color>
-            <red>136</red>
-            <green>136</green>
-            <blue>136</blue>
+            <red>65</red>
+            <green>65</green>
+            <blue>65</blue>
            </color>
           </property>
           <property name="prefEntry" stdset="0">
