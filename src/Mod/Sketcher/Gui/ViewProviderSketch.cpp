@@ -3230,6 +3230,7 @@ void ViewProviderSketch::unsetEdit(int ModNum)
 
         auto headlightIntensityExisting = hGrpView->GetInt("HeadlightIntensityExisting", 100);
         hGrpView->SetInt("HeadlightIntensity", headlightIntensityExisting);
+        hGrpView->RemoveInt("HeadlightIntensityExisting");
 
         App::AutoTransaction trans("Sketch recompute");
         try {
@@ -3304,6 +3305,12 @@ void ViewProviderSketch::setEditViewer(Gui::View3DInventorViewer* viewer, int Mo
     ParameterGrp::handle hGrpView = App::GetApplication().GetParameterGroupByPath(
         "User parameter:BaseApp/Preferences/View");
 
+    // Check if Sketcher Edit Mode exited cleanly
+    auto sketcherEditLastExit = hGrpView->GetInt("HeadlightIntensityExisting", 101);
+    if (sketcherEditLastExit != 101) {
+        // must mean a seg fault or abnormal exit last time
+        hGrpView->SetInt("HeadlightIntensity", sketcherEditLastExit);
+    }
     auto headlightIntensityExisting = hGrpView->GetInt("HeadlightIntensity", 100);
     auto headlightIntensityTemp = 50;
     hGrpView->SetInt("HeadlightIntensity", headlightIntensityTemp);
