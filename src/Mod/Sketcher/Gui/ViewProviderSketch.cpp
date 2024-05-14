@@ -3305,7 +3305,7 @@ void ViewProviderSketch::setEditViewer(Gui::View3DInventorViewer* viewer, int Mo
     ParameterGrp::handle hGrpView = App::GetApplication().GetParameterGroupByPath(
         "User parameter:BaseApp/Preferences/View");
 
-    // Check if Sketcher Edit Mode exited cleanly
+    // This should not be needed but just incase
     auto sketcherEditLastExit = hGrpView->GetInt("HeadlightIntensityExisting", 101);
     if (sketcherEditLastExit != 101) {
         // must mean a seg fault or abnormal exit last time
