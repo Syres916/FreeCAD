@@ -1493,7 +1493,6 @@ QPushButton {
     border-bottom-color: #434D5B; /* simulates shadow under the button */
     padding: 4px 22px;
     margin: 4px 4px;
-    min-height: 16px; /* same as QTabBar QPushButton min-width */
     border-radius: 4px;
 }
 
