@@ -255,6 +255,7 @@ QString StartView::fileCardStyle() const
                                " border: 2px solid rgb(%7, %8, %9);"
                                "}"
                                "QLabel {"
+                               " font-size: 12px;"
                                " font-weight: bold;"
                                "}")
         .arg(background.red())
