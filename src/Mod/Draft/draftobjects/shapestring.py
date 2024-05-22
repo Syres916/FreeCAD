@@ -36,7 +36,7 @@ import Part
 from draftgeoutils import faces
 from draftutils.messages import _wrn
 from draftutils.translate import translate
-
+from draftutils.params import get_param
 from draftobjects.base import DraftObject
 
 import re
