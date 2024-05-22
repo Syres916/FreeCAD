@@ -36,9 +36,11 @@ import Part
 from draftgeoutils import faces
 from draftutils.messages import _wrn
 from draftutils.translate import translate
+
 from draftutils.params import get_param
 from draftobjects.base import DraftObject
 
+import fnmatch
 import os.path
 import platform
 import re
@@ -199,10 +201,8 @@ class ShapeString(DraftObject):
         self.props_changed_clear()
 
     def check_portable_folder(self, obj, on_restore):
-        print(obj.FontFile)
-
+        # We have been passed the correct location from the task panel
         if not on_restore and os.path.isfile(obj.FontFile):
-            # We have been passed the correct location from the task panel
             return True
 
         # We may have been passed an incorrect location from the task panel
@@ -219,7 +219,8 @@ class ShapeString(DraftObject):
 
         # So the only things left are opening existing files
         unique_identifier = "%d"
-        number_of_chars_param = len(get_param("FontFile")) - 2
+        actual_param = get_param("FontFile")[2 : len(get_param("FontFile"))]
+        number_of_chars_param = len(actual_param)
         if re.search(unique_identifier, get_param("FontFile"), re.IGNORECASE):
             if on_restore:
                 App.Console.PrintLog(
@@ -243,7 +244,6 @@ class ShapeString(DraftObject):
             + get_param("FontFile")[len(unique_identifier) : len(get_param("FontFile"))]
         )
         number_of_chars_font = len(obj.FontFile)
-
         existingFileInfo = (
             specialF
             + get_param("FontFile")[len(unique_identifier) : len(get_param("FontFile"))]
@@ -253,23 +253,25 @@ class ShapeString(DraftObject):
             + len(get_param("FontFile"))
             - len(unique_identifier)
         ]
-
         if existingFileInfo != systemFileInfo:
             # We have to iterate through the FontFile until we get the number_of_chars_param characters of Fonts/truetype
+            path = os.path.normpath(obj.FontFile)
+            existingFileInfo = ""
+            for each_str in path.split(os.sep):
+                existingFileInfo = existingFileInfo + each_str + "/"
+            existingFileInfo = existingFileInfo[0 : len(existingFileInfo) - 1]
             number_of_chars_user_appdata_dir = len(App.getUserAppDataDir())
             for each_char in range(0, len(existingFileInfo)):
                 if (
                     existingFileInfo[each_char : each_char + number_of_chars_param]
-                    == "Fonts/truetype"
+                    == actual_param
                 ):
-                    offset_char = number_of_chars_user_appdata_dir - each_char - 5
-                    print(
-                        specialF
-                        + obj.FontFile[each_char + offset_char : len(obj.FontFile)]
-                    )
                     obj.FontFile = (
                         specialF
-                        + obj.FontFile[each_char + offset_char : len(obj.FontFile)]
+                        + actual_param
+                        + obj.FontFile[
+                            each_char + len(actual_param) : len(existingFileInfo)
+                        ]
                     )
                     break
 
@@ -277,26 +279,38 @@ class ShapeString(DraftObject):
             App.Console.PrintWarning(
                 translate(
                     "draft",
-                    "ShapeString: font file does not exist, "
+                    "ShapeString: opening existing shapestring, font file does not exist, "
                     "use the ... button to select a font file",
                 )
                 + "\n"
             )
-            import fnmatch
-
-            for file in os.listdir(
-                "C:/Users/JPS/AppData/Roaming/FreeCAD/Fonts/truetype/dejavu"
-            ):
-                if fnmatch.fnmatch(file, "DejaVuSans*" + obj.FontFile[-4:]):
-                    App.Console.PrintWarning(
-                        translate(
-                            "draft",
-                            "ShapeString: other simlar named font files found in the folder",
+            path = os.path.normpath(obj.FontFile)
+            testList = []
+            for each_str in path.split(os.sep):
+                testList.append(each_str)
+            if os.path.isdir(specialF + actual_param + "/" + testList[-2]):
+                for file in os.listdir(specialF + actual_param + "/" + testList[-2]):
+                    if fnmatch.fnmatch(
+                        file, testList[-1][0:6] + "*" + obj.FontFile[-4:]
+                    ):
+                        App.Console.PrintWarning(
+                            translate(
+                                "draft",
+                                "ShapeString: other simlar named font files found in the folder",
+                            )
+                            + "\n"
                         )
-                        + "\n"
+                        break
+            else:
+                App.Console.PrintWarning(
+                    translate(
+                        "draft",
+                        "ShapeString: please browse for an appropriate font file",
                     )
-                    break
+                    + "\n"
+                )
             return False
+        return True
 
         return True
     def onChanged(self, obj, prop):
