@@ -68,6 +68,13 @@ class ShapeStringTaskPanel:
         self.form.leString.setText(self.stringText)
         self.platWinDialog("Overwrite")
         self.fileSpec = font if font else get_param("FontFile")
+        # print(self.fileSpec)
+        import re
+        if re.search("%d", self.fileSpec, re.IGNORECASE):
+            # print("Found a special folder")
+            pattern = re.compile("%d", re.IGNORECASE)
+            self.fileSpec = pattern.sub(App.getUserAppDataDir(), self.fileSpec)
+        # print(self.fileSpec)
         self.form.fcFontFile.setFileName(self.fileSpec)
         self.point = point
         self.pointPicked = False
