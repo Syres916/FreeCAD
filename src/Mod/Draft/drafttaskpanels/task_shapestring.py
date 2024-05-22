@@ -40,6 +40,8 @@ from draftutils.params import get_param
 from draftutils.translate import translate
 from DraftVecUtils import toString
 
+import re
+
 # So the resource file doesn't trigger errors from code checkers (flake8)
 True if Draft_rc.__name__ else False
 
@@ -69,7 +71,7 @@ class ShapeStringTaskPanel:
         self.platWinDialog("Overwrite")
         self.fileSpec = font if font else get_param("FontFile")
         # print(self.fileSpec)
-        import re
+
         if re.search("%d", self.fileSpec, re.IGNORECASE):
             # print("Found a special folder")
             pattern = re.compile("%d", re.IGNORECASE)
