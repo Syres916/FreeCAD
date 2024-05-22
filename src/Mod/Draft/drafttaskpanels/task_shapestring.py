@@ -40,6 +40,8 @@ from draftutils.params import get_param
 from draftutils.translate import translate
 from DraftVecUtils import toString
 
+import platform
+import os
 import re
 
 # So the resource file doesn't trigger errors from code checkers (flake8)
@@ -66,17 +68,20 @@ class ShapeStringTaskPanel:
         self.form.sbHeight.setProperty('rawValue', size)
         self.form.sbHeight.setProperty('unit', unit_length)
 
+        self.unique_identifier = "%d"
         self.stringText = string if string else translate("draft", "Default")
         self.form.leString.setText(self.stringText)
         self.platWinDialog("Overwrite")
         self.fileSpec = font if font else get_param("FontFile")
-        # print(self.fileSpec)
-
-        if re.search("%d", self.fileSpec, re.IGNORECASE):
-            # print("Found a special folder")
-            pattern = re.compile("%d", re.IGNORECASE)
-            self.fileSpec = pattern.sub(App.getUserAppDataDir(), self.fileSpec)
-        # print(self.fileSpec)
+        if re.search(self.unique_identifier, self.fileSpec, re.IGNORECASE):
+            specialF = str(App.getUserAppDataDir())
+            if platform.system() == "Windows":
+                path = os.path.normpath(specialF)
+                specialF = ""
+                for each_str in path.split(os.sep):
+                    specialF = specialF + each_str + "/"
+            # pattern = re.compile("/%d/", re.IGNORECASE)
+            self.fileSpec = specialF + self.fileSpec[len(self.unique_identifier):len(self.fileSpec)]
         self.form.fcFontFile.setFileName(self.fileSpec)
         self.point = point
         self.pointPicked = False
