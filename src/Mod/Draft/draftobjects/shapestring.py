@@ -39,6 +39,7 @@ from draftutils.translate import translate
 
 from draftobjects.base import DraftObject
 
+import re
 
 class ShapeString(DraftObject):
     """The ShapeString object"""
@@ -103,6 +104,7 @@ class ShapeString(DraftObject):
 
     def onDocumentRestored(self, obj):
         super().onDocumentRestored(obj)
+        self.check_portable_folder(obj)
         if hasattr(obj, "ObliqueAngle"): # several more properties were added
             return
         self.update_properties_1v0(obj)
@@ -129,7 +131,7 @@ class ShapeString(DraftObject):
         if obj.String and obj.FontFile:
             if obj.Placement:
                 plm = obj.Placement
-
+            self.check_portable_folder(obj)
             fill = obj.MakeFace
             if fill is True:
                 # Test a simple letter to know if we have a sticky font or not.
@@ -191,6 +193,14 @@ class ShapeString(DraftObject):
 
         obj.positionBySupport()
         self.props_changed_clear()
+
+    def check_portable_folder(self, obj):
+        if re.search("%d", get_param("FontFile"), re.IGNORECASE):
+            App.Console.PrintLog(translate("draft", "ShapeString: changing font location to local "
+                                           "App.getUserAppDataDir() - " + str(App.getUserAppDataDir())))
+            pattern = re.compile("%d", re.IGNORECASE)
+            obj.FontFile = pattern.sub(App.getUserAppDataDir(), obj.FontFile)
+        return
 
     def onChanged(self, obj, prop):
         self.props_changed_store(prop)
