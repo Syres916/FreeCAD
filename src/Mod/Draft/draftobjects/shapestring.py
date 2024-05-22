@@ -40,6 +40,7 @@ from draftutils.params import get_param
 from draftobjects.base import DraftObject
 
 import os.path
+import platform
 import re
 
 class ShapeString(DraftObject):
