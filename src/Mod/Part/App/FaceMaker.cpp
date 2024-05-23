@@ -56,6 +56,9 @@ void Part::FaceMaker::addTopoShape(const TopoShape& shape) {
     if(sh.IsNull())
         throw Base::ValueError("Input shape is null.");
     switch(sh.ShapeType()){
+        case TopAbs_VERTEX:
+            Base::Console().Warning("Ignoring unwanted vertex in sketch\n");
+        break;
         case TopAbs_COMPOUND:
             this->myCompounds.push_back(TopoDS::Compound(sh));
         break;
