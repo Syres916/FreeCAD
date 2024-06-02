@@ -26,20 +26,26 @@
 #include <memory>
 #include <Mod/Part/App/Interface.h>
 #include <Base/Parameter.h>
+
+#if OCC_VERSION_HEX >= 0x070603
 #include <Resource_FormatType.hxx>
+#endif
+
 
 namespace Part
 {
 
-namespace STEP {
+namespace STEP
+{
 class ImportExportSettings;
 using ImportExportSettingsPtr = std::shared_ptr<ImportExportSettings>;
-}
+}  // namespace STEP
 
-namespace IGES {
+namespace IGES
+{
 class ImportExportSettings;
 using ImportExportSettingsPtr = std::shared_ptr<ImportExportSettings>;
-}
+}  // namespace IGES
 
 namespace OCAF
 {
@@ -47,7 +53,8 @@ namespace OCAF
 class PartExport ImportExportSettings
 {
 public:
-    enum class ImportMode {
+    enum class ImportMode
+    {
         SingleDocument = 0,
         GroupPerDocument = 1,
         GroupPerDirectory = 2,
@@ -55,10 +62,13 @@ public:
         ObjectPerDirectory = 4,
     };
 
-    struct CodePage {
+#if OCC_VERSION_HEX >= 0x070603
+    struct CodePage
+    {
         std::string codePageName;
         Resource_FormatType codePage;
     };
+#endif
 
     static void initialize();
     ImportExportSettings();
@@ -103,8 +113,10 @@ public:
     bool getReadShowDialogImport() const;
 
     void setImportCodePage(int);
+#if OCC_VERSION_HEX >= 0x070603
     Resource_FormatType getImportCodePage() const;
     std::list<ImportExportSettings::CodePage> getCodePageList() const;
+#endif
 
 private:
     static void initGeneral(Base::Reference<ParameterGrp> hGrp);
@@ -115,38 +127,41 @@ private:
     mutable STEP::ImportExportSettingsPtr step;
     mutable IGES::ImportExportSettingsPtr iges;
     ParameterGrp::handle pGroup;
+#if OCC_VERSION_HEX >= 0x070603
     std::list<CodePage> codePageList {
-                                      {"No conversion", Resource_FormatType_NoConversion},
-                                      {"Multi-byte UTF-8 encoding", Resource_FormatType_UTF8},
-                                      {"SJIS (Shift Japanese Industrial Standards) encoding", Resource_FormatType_SJIS},
-                                      {"EUC (Extended Unix Code) ", Resource_FormatType_EUC},
-                                      {"GB (Guobiao) encoding for Simplified Chinese", Resource_FormatType_GB},
-                                      {"GBK (Unified Chinese) encoding", Resource_FormatType_GBK},
-                                      {"Big5 (Traditional Chinese) encoding", Resource_FormatType_Big5},
-                                      //{"active system-defined locale; this value is strongly NOT recommended to use", Resource_FormatType_SystemLocale},
-                                      {"ISO 8859-1 (Western European) encoding", Resource_FormatType_iso8859_1},
-                                      {"ISO 8859-2 (Central European) encoding", Resource_FormatType_iso8859_2},
-                                      {"ISO 8859-3 (Turkish) encoding", Resource_FormatType_iso8859_3},
-                                      {"ISO 8859-4 (Northern European) encoding", Resource_FormatType_iso8859_4},
-                                      {"ISO 8859-5 (Cyrillic) encoding", Resource_FormatType_iso8859_5},
-                                      {"ISO 8859-6 (Arabic) encoding", Resource_FormatType_iso8859_6},
-                                      {"ISO 8859-7 (Greek) encoding", Resource_FormatType_iso8859_7},
-                                      {"ISO 8859-8 (Hebrew) encoding", Resource_FormatType_iso8859_8},
-                                      {"ISO 8859-9 (Turkish) encoding", Resource_FormatType_iso8859_9},
-                                      {"ISO 850 (Western European) encoding", Resource_FormatType_CP850},
-                                      {"CP1250 (Central European) encoding", Resource_FormatType_CP1250},
-                                      {"CP1251 (Cyrillic) encoding", Resource_FormatType_CP1251},
-                                      {"CP1252 (Western European) encoding", Resource_FormatType_CP1252},
-                                      {"CP1253 (Greek) encoding", Resource_FormatType_CP1253},
-                                      {"CP1254 (Turkish) encoding", Resource_FormatType_CP1254},
-                                      {"CP1255 (Hebrew) encoding", Resource_FormatType_CP1255},
-                                      {"CP1256 (Arabic) encoding", Resource_FormatType_CP1256},
-                                      {"CP1257 (Baltic) encoding", Resource_FormatType_CP1257},
-                                      {"CP1258 (Vietnamese) encoding", Resource_FormatType_CP1258},
-                                      };
+        {"No conversion", Resource_FormatType_NoConversion},
+        {"Multi-byte UTF-8 encoding", Resource_FormatType_UTF8},
+        {"SJIS (Shift Japanese Industrial Standards) encoding", Resource_FormatType_SJIS},
+        {"EUC (Extended Unix Code) ", Resource_FormatType_EUC},
+        {"GB (Guobiao) encoding for Simplified Chinese", Resource_FormatType_GB},
+        {"GBK (Unified Chinese) encoding", Resource_FormatType_GBK},
+        {"Big5 (Traditional Chinese) encoding", Resource_FormatType_Big5},
+        //{"active system-defined locale; this value is strongly NOT recommended to use",
+        //Resource_FormatType_SystemLocale},
+        {"ISO 8859-1 (Western European) encoding", Resource_FormatType_iso8859_1},
+        {"ISO 8859-2 (Central European) encoding", Resource_FormatType_iso8859_2},
+        {"ISO 8859-3 (Turkish) encoding", Resource_FormatType_iso8859_3},
+        {"ISO 8859-4 (Northern European) encoding", Resource_FormatType_iso8859_4},
+        {"ISO 8859-5 (Cyrillic) encoding", Resource_FormatType_iso8859_5},
+        {"ISO 8859-6 (Arabic) encoding", Resource_FormatType_iso8859_6},
+        {"ISO 8859-7 (Greek) encoding", Resource_FormatType_iso8859_7},
+        {"ISO 8859-8 (Hebrew) encoding", Resource_FormatType_iso8859_8},
+        {"ISO 8859-9 (Turkish) encoding", Resource_FormatType_iso8859_9},
+        {"ISO 850 (Western European) encoding", Resource_FormatType_iso850},
+        {"CP1250 (Central European) encoding", Resource_FormatType_CP1250},
+        {"CP1251 (Cyrillic) encoding", Resource_FormatType_CP1251},
+        {"CP1252 (Western European) encoding", Resource_FormatType_CP1252},
+        {"CP1253 (Greek) encoding", Resource_FormatType_CP1253},
+        {"CP1254 (Turkish) encoding", Resource_FormatType_CP1254},
+        {"CP1255 (Hebrew) encoding", Resource_FormatType_CP1255},
+        {"CP1256 (Arabic) encoding", Resource_FormatType_CP1256},
+        {"CP1257 (Baltic) encoding", Resource_FormatType_CP1257},
+        {"CP1258 (Vietnamese) encoding", Resource_FormatType_CP1258},
+    };
+#endif
 };
 
-} //namespace OCAF
-} //namespace Part
+}  // namespace OCAF
+}  // namespace Part
 
 #endif
