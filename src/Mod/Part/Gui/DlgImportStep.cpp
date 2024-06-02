@@ -47,7 +47,7 @@ DlgImportStep::DlgImportStep(QWidget* parent)
     ui->checkBoxReduceObjects->setChecked(settings.getReduceObjects());
     ui->checkBoxExpandCompound->setChecked(settings.getExpandCompound());
     ui->checkBoxShowProgress->setChecked(settings.getShowProgress());
-#if OCC_VERSION_HEX >= 0x070603
+#if OCC_VERSION_HEX >= 0x070800
     std::list<Part::OCAF::ImportExportSettings::CodePage> codepagelist;
     codepagelist = settings.getCodePageList();
     for (const auto& codePage : codepagelist) {
