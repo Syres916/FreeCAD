@@ -147,7 +147,7 @@ private:
         {"ISO 8859-7 (Greek) encoding", Resource_FormatType_iso8859_7},
         {"ISO 8859-8 (Hebrew) encoding", Resource_FormatType_iso8859_8},
         {"ISO 8859-9 (Turkish) encoding", Resource_FormatType_iso8859_9},
-        {"ISO 850 (Western European) encoding", Resource_FormatType_iso850},
+        {"ISO 850 (Western European) encoding", Resource_FormatType_CP850},
         {"CP1250 (Central European) encoding", Resource_FormatType_CP1250},
         {"CP1251 (Cyrillic) encoding", Resource_FormatType_CP1251},
         {"CP1252 (Western European) encoding", Resource_FormatType_CP1252},
