@@ -1766,7 +1766,7 @@ void ViewProviderSketch::moveConstraint(Sketcher::Constraint* Constr, int constN
             const Part::Geometry *geo2 = GeoList::getGeometryFromGeoId (geomlist, Constr->Second);
 
             if (isLineSegment(*geo2)) {
-                if (isCircleOrArc(*geo1)){
+                if (isCircleOrArc(*geo1) && Constr->FirstPos == Sketcher::PointPos::none){
                     std::swap(geo1, geo2); // see below
                 }
                 else {
@@ -1818,7 +1818,7 @@ void ViewProviderSketch::moveConstraint(Sketcher::Constraint* Constr, int constN
                 p2 = lineSeg->getEndPoint();
             }
             else if (geo->is<Part::GeomArcOfCircle>()) {
-                const Part::GeomArcOfCircle* arc = static_cast<const Part::GeomArcOfCircle*>(geo);
+                auto* arc = static_cast<const Part::GeomArcOfCircle*>(geo);
                 double radius = arc->getRadius();
                 Base::Vector3d center = arc->getCenter();
                 double startangle, endangle;
@@ -2586,6 +2586,12 @@ void ViewProviderSketch::updateColor()
     assert(isInEditMode());
 
     editCoinManager->updateColor();
+}
+
+bool ViewProviderSketch::selectAll()
+{
+    // TODO: eventually implement "select all" logic
+    return true;
 }
 
 bool ViewProviderSketch::doubleClicked()
