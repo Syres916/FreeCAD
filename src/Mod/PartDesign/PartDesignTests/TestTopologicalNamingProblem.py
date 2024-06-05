@@ -1719,6 +1719,183 @@ class TestTopologicalNamingProblem(unittest.TestCase):
         self.Doc.recompute()
         self.assertTrue(self.Sketch001.isValid())
 
+    def testPadChange_UpToFirst_to_Dimension(self):
+        # Arrange
+        self.Body = self.Doc.addObject("PartDesign::Body", "Body")
+        # Make first offset cube Pad
+        self.PadSketch = self.Doc.addObject("Sketcher::SketchObject", "Sketch")
+        self.Body.addObject(self.PadSketch)
+        TestSketcherApp.CreateRectangleSketch(self.PadSketch, (-42.5, -42.5), (85, 85))
+        self.Doc.recompute()
+        TestSketcherApp.CreateRectangleSketch(self.PadSketch, (-37.5, -37.5), (75, 75))
+        self.Doc.recompute()
+        self.Pad = self.Doc.addObject("PartDesign::Pad", "Pad")
+        self.Body.addObject(self.Pad)
+        self.Pad.Profile = self.PadSketch
+        self.Pad.Length = 10
+        self.Doc.recompute()
+
+        self.Sketch001 = self.Body.newObject("Sketcher::SketchObject", "Sketch001")
+        self.Sketch001.AttachmentSupport = (
+            self.Doc.getObject("Pad"),
+            [
+                "Face5",
+            ],
+        )
+        self.Sketch001.MapMode = "FlatFace"
+        self.Doc.recompute()
+        lastGeoId = len(self.Sketch001.Geometry)
+
+        self.geoList = []
+        self.geoList.append(
+            Part.LineSegment(
+                App.Vector(-33.953453, 7.680901, 0.000000),
+                App.Vector(-33.953453, 2.543239, 0.000000),
+            )
+        )
+        self.geoList.append(
+            Part.LineSegment(
+                App.Vector(-33.953453, 2.543239, 0.000000),
+                App.Vector(33.282925, 2.543239, 0.000000),
+            )
+        )
+        self.geoList.append(
+            Part.LineSegment(
+                App.Vector(33.282925, 2.543239, 0.000000),
+                App.Vector(33.282925, 7.680901, 0.000000),
+            )
+        )
+        self.geoList.append(
+            Part.LineSegment(
+                App.Vector(33.282925, 7.680901, 0.000000),
+                App.Vector(-33.953453, 7.680901, 0.000000),
+            )
+        )
+        self.Sketch001.addGeometry(self.geoList, False)
+        del self.geoList
+
+        self.constraintList = []
+        self.constraintList.append(Sketcher.Constraint("Coincident", 0, 2, 1, 1))
+        self.constraintList.append(Sketcher.Constraint("Coincident", 1, 2, 2, 1))
+        self.constraintList.append(Sketcher.Constraint("Coincident", 2, 2, 3, 1))
+        self.constraintList.append(Sketcher.Constraint("Coincident", 3, 2, 0, 1))
+        self.constraintList.append(Sketcher.Constraint("Vertical", 0))
+        self.constraintList.append(Sketcher.Constraint("Vertical", 2))
+        self.constraintList.append(Sketcher.Constraint("Horizontal", 1))
+        self.constraintList.append(Sketcher.Constraint("Horizontal", 3))
+        self.Sketch001.addConstraint(self.constraintList)
+        del self.constraintList
+
+        self.Doc.recompute()
+        self.Pad001 = self.Body.newObject("PartDesign::Pad", "Pad001")
+        self.Pad001.Profile = (
+            self.Doc.getObject("Sketch001"),
+            [
+                "",
+            ],
+        )
+        self.Pad001.Length = 10
+        self.Doc.recompute()
+        self.Pad001.ReferenceAxis = (self.Doc.getObject("Sketch001"), ["N_Axis"])
+        self.Doc.recompute()
+        self.Pad001.UseCustomVector = 0
+        self.Pad001.Direction = (0, -1, 0)
+        self.Pad001.ReferenceAxis = (self.Doc.getObject("Sketch001"), ["N_Axis"])
+        self.Pad001.AlongSketchNormal = 1
+        self.Pad001.Type = 2
+        self.Pad001.UpToFace = None
+        self.Pad001.Reversed = 0
+        self.Pad001.Midplane = 0
+        self.Pad001.Offset = 0
+        self.Doc.recompute()
+        self.Sketch002 = self.Body.newObject("Sketcher::SketchObject", "Sketch002")
+        self.Sketch002.AttachmentSupport = (
+            self.Doc.getObject("Pad001"),
+            [
+                "Face11",
+            ],
+        )
+        self.Sketch002.MapMode = "FlatFace"
+        self.Doc.recompute()
+        lastGeoId = len(self.Sketch002.Geometry)
+
+        self.geoList = []
+        self.geoList.append(
+            Part.LineSegment(
+                App.Vector(-30.826233, 35.070259, 0.000000),
+                App.Vector(-30.826233, 30.602728, 0.000000),
+            )
+        )
+        self.geoList.append(
+            Part.LineSegment(
+                App.Vector(-30.826233, 30.602728, 0.000000),
+                App.Vector(30.602348, 30.602728, 0.000000),
+            )
+        )
+        self.geoList.append(
+            Part.LineSegment(
+                App.Vector(30.602348, 30.602728, 0.000000),
+                App.Vector(30.602348, 35.070259, 0.000000),
+            )
+        )
+        self.geoList.append(
+            Part.LineSegment(
+                App.Vector(30.602348, 35.070259, 0.000000),
+                App.Vector(-30.826233, 35.070259, 0.000000),
+            )
+        )
+        self.Sketch002.addGeometry(self.geoList, False)
+        del self.geoList
+
+        self.constraintList = []
+        self.constraintList.append(Sketcher.Constraint("Coincident", 0, 2, 1, 1))
+        self.constraintList.append(Sketcher.Constraint("Coincident", 1, 2, 2, 1))
+        self.constraintList.append(Sketcher.Constraint("Coincident", 2, 2, 3, 1))
+        self.constraintList.append(Sketcher.Constraint("Coincident", 3, 2, 0, 1))
+        self.constraintList.append(Sketcher.Constraint("Vertical", 0))
+        self.constraintList.append(Sketcher.Constraint("Vertical", 2))
+        self.constraintList.append(Sketcher.Constraint("Horizontal", 1))
+        self.constraintList.append(Sketcher.Constraint("Horizontal", 3))
+        self.Sketch002.addConstraint(self.constraintList)
+        del self.constraintList
+
+        self.Doc.recompute()
+
+        self.Pad002 = self.Body.newObject("PartDesign::Pad", "Pad002")
+        self.Pad002.Profile = (
+            self.Doc.getObject("Sketch002"),
+            [
+                "",
+            ],
+        )
+        self.Pad002.Length = 10
+        self.Doc.recompute()
+        self.Pad002.ReferenceAxis = (self.Doc.getObject("Sketch002"), ["N_Axis"])
+
+        self.Doc.recompute()
+        self.Pad002.Length = 10.000000
+        self.Pad002.TaperAngle = 0.000000
+        self.Pad002.UseCustomVector = 0
+        self.Pad002.Direction = (0, 0, 1)
+        self.Pad002.ReferenceAxis = (self.Doc.getObject("Sketch002"), ["N_Axis"])
+        self.Pad002.AlongSketchNormal = 1
+        self.Pad002.Type = 0
+        self.Pad002.UpToFace = None
+        self.Pad002.Reversed = 0
+        self.Pad002.Midplane = 0
+        self.Pad002.Offset = 0
+        self.Doc.recompute()
+
+        self.Pad001.Type = "Length"
+        self.Pad001.Length = "4 mm"
+        self.Doc.recompute()
+        """Assumption: the warning <PropertyLinks> PropertyLinks.cpp(453):
+         PartDesignTestTNP1#Sketch002.AttachmentSupport missing element
+         reference PartDesignTestTNP1#Pad001 ;g815v1;SKT;:H976,V;:L#2;PSM;
+        :H976:9,E;:L#8;PSM;:H976:9,F;:H-977,F.Face11 is only temporary and can be ignored."""
+        self.assertTrue(self.Sketch002.Support[0][1][0] == "Face11")
+        self.assertGreaterEqual(self.Body.Shape.Volume, 20126)
+
     def tearDown(self):
         """ Close our test document """
         App.closeDocument("PartDesignTestTNP")
