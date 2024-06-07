@@ -1893,8 +1893,31 @@ class TestTopologicalNamingProblem(unittest.TestCase):
          PartDesignTestTNP1#Sketch002.AttachmentSupport missing element
          reference PartDesignTestTNP1#Pad001 ;g815v1;SKT;:H976,V;:L#2;PSM;
         :H976:9,E;:L#8;PSM;:H976:9,F;:H-977,F.Face11 is only temporary and can be ignored."""
+        self.assertTrue(self.PadSketch.isValid())
+        self.assertTrue(self.Pad.isValid())
+        self.assertTrue(self.Sketch001.isValid())
+        self.assertTrue(self.Pad001.isValid())
+        self.assertTrue(self.Sketch002.isValid())
+        self.assertTrue(self.Pad002.isValid())
         self.assertTrue(self.Sketch002.Support[0][1][0] == "Face11")
         self.assertGreaterEqual(self.Body.Shape.Volume, 20126)
+        """ Now Sketch001 should be extended past the outer boundary of Pad
+         which currently fails with error Sketch002: Invalid shape name ?Face11"""
+        self.Sketch001.addConstraint(Sketcher.Constraint('DistanceX',-1,1,1,2,33.282925))
+        self.Sketch001.setDatum(8,App.Units.Quantity('33.280000 mm'))
+        self.Sketch001.addConstraint(Sketcher.Constraint('DistanceY',-1,1,1,2,2.543239))
+        self.Sketch001.setDatum(9,App.Units.Quantity('2.540000 mm'))
+        self.Sketch001.addConstraint(Sketcher.Constraint('DistanceY',0,2,0,1,5.140901))
+        self.Sketch001.setDatum(10,App.Units.Quantity('5.140000 mm'))
+        self.Sketch001.addConstraint(Sketcher.Constraint('DistanceX',0,2,-1,1,33.953453))
+        self.Sketch001.setDatum(11,App.Units.Quantity('50.000000 mm'))
+        self.Doc.recompute()
+        self.assertTrue(self.PadSketch.isValid())
+        self.assertTrue(self.Pad.isValid())
+        self.assertTrue(self.Sketch001.isValid())
+        self.assertTrue(self.Pad001.isValid())
+        self.assertTrue(self.Sketch002.isValid())
+        self.assertTrue(self.Pad002.isValid())
 
     def tearDown(self):
         """ Close our test document """
