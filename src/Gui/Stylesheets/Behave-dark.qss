@@ -1083,7 +1083,7 @@ QSplitter::handle {
 }
 
 QSplitter::handle:horizontal {
-    background-image: url(qss:images_dark-light/splitter_vertical_dark.svg);
+    background-image: url(qss:images_dark-light/splitter_vertical_blue.svg);
     background-position: center center;
     background-repeat: none;
     margin: 4px 2px 4px 2px;
@@ -1091,7 +1091,7 @@ QSplitter::handle:horizontal {
 }
 
 QSplitter::handle:vertical {
-    background-image: url(qss:images_dark-light/splitter_horizontal_dark.svg);
+    background-image: url(qss:images_dark-light/splitter_horizontal_blue.svg);
     background-position: center center;
     background-repeat: none;
     margin: 2px 4px 2px 4px;
@@ -1106,13 +1106,13 @@ QMainWindow::separator {
 
 QMainWindow::separator:horizontal {
     height: 2px;
-    background-image: url(qss:images_dark-light/splitter_horizontal_dark.svg);
+    background-image: url(qss:images_dark-light/splitter_horizontal_blue.svg);
     margin: 4px 2px 4px 2px;
 }
 
 QMainWindow::separator:vertical {
     width: 2px;
-    background-image: url(qss:images_dark-light/splitter_vertical_dark.svg);
+    background-image: url(qss:images_dark-light/splitter_vertical_blue.svg);
     margin: 2px 4px 2px 4px;
 }
 
@@ -2426,6 +2426,31 @@ Gui--StatefulLabel[state="fully_constrained"] {
 Gui--UrlLabel {
     color : rgba(100, 149, 237, 255); /* Cornflower blue */
     text-decoration : underline;
+}
+
+Gui--OverlaySplitterHandle Gui--OverlayToolButton,
+Gui--OverlayToolButton[objectName="OBTN Float"] {
+  image: url(qss:overlay/icons/float_blue.svg);
+}
+
+Gui--OverlaySplitterHandle Gui--OverlayToolButton:hover,
+Gui--OverlayToolButton[objectName="OBTN Float"]:hover {
+  image: url(qss:overlay/icons/float_lighter.svg);
+}
+
+Gui--OverlaySplitterHandle Gui--OverlayToolButton,
+Gui--OverlayToolButton[objectName="OBTN Overlay"] {
+  image: url(qss:overlay/icons/overlay_blue.svg);
+}
+Gui--OverlayToolButton[objectName="OBTN Overlay"]:hover {
+  image: url(qss:overlay/icons/overlay_lighter.svg);
+}
+Gui--OverlaySplitterHandle Gui--OverlayToolButton,
+Gui--OverlayToolButton[objectName="OBTN Close"] {
+  image: url(qss:overlay/icons/close_blue.svg);
+}
+Gui--OverlayToolButton[objectName="OBTN Close"]:hover {
+  image: url(qss:overlay/icons/close_lighter.svg);
 }
 
 /*==================================================================================================
