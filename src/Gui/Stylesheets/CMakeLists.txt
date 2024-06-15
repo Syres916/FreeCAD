@@ -13,7 +13,7 @@ SET(Overlay_Stylesheets_Files
     "overlay/DarkBehave_overlay.qss"
 )
 
-# Find all the image files
+# Find all the image files including the 5 new ones
 FILE(GLOB Images_Files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/images_dark-light/*.svg")
 
