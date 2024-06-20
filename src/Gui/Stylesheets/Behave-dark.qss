@@ -2476,3 +2476,11 @@ QTreeView::branch#groupsTreeView:closed:has-children:has-siblings  {
   QTreeView::branch#groupsTreeView:has-siblings:!adjoins-item  {
     border-image: none 0;
   }
+
+/*==================================================================================================
+Special tweak for TechDraw ProjGroup task panel to keep acceptable width
+==================================================================================================*/
+
+QWidget[objectName="TechDrawGui__TaskProjGroup"] QPushButton, QWidget[objectName="TechDrawGui__TaskProjGroup"] QWidget#wbList QPushButton, QWidget#wbList QWidget[objectName="TechDrawGui__TaskProjGroup"] QPushButton, QWidget[objectName="TechDrawGui__TaskProjGroup"] QSint--ActionGroup QFrame[class="content"] QToolButton, QSint--ActionGroup QFrame[class="content"] QWidget[objectName="TechDrawGui__TaskProjGroup"] QToolButton, QWidget[objectName="TechDrawGui__TaskProjGroup"] QWidget#wbList QSint--ActionGroup QFrame[class="content"] QToolButton, QWidget#wbList QSint--ActionGroup QFrame[class="content"] QWidget[objectName="TechDrawGui__TaskProjGroup"] QToolButton, QWidget[objectName="TechDrawGui__TaskProjGroup"] QSint--ActionGroup QFrame[class="content"] QWidget#wbList QToolButton, QSint--ActionGroup QFrame[class="content"] QWidget#wbList QWidget[objectName="TechDrawGui__TaskProjGroup"] QToolButton {
+    min-width: 24px;
+}
