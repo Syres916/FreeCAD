@@ -34,6 +34,7 @@
 #include <gsl/pointers>
 #include <App/Application.h>
 #include <Gui/Application.h>
+#include <Gui/Command.h>
 #include <Gui/PreferencePackManager.h>
 
 using namespace StartGui;
@@ -105,6 +106,21 @@ void ThemeSelectorWidget::setupUi()
     outerLayout->addLayout(buttonLayout);
     setupButtons(buttonLayout);
     retranslateUi();
+    connect(_descriptionLabel, &QLabel::linkActivated, this, &ThemeSelectorWidget::onLinkActivated);
+}
+
+void ThemeSelectorWidget::onLinkActivated(const QString& link)
+{
+    const auto prefix = QStringLiteral("freecad:");
+
+    if (!link.startsWith(prefix)) {
+        return;
+    }
+    auto pref = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Addons");
+    pref->SetInt("PackageTypeSelection", 3);
+    pref->SetInt("StatusSelection", 0);
+    Gui::CommandManager& rMgr = Gui::Application::Instance->commandManager();
+    rMgr.runCommandByName("Std_AddonMgr");
 }
 
 void ThemeSelectorWidget::themeChanged(Theme newTheme)
@@ -135,7 +151,7 @@ bool ThemeSelectorWidget::eventFilter(QObject* object, QEvent* event)
 void ThemeSelectorWidget::retranslateUi()
 {
     _titleLabel->setText(QLatin1String("<h2>") + tr("Theme") + QLatin1String("</h2>"));
-    _descriptionLabel->setText(tr("More themes are available online using the Addon Manager"));
+    _descriptionLabel->setText(tr("More themes are available online using the ") +  QLatin1String("<a href='freecad:Std_AddonMgr'>Addon Manager</a>"));
     _buttons[static_cast<int>(Theme::Dark)]->setText(tr("Dark theme", "Visual theme name"));
     _buttons[static_cast<int>(Theme::Light)]->setText(tr("Light theme", "Visual theme name"));
     _buttons[static_cast<int>(Theme::Classic)]->setText(tr("Classic", "Visual theme name"));
