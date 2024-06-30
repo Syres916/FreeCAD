@@ -109,7 +109,7 @@ void ThemeSelectorWidget::setupUi()
     connect(_descriptionLabel, &QLabel::linkActivated, this, &ThemeSelectorWidget::onLinkActivated);
 }
 
-void ThemeSelectorWidget::onLinkActivated(const QString& link)
+static void ThemeSelectorWidget::onLinkActivated(const QString& link)
 {
     const auto prefix = QStringLiteral("freecad:");
 
