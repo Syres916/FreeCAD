@@ -109,18 +109,21 @@ void ThemeSelectorWidget::setupUi()
     connect(_descriptionLabel, &QLabel::linkActivated, this, &ThemeSelectorWidget::onLinkActivated);
 }
 
-static void ThemeSelectorWidget::onLinkActivated(const QString& link)
+void ThemeSelectorWidget::onLinkActivated(const QString& link)
 {
-    const auto prefix = QStringLiteral("freecad:");
+    auto const addonManagerLink = QStringLiteral("freecad:Std_AddonMgr");
 
-    if (!link.startsWith(prefix)) {
+    if (link != addonManagerLink) {
         return;
     }
+
+    // Set the user preferences to include only preference packs.
+    // This is a quick and dirty way to open Addon Manager with only themes.
     auto pref = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Addons");
-    pref->SetInt("PackageTypeSelection", 3);
-    pref->SetInt("StatusSelection", 0);
-    Gui::CommandManager& rMgr = Gui::Application::Instance->commandManager();
-    rMgr.runCommandByName("Std_AddonMgr");
+    pref->SetInt("PackageTypeSelection", 3); // 3 stands for Preference Packs
+    pref->SetInt("StatusSelection", 0);      // 0 stands for any installation status
+
+    Gui::Application::Instance->commandManager().runCommandByName("Std_AddonMgr");
 }
 
 void ThemeSelectorWidget::themeChanged(Theme newTheme)
