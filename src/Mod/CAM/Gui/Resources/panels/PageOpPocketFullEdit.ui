@@ -277,7 +277,7 @@ The latter can be used to face of the entire stock area to ensure uniform height
       <widget class="QCheckBox" name="useFinishingOffset">
        <property name="toolTip">
         <string>Finishing Pass only for Offset Pattern</string>
-       </property>      
+       </property>
        <property name="text">
         <string>Finishing Pass Only</string>
        </property>
@@ -289,7 +289,7 @@ The latter can be used to face of the entire stock area to ensure uniform height
     <widget class="QCheckBox" name="NoPathReverse">
        <property name="toolTip">
         <string>Prevents Path Reverse on each Step Down if Start Point is used</string>
-       </property>    
+       </property>
      <property name="text">
       <string>No Path Reverse</string>
      </property>
