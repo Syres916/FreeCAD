@@ -161,7 +161,7 @@
      <item row="2" column="0">
       <widget class="QCheckBox" name="multiProfile">
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Multipe Profile Op with Step Over&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Multiple Profile Op with Step Over&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Multi Profile Op</string>
