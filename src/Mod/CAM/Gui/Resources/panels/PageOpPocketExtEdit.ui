@@ -75,7 +75,7 @@
          <item row="3" column="0">
           <widget class="QCheckBox" name="independentExtensions">
            <property name="toolTip">
-            <string>Extend Edges Indepedently.</string>
+            <string>Extend Edges Independently.</string>
            </property>
            <property name="text">
             <string>Extend Edges Ind</string>
