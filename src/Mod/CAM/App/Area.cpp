@@ -2290,9 +2290,9 @@ TopoDS_Shape Area::makePocket(int index, PARAM_ARGS(PARAM_FARG, AREA_PARAMS_POCK
             return makeOffset(index, PARAM_FIELDS(PARAM_FNAME, AREA_PARAMS_OFFSET), -1, from_center);
         }
         else {
-            pm = SingleOffsetPocketMode;         
+            pm = SingleOffsetPocketMode;
             break;
-        }    
+        }
     }case Area::PocketModeZigZagOffset:
         pm = ZigZagThenSingleOffsetPocketMode;
         break;
