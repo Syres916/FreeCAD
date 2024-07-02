@@ -137,7 +137,7 @@ class ObjectDressup:
             QT_TRANSLATE_NOOP(
                 "App::Property", "Reverse direction of LeadInOut"
             ),
-        )         
+        )
         obj.Proxy = self
 
         self.wire = None
@@ -201,8 +201,8 @@ class ObjectDressup:
 
         if side == "Outside":
             return "left" if direction == "Climb" else "right"
-        else:
-            return "right" if direction == "Climb" else "left"
+        # else:
+        #    return "right" if direction == "Climb" else "left"
 
     def getArcDirection(self, obj):
         direction = self.getDirectionOfPath(obj)
@@ -374,16 +374,16 @@ class ObjectDressup:
         # we just use a flag and set it to false afterwards. To find the last
         # cutting move we need to search the list in reverse order.
         first = True
-        Sur = "(Surface)"        
+        Sur = "(Surface)"
         lastCuttingMoveIndex = self.findLastCuttingMoveIndex(obj, source)
 
-        if Sur in source[0].cmd.title(): 
+        if Sur in source[0].cmd.title():
             LeadS = "--Start"
-            LeadE = "Break"               
-            for i, instr in enumerate(source):                              
+            LeadE = "Break"
+            for i, instr in enumerate(source):
                 if LeadE in source[i-2].cmd.title() and obj.KeepToolDown:
                     pass
-                else:    
+                else:
                     if LeadS in source[i-3].cmd.title():
                         # add lead start and travel moves
                         maneuver.addInstructions(self.getLeadStart(obj, instr, first))
@@ -401,7 +401,7 @@ class ObjectDressup:
                         maneuver.addInstruction(instr)  
                          
         else:
-             for i, instr in enumerate(source):
+            for i, instr in enumerate(source):
                  
                 if not self.isCuttingMove(obj, instr):
                     # non-move instructions get added verbatim
@@ -506,7 +506,8 @@ class CommandPathDressupLeadInOut:
             "MenuText": QT_TRANSLATE_NOOP("CAM_DressupLeadInOut", "LeadInOut"),
             "ToolTip": QT_TRANSLATE_NOOP(
                 "CAM_DressupLeadInOut",
-                "Creates a Cutter Radius Compensation G41/G42 Entry Dressup object from a selected path",
+                "Creates a Cutter Radius Compensation G41/G42 Entry Dressup object"
+                " from a selected path",
             ),
         }
 
