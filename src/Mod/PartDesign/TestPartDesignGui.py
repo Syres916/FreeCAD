@@ -216,6 +216,11 @@ class PartDesignGuiTestCases(unittest.TestCase):
             return
         Gui.Selection.addSelection(self.Doc.Name, body.Name, "SketchPad.Edge1")
         self.assertEqual(len(Gui.Selection.getSelectionEx()[0].SubObjects), 1)
+        if len(Gui.Selection.getSelectionEx()[0].SubObjects) == 1:
+            self.assertEqual(
+                App.Gui.Selection.getSelectionEx("", 0)[0].SubElementNames[0][-8:],
+                "KT.Edge1",
+            )
 
     def tearDown(self):
         FreeCAD.closeDocument("SketchGuiTest")
