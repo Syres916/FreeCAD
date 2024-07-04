@@ -26,6 +26,7 @@ import os
 import sys
 import unittest
 import Sketcher
+import TestSketcherApp
 import Part
 import PartDesign
 import PartDesignGui
@@ -202,6 +203,19 @@ class PartDesignGuiTestCases(unittest.TestCase):
         self.assertTrue(self.Sketch.AttachmentSupport[0][0] in self.BodyTarget.Origin.OriginFeatures)
         self.assertEqual(len(self.BodySource.Group), 0, "Source body feature count is wrong")
         self.assertEqual(len(self.BodyTarget.Group), 2, "Target body feature count is wrong")
+
+    def testGetSubObjects(self):
+        # Arrange
+        body = self.Doc.addObject("PartDesign::Body", "Body")
+        padSketch = self.Doc.addObject("Sketcher::SketchObject", "SketchPad")
+        body.addObject(padSketch)
+        TestSketcherApp.CreateRectangleSketch(padSketch, (0, 0), (1, 1))
+        # Act
+        self.Doc.recompute()
+        if padSketch.Shape.ElementMapVersion == "":  # Should be '4' as of Mar 2023.
+            return
+        Gui.Selection.addSelection(self.Doc.Name, body.Name, "SketchPad.Edge1")
+        self.assertEqual(len(Gui.Selection.getSelectionEx()[0].SubObjects), 1)
 
     def tearDown(self):
         FreeCAD.closeDocument("SketchGuiTest")
