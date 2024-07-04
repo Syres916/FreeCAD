@@ -20,7 +20,14 @@
 #   USA                                                                   *
 # **************************************************************************
 
-# import FreeCAD, FreeCADGui, os, sys, unittest, Sketcher, SketcherGui
+import FreeCAD
+import FreeCADGui
+import unittest
+import Sketcher
+import TestSketcherApp
+
+App = FreeCAD
+Gui = FreeCADGui
 
 
 # ---------------------------------------------------------------------------
@@ -28,17 +35,25 @@
 # ---------------------------------------------------------------------------
 
 
-# class SketcherGuiTestCases(unittest.TestCase):
-#   def setUp(self):
-#       self.Doc = FreeCAD.newDocument("SketchGuiTest")
-#
-#   def testBoxCase(self):
-#       self.Box = self.Doc.addObject('Sketcher::SketchObject','SketchBox')
-#       self.Box.addGeometry(Part.LineSegment(App.Vector(-99.230339,36.960674,0),App.Vector(69.432587,36.960674,0)))
-#       self.Box.addGeometry(Part.LineSegment(App.Vector(69.432587,36.960674,0),App.Vector(69.432587,-53.196629,0)))
-#       self.Box.addGeometry(Part.LineSegment(App.Vector(69.432587,-53.196629,0),App.Vector(-99.230339,-53.196629,0)))
-#       self.Box.addGeometry(Part.LineSegment(App.Vector(-99.230339,-53.196629,0),App.Vector(-99.230339,36.960674,0)))
-#
-#   def tearDown(self):
-#       #closing doc
-#       FreeCAD.closeDocument("SketchGuiTest")
+class SketcherGuiTestCases(unittest.TestCase):
+    def setUp(self):
+        self.Doc = FreeCAD.newDocument("SketcherGuiTest")
+
+    def testSketchGetSubObjects(self):
+        # Arrange
+        Sketch = self.Doc.addObject("Sketcher::SketchObject", "Sketch")
+        TestSketcherApp.CreateRectangleSketch(Sketch, (0, 0), (1, 1))
+        # Act
+        self.Doc.recompute()
+        if Sketch.Shape.ElementMapVersion == "":  # Should be '4' as of Mar 2023.
+            return
+        Gui.Selection.addSelection(self.Doc.Name, "Sketch", "Edge1")
+        self.assertEqual(len(Gui.Selection.getSelectionEx()[0].SubObjects), 1)
+        if len(Gui.Selection.getSelectionEx()[0].SubObjects) == 1:
+            self.assertEqual(
+                App.Gui.Selection.getSelectionEx("", 0)[0].SubElementNames[0][-8:],
+                "KT.Edge1",
+            )
+
+    def tearDown(self):
+        FreeCAD.closeDocument("SketcherGuiTest")
