@@ -53,7 +53,7 @@ from Tests.TestPathPost import TestResolvingPostProcessorName
 from Tests.TestPathPost import TestFileNameGenerator
 
 from Tests.TestPathPreferences import TestPathPreferences
-from Tests.TestPathProfile import TestPathProfile
+from Tests.TestPathDrillTopo import TestPathDrillTopo
 from Tests.TestPathPropertyBag import TestPathPropertyBag
 from Tests.TestPathRotationGenerator import TestPathRotationGenerator
 from Tests.TestPathSetupSheet import TestPathSetupSheet
