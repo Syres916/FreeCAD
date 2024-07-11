@@ -452,7 +452,8 @@ void DlgSettingsGeneral::loadThemes()
     }
 
     if (currentTheme.isEmpty()) {
-        if (!currentStyleSheet.isEmpty()) {  // a user upgrading from 0.21 or earlier
+        if (!currentStyleSheet.isEmpty()
+            && !similarTheme.isEmpty()) {  // a user upgrading from 0.21 or earlier
             hGrp->SetASCII("Theme", similarTheme.toStdString());
             currentTheme = QString::fromLatin1(hGrp->GetASCII("Theme", "").c_str());
         }
