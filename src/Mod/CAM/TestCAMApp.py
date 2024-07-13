@@ -96,6 +96,8 @@ False if TestPathAdaptive.__name__ else True
 False if TestPathCore.__name__ else True
 False if TestPathOpDeburr.__name__ else True
 False if TestPathDrillable.__name__ else True
+False if TestPathDrillTopo.__name__ else True
+False if TestPathProfileTopo.__name__ else True
 False if TestPathGeom.__name__ else True
 False if TestPathHelpers.__name__ else True
 # False if TestPathHelix.__name__ else True
