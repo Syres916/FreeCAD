@@ -54,6 +54,7 @@ from Tests.TestPathPost import TestFileNameGenerator
 
 from Tests.TestPathPreferences import TestPathPreferences
 from Tests.TestPathDrillTopo import TestPathDrillTopo
+from Tests.TestPathProfileTopo import TestPathProfileTopo
 from Tests.TestPathPropertyBag import TestPathPropertyBag
 from Tests.TestPathRotationGenerator import TestPathRotationGenerator
 from Tests.TestPathSetupSheet import TestPathSetupSheet
