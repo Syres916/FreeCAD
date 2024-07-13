@@ -313,6 +313,7 @@ SET(Tests_SRCS
     Tests/TestPathDrillGenerator.py
     Tests/TestPathDrillable.py
     Tests/TestPathDrillTopo.py
+    Tests/TestPathProfileTopo.py
     Tests/TestPathGeneratorDogboneII.py
     Tests/TestPathGeom.py
     Tests/TestPathHelix.py
