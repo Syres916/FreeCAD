@@ -145,9 +145,9 @@ void FileCardDelegate::paint(QPainter* painter,
                                                    " border-radius: 4px;"
                                                    " padding: 8px;"
                                                    "}")
-                                    .arg(color.red())
-                                    .arg(color.green())
-                                    .arg(color.blue()));
+                                   .arg(color.red())
+                                   .arg(color.green())
+                                   .arg(color.blue()));
     }
 
     auto elided =
