@@ -115,41 +115,39 @@ void FileCardDelegate::paint(QPainter* painter,
     _widget->setProperty("state", QStringLiteral(""));
     if (option.state & QStyle::State_Selected) {
         _widget->setProperty("state", QStringLiteral("pressed"));
-        if (qApp->styleSheet().isEmpty()) {
-            QColor color = getSelectionColor();
-            _widget->setStyleSheet(QString::fromLatin1("QWidget#thumbnailWidget {"
-                                                       " border: 2px solid rgb(%1, %2, %3);"
-                                                       " border-radius: 4px;"
-                                                       " padding: 2px;"
-                                                       "}")
-                                       .arg(color.red())
-                                       .arg(color.green())
-                                       .arg(color.blue()));
-        }
+        QColor color = getSelectionColor();
+        _widget->setStyleSheet(QString::fromLatin1("QWidget#thumbnailWidget {"
+                                                   " border: 2px solid rgb(%1, %2, %3);"
+                                                   " border-radius: 4px;"
+                                                   " padding: 8px;"
+                                                   "}")
+                                    .arg(color.red())
+                                    .arg(color.green())
+                                    .arg(color.blue()));
     }
     else if (option.state & QStyle::State_MouseOver) {
         _widget->setProperty("state", QStringLiteral("hovered"));
-        if (qApp->styleSheet().isEmpty()) {
-            QColor color = getBorderColor();
-            _widget->setStyleSheet(QString::fromLatin1("QWidget#thumbnailWidget {"
-                                                       " border: 2px solid rgb(%1, %2, %3);"
-                                                       " border-radius: 4px;"
-                                                       " padding: 2px;"
-                                                       "}")
-                                       .arg(color.red())
-                                       .arg(color.green())
-                                       .arg(color.blue()));
-        }
+        QColor color = getBorderColor();
+        _widget->setStyleSheet(QString::fromLatin1("QWidget#thumbnailWidget {"
+                                                   " border: 2px solid rgb(%1, %2, %3);"
+                                                   " border-radius: 4px;"
+                                                   " padding: 8px;"
+                                                   "}")
+                                    .arg(color.red())
+                                    .arg(color.green())
+                                    .arg(color.blue()));
     }
-    else if (qApp->styleSheet().isEmpty()) {
+    else {
         QColor color = getBackgroundColor();
         _widget->setStyleSheet(QString::fromLatin1("QWidget#thumbnailWidget {"
                                                    " background-color: rgb(%1, %2, %3);"
-                                                   " border-radius: 8px;"
+                                                   " border: 2px solid transparent;"
+                                                   " border-radius: 4px;"
+                                                   " padding: 8px;"
                                                    "}")
-                                   .arg(color.red())
-                                   .arg(color.green())
-                                   .arg(color.blue()));
+                                    .arg(color.red())
+                                    .arg(color.green())
+                                    .arg(color.blue()));
     }
 
     auto elided =
@@ -176,14 +174,14 @@ QSize FileCardDelegate::sizeHint(const QStyleOptionViewItem& option, const QMode
     Q_UNUSED(index)
     auto thumbnailSize = _parameterGroup->GetInt("FileThumbnailIconsSize", 128);  // NOLINT
     auto cardMargin = _widget->layout()->contentsMargins();
-    auto cardWidth = thumbnailSize + cardMargin.left() + cardMargin.right();
+    auto cardWidth = thumbnailSize + cardMargin.left() + cardMargin.right() + 10;
     auto spacing = _widget->layout()->spacing();
 
     auto font = QGuiApplication::font();
     auto qfm = QFontMetrics(font);
     auto textHeight = 2 * qfm.lineSpacing();
     auto cardHeight =
-        thumbnailSize + textHeight + 2 * spacing + cardMargin.top() + cardMargin.bottom();
+        thumbnailSize + textHeight + 2 * spacing + cardMargin.top() + cardMargin.bottom() + 8;
 
     return {static_cast<int>(cardWidth), static_cast<int>(cardHeight)};
 }
