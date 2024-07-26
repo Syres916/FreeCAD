@@ -181,6 +181,8 @@ public:
     void syncAutoMode();
     // Establish if stylesheet is dark
     static bool isStyleSheetDark(std::string curStyleSheet);
+    // Rotate the AutoHide icon according to the dock area
+    static QPixmap rotateAutoHideIcon(QPixmap pxAutoHide, Qt::DockWidgetArea dockArea);
 
     /** Set tab widget position offset
      * @param ofs: the offset size. Width is the x offset for top and bottom
