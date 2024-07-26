@@ -179,6 +179,8 @@ public:
     void onAction(QAction *);
     /// Sync relevant actions status with the current auto mode
     void syncAutoMode();
+    // Establish if stylesheet is dark
+    static bool isStyleSheetDark(std::string curStyleSheet);
 
     /** Set tab widget position offset
      * @param ofs: the offset size. Width is the x offset for top and bottom
