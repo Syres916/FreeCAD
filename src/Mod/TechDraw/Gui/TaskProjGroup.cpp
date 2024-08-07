@@ -324,6 +324,7 @@ void TaskProjGroup::turnViewToProjGroup()
     viewPart->LockPosition.setValue(true);
     viewPart->LockPosition.setStatus(App::Property::ReadOnly, true); //Front should stay locked.
     viewPart->LockPosition.purgeTouched();
+    viewPart->recomputeFeature();
 
     multiView->requestPaint();//make sure the group object is on the Gui page
     view = multiView;
