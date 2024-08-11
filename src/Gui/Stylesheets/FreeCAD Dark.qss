@@ -2292,7 +2292,6 @@ QColumnView::indicator:indeterminate:pressed {
   border: 1px solid #ffffff; */
 }
 
-QTreeView,
 QListView,
 QTableView,
 QColumnView {
@@ -2301,6 +2300,14 @@ QColumnView {
   gridline-color: #020202;
   border-radius: 0px;
   selection-background-color: @ThemeAccentColor1;
+}
+
+QTreeView {
+  background-color: #f0f0f0;  /* background of a lot of stuff including spreadsheets.*/
+  color: black;
+  gridline-color: #ababab;
+  border-radius: 0px;
+  selection-background-color: transparent;
 }
 
 QTableView,
