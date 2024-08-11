@@ -2304,7 +2304,7 @@ QTreeView {
   color: black;
   gridline-color: #ababab;
   border-radius: 0px;
-  selection-background-color: #ffffff;
+  selection-background-color: transparent;
 }
 
 QTableView,
