@@ -71,6 +71,26 @@ void ShapeMapper::populate(MappingStatus status,
         expand(it.Value(), dstShapes);
     }
     insert(status, src.getShape(), dstShapes);
+    if (shapeSet.insert(src.getShape()).second) {
+        shapes.push_back(src);
+    }
+}
+
+void ShapeMapper::populate(MappingStatus status,
+                           const TopoShape& src,
+                           const std::vector<TopoShape>& dst)
+{
+    if (src.isNull()) {
+        return;
+    }
+    std::vector<TopoDS_Shape> dstShapes;
+    for (auto& d : dst) {
+        expand(d.getShape(), dstShapes);
+    }
+    insert(status, src.getShape(), dstShapes);
+    if (shapeSet.insert(src.getShape()).second) {
+        shapes.push_back(src);
+    }
 }
 
 void ShapeMapper::insert(MappingStatus status, const TopoDS_Shape& s, const TopoDS_Shape& d)
