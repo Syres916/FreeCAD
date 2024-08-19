@@ -169,17 +169,7 @@ struct PartExport ShapeMapper: TopoShape::Mapper
      * The source will be expanded into sub shapes of faces, edges and vertices
      * before being inserted into the map.
      */
-    void populate(MappingStatus status, const TopoShape& src, const std::vector<TopoShape>& dst)
-    {
-        if (src.isNull()) {
-            return;
-        }
-        std::vector<TopoDS_Shape> dstShapes;
-        for (auto& d : dst) {
-            expand(d.getShape(), dstShapes);
-        }
-        insert(status, src.getShape(), dstShapes);
-    }
+    void populate(MappingStatus status, const TopoShape& src, const std::vector<TopoShape>& dst);
 
     /** Expand a shape into faces, edges and vertices
      * @params d: shape to expand
