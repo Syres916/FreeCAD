@@ -1555,8 +1555,11 @@ bool GeometryUtils::isCircle(TopoDS_Edge occEdge)
     return GeometryUtils::getCircleParms(occEdge, radius, center, isArc);
 }
 
-//tries to interpret a BSpline edge as a circle. Used by DVDim for approximate dimensions.
-bool GeometryUtils::getCircleParms(TopoDS_Edge occEdge, double& radius, Base::Vector3d& center, bool& isArc)
+// tries to interpret a BSpline edge as a circle. Used by DVDim for approximate dimensions.
+bool GeometryUtils::getCircleParms(TopoDS_Edge occEdge,
+                                   double& radius,
+                                   Base::Vector3d& center,
+                                   bool& isArc)
 {
     double curveLimit = EWTOLERANCE;
     BRepAdaptor_Curve c(occEdge);
@@ -1566,7 +1569,7 @@ bool GeometryUtils::getCircleParms(TopoDS_Edge occEdge, double& radius, Base::Ve
     l = c.LastParameter();
     double parmRange = fabs(l - f);
     int testCount = 6;
-    double parmStep = parmRange/testCount;
+    double parmStep = parmRange / testCount;
     std::vector<double> curvatures;
     std::vector<gp_Pnt> centers;
     gp_Pnt curveCenter;
@@ -1598,20 +1601,32 @@ bool GeometryUtils::getCircleParms(TopoDS_Edge occEdge, double& radius, Base::Ve
     catch (Standard_Failure&) {
         return false;
     }
-    Base::Vector3d avgCenter = sumCenter/testCount;
+    Base::Vector3d avgCenter = sumCenter / testCount;
 
-    double avgCurve = sumCurvature/testCount;
-    double errorCurve  = 0;
-    for (auto& cv: curvatures) {
-        errorCurve += avgCurve - cv;
+    GeomLProp_CLProps propSpline(spline, f, 3, Precision::Confusion());
+    gp_Dir gdir;
+    propSpline.Normal(gdir);
+    bool isSplineOnStdPlane = DrawUtil::isStdPlane(Base::Vector3d(gdir.X(), gdir.Y(), gdir.Z()));
+
+    double avgCurve = sumCurvature / testCount;
+    double errorCurve = 0;
+    if (isSplineOnStdPlane) {
+        for (auto& cv : curvatures) {
+            errorCurve += avgCurve - cv;
+        }
     }
-    errorCurve  = errorCurve/testCount;
+    else {
+        for (auto& cv : curvatures) {
+            errorCurve += fabs(avgCurve - cv);
+        }
+    }
+    errorCurve = errorCurve / testCount;
 
     isArc = !c.IsClosed();
     bool isCircle(false);
-    if ( errorCurve < curveLimit ) {
+    if (errorCurve < curveLimit) {
         isCircle = true;
-        radius = 1.0/avgCurve;
+        radius = 1.0 / avgCurve;
         center = avgCenter;
     }
     return isCircle;
