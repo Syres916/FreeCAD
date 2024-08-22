@@ -57,11 +57,10 @@ DlgSettings3DViewPart::DlgSettings3DViewPart(QWidget* parent)
             &DlgSettings3DViewPart::onMaxAngularDeflectionValueChanged);
     ParameterGrp::handle hPart = App::GetApplication().GetParameterGroupByPath(
         "User parameter:BaseApp/Preferences/Mod/Part");
-    double minDeviationlowerLimit;
-    minDeviationlowerLimit = hPart->GetFloat("MinimumDeviation", ui->maxDeviation->minimum());
+    const double minDeviationlowerLimit = hPart->GetFloat(
+        "MinimumDeviation", ui->maxDeviation->minimum());
     ui->maxDeviation->setMinimum(minDeviationlowerLimit);
-    double minAngleDeflectionlowerLimit;
-    minAngleDeflectionlowerLimit = hPart->GetFloat(
+    const double minAngleDeflectionlowerLimit = hPart->GetFloat(
         "MinimumDeviation", ui->maxAngularDeflection->minimum());
     ui->maxAngularDeflection->setMinimum(minAngleDeflectionlowerLimit);
 }
@@ -76,7 +75,7 @@ void DlgSettings3DViewPart::onMaxDeviationValueChanged(double vMaxDev)
     if (!this->isVisible()) {
         return;
     }
-    double maxDevMinThreshold = 0.01;
+    const double maxDevMinThreshold = 0.01;
     if (vMaxDev < maxDevMinThreshold && !checkValue) {
         checkValue = true;
         QMessageBox::warning(
@@ -92,7 +91,7 @@ void DlgSettings3DViewPart::onMaxAngularDeflectionValueChanged(double vMaxAngle)
     if (!this->isVisible()) {
         return;
     }
-    double vMaxAngleMinThreshold = 2.0;
+    const double vMaxAngleMinThreshold = 2.0;
     if (vMaxAngle < vMaxAngleMinThreshold && !checkValue) {
         checkValue = true;
         QMessageBox::warning(
