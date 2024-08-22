@@ -856,6 +856,23 @@ double DrawUtil::getWidthInDirection(gp_Dir direction, TopoDS_Shape& shape)
     return 0.0;
 }
 
+bool DrawUtil::isStdPlane(const Base::Vector3d propDir)
+{
+    Base::Vector3d stdX(1.0, 0.0, 0.0);
+    Base::Vector3d stdY(0.0, 1.0, 0.0);
+    Base::Vector3d stdZ(0.0, 0.0, 1.0);
+    Base::Vector3d stdXr(-1.0, 0.0, 0.0);
+    Base::Vector3d stdYr(0.0, -1.0, 0.0);
+    Base::Vector3d stdZr(0.0, 0.0, -1.0);
+
+    if (propDir.IsEqual(stdX, EWTOLERANCE) || propDir.IsEqual(stdXr, EWTOLERANCE)
+        || propDir.IsEqual(stdY, EWTOLERANCE) || propDir.IsEqual(stdYr, EWTOLERANCE)
+        || propDir.IsEqual(stdZ, EWTOLERANCE) || propDir.IsEqual(stdZr, EWTOLERANCE)) {
+        return true;
+    }
+    return false;
+}
+
 //! mask off one component of the input vector. input vector (a, b, c) with
 //! direction to mask (0, 1, 0) would return (a, 0.0, c).  The mask is a
 //! cardinal direction or the reverse of a cardinal direction.
