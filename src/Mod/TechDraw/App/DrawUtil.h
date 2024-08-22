@@ -155,6 +155,7 @@ public:
     static Base::Vector3d closestBasisOriented(Base::Vector3d v);
 
     static double getWidthInDirection(gp_Dir direction, TopoDS_Shape& shape);
+    static bool isStdPlane(const Base::Vector3d propDir);
     static gp_Vec maskDirection(gp_Vec inVec, gp_Dir directionToMask);
     static Base::Vector3d maskDirection(Base::Vector3d inVec, Base::Vector3d directionToMask);
     static double coordinateForDirection(Base::Vector3d inPoint,  Base::Vector3d cardinal);
