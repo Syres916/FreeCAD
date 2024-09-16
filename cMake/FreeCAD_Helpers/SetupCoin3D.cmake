@@ -6,8 +6,20 @@ macro(SetupCoin3D)
         find_library(COIN3D_LIBRARIES Coin)
     endif ()
 
-    # Try MODULE mode
-    find_package(Coin3D)
+    # Custom Coin3D install
+    if (Coin_DIR)
+        find_package(Coin CONFIG QUIET)
+        if (Coin_FOUND)
+            set(COIN3D_INCLUDE_DIRS ${Coin_INCLUDE_DIR})
+            set(COIN3D_LIBRARIES ${Coin_LIBRARIES})
+        endif ()
+    endif ()
+
+    if (NOT COIN3D_FOUND)
+        # Try MODULE mode
+        find_package(Coin3D)
+    ENDIF ()
+
     if (NOT COIN3D_FOUND)
         # Try CONFIG mode
         find_package(Coin CONFIG REQUIRED)
