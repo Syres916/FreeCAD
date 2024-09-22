@@ -41,6 +41,7 @@
 #include <Mod/TechDraw/App/Geometry.h>
 #include <Mod/TechDraw/App/DrawLeaderLine.h>
 #include <Mod/TechDraw/App/DrawPage.h>
+#include <Mod/TechDraw/App/DrawProjGroupItem.h>
 #include <Mod/TechDraw/App/DrawView.h>
 #include <Mod/TechDraw/App/DrawViewAnnotation.h>
 #include <Mod/TechDraw/App/DrawViewPart.h>
@@ -138,8 +139,21 @@ void CmdTechDrawLeaderLine::activated(int iMsg)
 bool CmdTechDrawLeaderLine::isActive()
 {
     bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, false);
-    return (havePage && haveView);
+    bool haveView = DrawGuiUtil::needView(this);
+    if (havePage && haveView) {
+        std::vector<Gui::SelectionObject> selection = this->getSelection().getSelectionEx();
+        if (!selection.empty()) {
+            std::vector<App::DocumentObject*> selProjGroupItem =
+                this->getSelection().getObjectsOfType(
+                    TechDraw::DrawProjGroupItem::getClassTypeId());
+            std::vector<App::DocumentObject*> selView =
+                this->getSelection().getObjectsOfType(TechDraw::DrawView::getClassTypeId());
+            if (!selView.empty() || !selProjGroupItem.empty()) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 //===========================================================================
@@ -1463,8 +1477,21 @@ void CmdTechDrawDecorateLine::activated(int iMsg)
 bool CmdTechDrawDecorateLine::isActive()
 {
     bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    bool haveView = DrawGuiUtil::needView(this);
+    if (havePage && haveView) {
+        std::vector<Gui::SelectionObject> selection = this->getSelection().getSelectionEx();
+        if (!selection.empty()) {
+            std::vector<App::DocumentObject*> selProjGroupItem =
+                this->getSelection().getObjectsOfType(
+                    TechDraw::DrawProjGroupItem::getClassTypeId());
+            std::vector<App::DocumentObject*> selView =
+                this->getSelection().getObjectsOfType(TechDraw::DrawView::getClassTypeId());
+            if (!selView.empty() || !selProjGroupItem.empty()) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 //===========================================================================
@@ -1528,8 +1555,21 @@ void CmdTechDrawShowAll::activated(int iMsg)
 bool CmdTechDrawShowAll::isActive()
 {
     bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    bool haveView = DrawGuiUtil::needView(this);
+    if (havePage && haveView) {
+        std::vector<Gui::SelectionObject> selection = this->getSelection().getSelectionEx();
+        if (!selection.empty()) {
+            std::vector<App::DocumentObject*> selProjGroupItem =
+                this->getSelection().getObjectsOfType(
+                    TechDraw::DrawProjGroupItem::getClassTypeId());
+            std::vector<App::DocumentObject*> selView =
+                this->getSelection().getObjectsOfType(TechDraw::DrawView::getClassTypeId());
+            if (!selView.empty() || !selProjGroupItem.empty()) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 //===========================================================================
@@ -1592,8 +1632,21 @@ void CmdTechDrawWeldSymbol::activated(int iMsg)
 bool CmdTechDrawWeldSymbol::isActive()
 {
     bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, false);
-    return (havePage && haveView);
+    bool haveView = DrawGuiUtil::needView(this);
+    if (havePage && haveView) {
+        std::vector<Gui::SelectionObject> selection = this->getSelection().getSelectionEx();
+        if (!selection.empty()) {
+            std::vector<App::DocumentObject*> selProjGroupItem =
+                this->getSelection().getObjectsOfType(
+                    TechDraw::DrawProjGroupItem::getClassTypeId());
+            std::vector<App::DocumentObject*> selView =
+                this->getSelection().getObjectsOfType(TechDraw::DrawView::getClassTypeId());
+            if (!selView.empty() || !selProjGroupItem.empty()) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 //===========================================================================
@@ -1659,7 +1712,20 @@ bool CmdTechDrawSurfaceFinishSymbols::isActive()
 {
     bool havePage = DrawGuiUtil::needPage(this);
     bool haveView = DrawGuiUtil::needView(this);
-    return havePage && haveView;
+    if (havePage && haveView) {
+        std::vector<Gui::SelectionObject> selection = this->getSelection().getSelectionEx();
+        if (!selection.empty()) {
+            std::vector<App::DocumentObject*> selProjGroupItem =
+                this->getSelection().getObjectsOfType(
+                    TechDraw::DrawProjGroupItem::getClassTypeId());
+            std::vector<App::DocumentObject*> selView =
+                this->getSelection().getObjectsOfType(TechDraw::DrawView::getClassTypeId());
+            if (!selView.empty() || !selProjGroupItem.empty()) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 void CreateTechDrawCommandsAnnotate()
