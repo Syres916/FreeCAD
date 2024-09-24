@@ -68,6 +68,24 @@ using namespace TechDraw;
 //internal functions
 bool _checkSelectionHatch(Gui::Command* cmd);
 
+
+bool isAnnotateCmdActivePartOnlyTrue(Gui::Command* cmd)
+{
+    bool havePage = DrawGuiUtil::needPage(cmd);
+    bool haveView = DrawGuiUtil::needView(cmd, true);
+    bool haveViewSelected = DrawGuiUtil::needViewSelected(cmd);
+    return havePage && haveView && haveViewSelected;
+}
+
+bool isAnnotateCmdActivePartOnlyFalse(Gui::Command* cmd)
+{
+    bool havePage = DrawGuiUtil::needPage(cmd);
+    bool haveView = DrawGuiUtil::needView(cmd, false);
+    bool haveViewSelected = DrawGuiUtil::needViewSelected(cmd);
+    return havePage && haveView && haveViewSelected;
+}
+
+
 void execCosmeticVertex(Gui::Command* cmd);
 void execMidpoints(Gui::Command* cmd);
 void execQuadrants(Gui::Command* cmd);
@@ -137,9 +155,7 @@ void CmdTechDrawLeaderLine::activated(int iMsg)
 
 bool CmdTechDrawLeaderLine::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, false);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyFalse(this);
 }
 
 //===========================================================================
@@ -295,9 +311,7 @@ void CmdTechDrawCosmeticVertexGroup::languageChange()
 
 bool CmdTechDrawCosmeticVertexGroup::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 
@@ -437,9 +451,7 @@ void CmdTechDrawCosmeticVertex::activated(int iMsg)
 
 bool CmdTechDrawCosmeticVertex::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -476,9 +488,7 @@ void CmdTechDrawMidpoints::activated(int iMsg)
 
 bool CmdTechDrawMidpoints::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -515,9 +525,7 @@ void CmdTechDrawQuadrants::activated(int iMsg)
 
 bool CmdTechDrawQuadrants::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -662,10 +670,9 @@ void CmdTechDrawCenterLineGroup::languageChange()
 
 bool CmdTechDrawCenterLineGroup::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
+
 //===========================================================================
 // TechDraw_Centerline
 //===========================================================================
@@ -700,9 +707,7 @@ void CmdTechDrawFaceCenterLine::activated(int iMsg)
 
 bool CmdTechDrawFaceCenterLine::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, false);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyFalse(this);
 }
 
 void execCenterLine(Gui::Command* cmd)
@@ -811,9 +816,7 @@ void CmdTechDraw2LineCenterLine::activated(int iMsg)
 
 bool CmdTechDraw2LineCenterLine::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 void exec2LineCenterLine(Gui::Command* cmd)
@@ -888,9 +891,7 @@ void CmdTechDraw2PointCenterLine::activated(int iMsg)
 
 bool CmdTechDraw2PointCenterLine::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 void exec2PointCenterLine(Gui::Command* cmd)
@@ -1002,9 +1003,7 @@ void CmdTechDraw2PointCosmeticLine::activated(int iMsg)
 
 bool CmdTechDraw2PointCosmeticLine::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 void execLine2Points(Gui::Command* cmd)
@@ -1153,9 +1152,7 @@ void CmdTechDrawCosmeticCircle::activated(int iMsg)
 
 bool CmdTechDrawCosmeticCircle::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 void execCosmeticCircle(Gui::Command* cmd)
@@ -1383,9 +1380,7 @@ void CmdTechDrawCosmeticEraser::activated(int iMsg)
 
 bool CmdTechDrawCosmeticEraser::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1462,9 +1457,7 @@ void CmdTechDrawDecorateLine::activated(int iMsg)
 
 bool CmdTechDrawDecorateLine::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1527,9 +1520,7 @@ void CmdTechDrawShowAll::activated(int iMsg)
 
 bool CmdTechDrawShowAll::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1591,9 +1582,7 @@ void CmdTechDrawWeldSymbol::activated(int iMsg)
 
 bool CmdTechDrawWeldSymbol::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, false);
-    return (havePage && haveView);
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1657,10 +1646,7 @@ void CmdTechDrawSurfaceFinishSymbols::activated(int iMsg)
 
 bool CmdTechDrawSurfaceFinishSymbols::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    bool haveViewSelected = DrawGuiUtil::needViewSelected(this);
-    return havePage && haveView && haveViewSelected;
+    return isAnnotateCmdActivePartOnlyTrue(this);
 }
 
 void CreateTechDrawCommandsAnnotate()
