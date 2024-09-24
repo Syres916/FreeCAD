@@ -73,6 +73,21 @@ using namespace TechDrawGui;
 using namespace TechDraw;
 using DU = DrawUtil;
 
+bool isExtensionPackCmdActivePartOnlyTrue(Gui::Command* cmd)
+{
+    bool havePage = DrawGuiUtil::needPage(cmd);
+    bool haveView = DrawGuiUtil::needView(cmd, true);
+    bool haveViewSelected = DrawGuiUtil::needViewSelected(cmd);
+    return havePage && haveView && haveViewSelected;
+}
+
+bool isExtensionPackCmdActivePartOnlyFalse(Gui::Command* cmd)
+{
+    bool havePage = DrawGuiUtil::needPage(cmd);
+    bool haveView = DrawGuiUtil::needView(cmd, false);
+    bool haveViewSelected = DrawGuiUtil::needViewSelected(cmd);
+    return havePage && haveView && haveViewSelected;
+}
 
 namespace TechDrawGui
 {
@@ -189,9 +204,7 @@ void CmdTechDrawExtensionHoleCircle::activated(int iMsg)
 
 bool CmdTechDrawExtensionHoleCircle::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -264,9 +277,7 @@ void CmdTechDrawExtensionCircleCenterLines::activated(int iMsg)
 
 bool CmdTechDrawExtensionCircleCenterLines::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -369,9 +380,7 @@ void CmdTechDrawExtensionCircleCenterLinesGroup::languageChange()
 
 bool CmdTechDrawExtensionCircleCenterLinesGroup::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -423,9 +432,7 @@ void CmdTechDrawExtensionThreadHoleSide::activated(int iMsg)
 
 bool CmdTechDrawExtensionThreadHoleSide::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -477,9 +484,7 @@ void CmdTechDrawExtensionThreadBoltSide::activated(int iMsg)
 
 bool CmdTechDrawExtensionThreadBoltSide::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -531,9 +536,7 @@ void CmdTechDrawExtensionThreadHoleBottom::activated(int iMsg)
 
 bool CmdTechDrawExtensionThreadHoleBottom::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -586,9 +589,7 @@ void CmdTechDrawExtensionThreadBoltBottom::activated(int iMsg)
 
 bool CmdTechDrawExtensionThreadBoltBottom::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -727,9 +728,7 @@ void CmdTechDrawExtensionThreadsGroup::languageChange()
 
 bool CmdTechDrawExtensionThreadsGroup::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -762,9 +761,7 @@ void CmdTechDrawExtensionSelectLineAttributes::activated(int iMsg)
 
 bool CmdTechDrawExtensionSelectLineAttributes::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -823,9 +820,7 @@ void CmdTechDrawExtensionChangeLineAttributes::activated(int iMsg)
 
 bool CmdTechDrawExtensionChangeLineAttributes::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -885,9 +880,7 @@ void CmdTechDrawExtensionVertexAtIntersection::activated(int iMsg)
 
 bool CmdTechDrawExtensionVertexAtIntersection::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -960,9 +953,7 @@ void CmdTechDrawExtensionDrawCosmArc::activated(int iMsg)
 
 bool CmdTechDrawExtensionDrawCosmArc::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1023,9 +1014,7 @@ void CmdTechDrawExtensionDrawCosmCircle::activated(int iMsg)
 
 bool CmdTechDrawExtensionDrawCosmCircle::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1088,9 +1077,7 @@ void CmdTechDrawExtensionDrawCosmCircle3Points::activated(int iMsg)
 
 bool CmdTechDrawExtensionDrawCosmCircle3Points::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1214,9 +1201,7 @@ void CmdTechDrawExtensionDrawCirclesGroup::languageChange()
 
 bool CmdTechDrawExtensionDrawCirclesGroup::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1303,9 +1288,7 @@ void CmdTechDrawExtensionLineParallel::activated(int iMsg)
 
 bool CmdTechDrawExtensionLineParallel::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1338,9 +1321,7 @@ void CmdTechDrawExtensionLinePerpendicular::activated(int iMsg)
 
 bool CmdTechDrawExtensionLinePerpendicular::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1446,9 +1427,7 @@ void CmdTechDrawExtensionLinePPGroup::languageChange()
 
 bool CmdTechDrawExtensionLinePPGroup::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1491,9 +1470,7 @@ void CmdTechDrawExtensionLockUnlockView::activated(int iMsg)
 
 bool CmdTechDrawExtensionLockUnlockView::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1609,9 +1586,7 @@ void CmdTechDrawExtensionExtendLine::activated(int iMsg)
 
 bool CmdTechDrawExtensionExtendLine::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1644,9 +1619,7 @@ void CmdTechDrawExtensionShortenLine::activated(int iMsg)
 
 bool CmdTechDrawExtensionShortenLine::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1748,9 +1721,7 @@ void CmdTechDrawExtendShortenLineGroup::languageChange()
 
 bool CmdTechDrawExtendShortenLineGroup::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this, true);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -1878,9 +1849,7 @@ void CmdTechDrawExtensionAreaAnnotation::activated(int iMsg)
 
 bool CmdTechDrawExtensionAreaAnnotation::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
@@ -2016,9 +1985,7 @@ void CmdTechDrawExtensionArcLengthAnnotation::activated(int iMsg)
 
 bool CmdTechDrawExtensionArcLengthAnnotation::isActive()
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
-    return (havePage && haveView);
+    return isExtensionPackCmdActivePartOnlyTrue(this);
 }
 
 //===========================================================================
