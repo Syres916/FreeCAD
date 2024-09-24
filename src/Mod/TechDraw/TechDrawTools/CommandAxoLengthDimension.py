@@ -117,7 +117,7 @@ class CommandAxoLengthDimension:
     def IsActive(self):
         """Return True when the command should be active or False when it should be disabled (greyed)."""
         if App.ActiveDocument:
-            return Utils.havePage() and Utils.haveView()
+            return Utils.havePage() and Utils.haveView() and Utils.isViewSelected()
         else:
             return False
 
