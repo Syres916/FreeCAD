@@ -1626,7 +1626,13 @@ void CmdTechDrawDraftView::activated(int iMsg)
     }
 }
 
-bool CmdTechDrawDraftView::isActive() { return DrawGuiUtil::needPage(this); }
+bool CmdTechDrawDraftView::isActive()
+{
+    bool havePage = DrawGuiUtil::needPage(this);
+    bool isDraftSelected = DrawGuiUtil::needDraftSelected(this);
+    return (havePage && isDraftSelected);
+}
+
 
 //===========================================================================
 // TechDraw_ArchView
