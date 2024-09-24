@@ -575,6 +575,38 @@ bool DrawGuiUtil::needSSheetSelected(Gui::Command* cmd)
     return isSSheetSelected;
 }
 
+bool DrawGuiUtil::needArchSectionSelected(Gui::Command* cmd)
+{
+    bool isArchSectionSelected = false;
+    std::vector<Gui::SelectionObject> selection = cmd->getSelection().getSelectionEx();
+    if (!selection.empty()) {
+        std::vector<App::DocumentObject*> selArchSection =
+            cmd->getSelection().getObjectsOfType(App::FeaturePython::getClassTypeId());
+        if (!selArchSection.empty()) {
+            App::PropertyPythonObject* proxy =
+                dynamic_cast<App::PropertyPythonObject*>(selArchSection.front()->getPropertyByName("Proxy"));
+            if (proxy) {
+                Py::Object proxyObj = proxy->getValue();
+                std::stringstream ss;
+                Base::PyGILStateLocker lock;
+                try {
+                    if (proxyObj.hasAttr("__module__")) {
+                        Py::String mod(proxyObj.getAttr("__module__"));
+                        ss << (std::string)mod;
+                        // does this have to be an ArchSection, or can it be other Arch objects?
+                        if (ss.str().find("ArchSectionPlane") != std::string::npos) {
+                            isArchSectionSelected = true;
+                        }
+                    }
+                }
+                catch (Py::Exception&) {
+                    isArchSectionSelected = false;
+                }
+            }
+        }
+    }
+    return isArchSectionSelected;
+}
 
 void DrawGuiUtil::dumpRectF(const char* text, const QRectF& r)
 {
