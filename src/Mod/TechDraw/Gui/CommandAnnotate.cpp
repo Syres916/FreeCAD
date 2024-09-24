@@ -1582,7 +1582,7 @@ void CmdTechDrawWeldSymbol::activated(int iMsg)
 
 bool CmdTechDrawWeldSymbol::isActive()
 {
-    return isAnnotateCmdActivePartOnlyTrue(this);
+    return isAnnotateCmdActivePartOnlyFalse(this);
 }
 
 //===========================================================================
