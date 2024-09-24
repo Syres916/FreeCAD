@@ -60,6 +60,8 @@
 #include <Gui/PrefWidgets.h>
 #include <Inventor/SbVec3f.h>
 
+#include <Mod/Spreadsheet/App/Sheet.h>
+
 #include <Mod/TechDraw/App/ArrowPropEnum.h>
 #include <Mod/TechDraw/App/BalloonPropEnum.h>
 #include <Mod/TechDraw/App/LineNameEnum.h>
@@ -558,6 +560,21 @@ bool DrawGuiUtil::needViewSelected(Gui::Command* cmd)
     }
     return isViewSelected;
 }
+
+bool DrawGuiUtil::needSSheetSelected(Gui::Command* cmd)
+{
+    bool isSSheetSelected = false;
+    std::vector<Gui::SelectionObject> selection = cmd->getSelection().getSelectionEx();
+    if (!selection.empty()) {
+        std::vector<App::DocumentObject*> selSSheet =
+            cmd->getSelection().getObjectsOfType(Spreadsheet::Sheet::getClassTypeId());
+        if (!selSSheet.empty()) {
+            isSSheetSelected = true;
+        }
+    }
+    return isSSheetSelected;
+}
+
 
 void DrawGuiUtil::dumpRectF(const char* text, const QRectF& r)
 {
