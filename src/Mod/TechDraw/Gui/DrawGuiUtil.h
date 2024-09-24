@@ -67,6 +67,7 @@ class TechDrawGuiExport DrawGuiUtil {
     static bool needView(Gui::Command* cmd, bool partOnly = true);
     static bool needViewSelected(Gui::Command* cmd);
     static bool needSSheetSelected(Gui::Command* cmd);
+    static bool needDraftSelected(Gui::Command* cmd);
     static bool needArchSectionSelected(Gui::Command* cmd);
     static void dumpRectF(const char* text, const QRectF& r);
     static void dumpPointF(const char* text, const QPointF& p);
