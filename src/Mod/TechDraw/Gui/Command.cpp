@@ -1697,7 +1697,12 @@ void CmdTechDrawArchView::activated(int iMsg)
     commitCommand();
 }
 
-bool CmdTechDrawArchView::isActive() { return DrawGuiUtil::needPage(this); }
+bool CmdTechDrawArchView::isActive()
+{
+    bool havePage = DrawGuiUtil::needPage(this);
+    bool isArchSectionSelected = DrawGuiUtil::needArchSectionSelected(this);
+    return (havePage && isArchSectionSelected);
+}
 
 //===========================================================================
 // TechDraw_SpreadsheetView
