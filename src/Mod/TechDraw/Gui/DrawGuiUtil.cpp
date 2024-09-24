@@ -583,20 +583,12 @@ bool DrawGuiUtil::needDraftSelected(Gui::Command* cmd)
     std::vector<Gui::SelectionObject> selection = cmd->getSelection().getSelectionEx();
     if (!selection.empty()) {
         for (auto& sel : selection) {
-
             if (!sel.getObject()->isDerivedFrom(App::FeaturePython::getClassTypeId())) {
                 isDraftSelected = false;
                 break;
             }
             else {
-                App::PropertyPythonObject* proxy = dynamic_cast<App::PropertyPythonObject*>(
-                    sel.getObject()->getPropertyByName("Proxy"));
-                if (!proxy) {
-                    break;
-                }
-                else {
-                    isDraftSelected = true;
-                }
+                isDraftSelected = true;
             }
         }
     }
@@ -614,14 +606,7 @@ bool DrawGuiUtil::needArchSectionSelected(Gui::Command* cmd)
                 break;
             }
             else {
-                App::PropertyPythonObject* proxy = dynamic_cast<App::PropertyPythonObject*>(
-                    sel.getObject()->getPropertyByName("Proxy"));
-                if (!proxy) {
-                    break;
-                }
-                else {
-                    isArchSectionSelected = true;
-                }
+                isArchSectionSelected = true;
             }
         }
     }
