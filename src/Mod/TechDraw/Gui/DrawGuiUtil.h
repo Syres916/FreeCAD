@@ -66,6 +66,7 @@ class TechDrawGuiExport DrawGuiUtil {
     static bool needPage(Gui::Command* cmd, bool findAny = false);
     static bool needView(Gui::Command* cmd, bool partOnly = true);
     static bool needViewSelected(Gui::Command* cmd);
+    static bool needSSheetSelected(Gui::Command* cmd);
     static void dumpRectF(const char* text, const QRectF& r);
     static void dumpPointF(const char* text, const QPointF& p);
     static std::pair<Base::Vector3d, Base::Vector3d> get3DDirAndRot();
