@@ -1734,17 +1734,9 @@ bool CmdTechDrawSpreadsheetView::isActive()
 {
     //need a Page and a SpreadSheet::Sheet
     bool havePage = DrawGuiUtil::needPage(this);
-    bool haveSheet = false;
-    if (havePage) {
-        auto spreadSheetType(Spreadsheet::Sheet::getClassTypeId());
-        auto selSheets = getDocument()->getObjectsOfType(spreadSheetType);
-        if (!selSheets.empty()) {
-            haveSheet = true;
-        }
-    }
-    return (havePage && haveSheet);
+    bool isSheetSelected = DrawGuiUtil::needSSheetSelected(this);
+    return (havePage && isSheetSelected);
 }
-
 
 //===========================================================================
 // TechDraw_ExportPageSVG
