@@ -91,7 +91,8 @@ bool isDimCmdActive(Gui::Command* cmd)
 {
     bool havePage = DrawGuiUtil::needPage(cmd);
     bool haveView = DrawGuiUtil::needView(cmd);
-    return (havePage && haveView);
+    bool haveViewSelected = DrawGuiUtil::needViewSelected(cmd);
+    return havePage && haveView && haveViewSelected;
 }
 
 
