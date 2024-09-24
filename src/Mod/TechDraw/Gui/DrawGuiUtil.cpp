@@ -566,9 +566,11 @@ bool DrawGuiUtil::needSSheetSelected(Gui::Command* cmd)
     bool isSSheetSelected = false;
     std::vector<Gui::SelectionObject> selection = cmd->getSelection().getSelectionEx();
     if (!selection.empty()) {
-        std::vector<App::DocumentObject*> selSSheet =
-            cmd->getSelection().getObjectsOfType(Spreadsheet::Sheet::getClassTypeId());
-        if (!selSSheet.empty()) {
+        for (auto& sel : selection) {
+            if (!sel.getObject()->isDerivedFrom(Spreadsheet::Sheet::getClassTypeId())) {
+                isSSheetSelected = false;
+                break;
+            }
             isSSheetSelected = true;
         }
     }
@@ -580,27 +582,19 @@ bool DrawGuiUtil::needArchSectionSelected(Gui::Command* cmd)
     bool isArchSectionSelected = false;
     std::vector<Gui::SelectionObject> selection = cmd->getSelection().getSelectionEx();
     if (!selection.empty()) {
-        std::vector<App::DocumentObject*> selArchSection =
-            cmd->getSelection().getObjectsOfType(App::FeaturePython::getClassTypeId());
-        if (!selArchSection.empty()) {
-            App::PropertyPythonObject* proxy =
-                dynamic_cast<App::PropertyPythonObject*>(selArchSection.front()->getPropertyByName("Proxy"));
-            if (proxy) {
-                Py::Object proxyObj = proxy->getValue();
-                std::stringstream ss;
-                Base::PyGILStateLocker lock;
-                try {
-                    if (proxyObj.hasAttr("__module__")) {
-                        Py::String mod(proxyObj.getAttr("__module__"));
-                        ss << (std::string)mod;
-                        // does this have to be an ArchSection, or can it be other Arch objects?
-                        if (ss.str().find("ArchSectionPlane") != std::string::npos) {
-                            isArchSectionSelected = true;
-                        }
-                    }
+        for (auto& sel : selection) {
+            if (!sel.getObject()->isDerivedFrom(App::FeaturePython::getClassTypeId())) {
+                // isArchSectionSelected = false;
+                break;
+            }
+            else {
+                App::PropertyPythonObject* proxy = dynamic_cast<App::PropertyPythonObject*>(
+                    sel.getObject()->getPropertyByName("Proxy"));
+                if (!proxy) {
+                    break;
                 }
-                catch (Py::Exception&) {
-                    isArchSectionSelected = false;
+                else {
+                    isArchSectionSelected = true;
                 }
             }
         }
