@@ -65,6 +65,7 @@
 #include <Mod/TechDraw/App/LineNameEnum.h>
 #include <Mod/TechDraw/App/MattingPropEnum.h>
 #include <Mod/TechDraw/App/DrawPage.h>
+#include <Mod/TechDraw/App/DrawProjGroupItem.h>
 #include <Mod/TechDraw/App/DrawUtil.h>
 #include <Mod/TechDraw/App/DrawViewPart.h>
 #include <Mod/TechDraw/App/LineGenerator.h>
@@ -540,6 +541,22 @@ bool DrawGuiUtil::needView(Gui::Command* cmd, bool partOnly)
         }
     }
     return haveView;
+}
+
+bool DrawGuiUtil::needViewSelected(Gui::Command* cmd)
+{
+    bool isViewSelected = false;
+    std::vector<Gui::SelectionObject> selection = cmd->getSelection().getSelectionEx();
+    if (!selection.empty()) {
+        std::vector<App::DocumentObject*> selProjGroupItem =
+            cmd->getSelection().getObjectsOfType(TechDraw::DrawProjGroupItem::getClassTypeId());
+        std::vector<App::DocumentObject*> selView =
+            cmd->getSelection().getObjectsOfType(TechDraw::DrawView::getClassTypeId());
+        if (!selView.empty() || !selProjGroupItem.empty()) {
+            isViewSelected = true;
+        }
+    }
+    return isViewSelected;
 }
 
 void DrawGuiUtil::dumpRectF(const char* text, const QRectF& r)
