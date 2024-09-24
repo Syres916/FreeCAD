@@ -2236,13 +2236,14 @@ void CmdTechDrawDimensionRepair::activated(int iMsg)
 
 bool CmdTechDrawDimensionRepair::isActive(void)
 {
-    bool havePage = DrawGuiUtil::needPage(this);
-    bool haveView = DrawGuiUtil::needView(this);
+    bool haveDimCmdActive = false;
+    haveDimCmdActive = isDimCmdActive(this);
     bool taskInProgress = false;
-    if (havePage) {
+    if (haveDimCmdActive) {
         taskInProgress = Gui::Control().activeDialog();
+        return(!taskInProgress);
     }
-    return (havePage && haveView && !taskInProgress);
+    return false;
 }
 
 //NOTE: to be deprecated.  revisions to the basic dimension allows it to handle
