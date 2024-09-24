@@ -577,6 +577,32 @@ bool DrawGuiUtil::needSSheetSelected(Gui::Command* cmd)
     return isSSheetSelected;
 }
 
+bool DrawGuiUtil::needDraftSelected(Gui::Command* cmd)
+{
+    bool isDraftSelected = false;
+    std::vector<Gui::SelectionObject> selection = cmd->getSelection().getSelectionEx();
+    if (!selection.empty()) {
+        for (auto& sel : selection) {
+
+            if (!sel.getObject()->isDerivedFrom(App::FeaturePython::getClassTypeId())) {
+                isDraftSelected = false;
+                break;
+            }
+            else {
+                App::PropertyPythonObject* proxy = dynamic_cast<App::PropertyPythonObject*>(
+                    sel.getObject()->getPropertyByName("Proxy"));
+                if (!proxy) {
+                    break;
+                }
+                else {
+                    isDraftSelected = true;
+                }
+            }
+        }
+    }
+    return isDraftSelected;
+}
+
 bool DrawGuiUtil::needArchSectionSelected(Gui::Command* cmd)
 {
     bool isArchSectionSelected = false;
@@ -584,7 +610,7 @@ bool DrawGuiUtil::needArchSectionSelected(Gui::Command* cmd)
     if (!selection.empty()) {
         for (auto& sel : selection) {
             if (!sel.getObject()->isDerivedFrom(App::FeaturePython::getClassTypeId())) {
-                // isArchSectionSelected = false;
+                isArchSectionSelected = false;
                 break;
             }
             else {
