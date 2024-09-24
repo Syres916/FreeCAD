@@ -50,6 +50,14 @@ def displayMessage(title,message):
     msgBox.setWindowTitle(title)
     msgBox.exec_()
 
+def isViewSelected():
+    '''
+    returns true if a view is selected otherwise false
+    '''
+    if Gui.Selection.getSelection()[0].TypeId == "TechDraw::DrawProjGroupItem":
+        return True
+    else:
+        return False
 
 def getSelView(nSel=0):
     '''
