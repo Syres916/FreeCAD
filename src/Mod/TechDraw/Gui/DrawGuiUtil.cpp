@@ -579,37 +579,13 @@ bool DrawGuiUtil::needSSheetSelected(Gui::Command* cmd)
 
 bool DrawGuiUtil::needDraftSelected(Gui::Command* cmd)
 {
-    bool isDraftSelected = false;
-    std::vector<Gui::SelectionObject> selection = cmd->getSelection().getSelectionEx();
-    if (!selection.empty()) {
-        for (auto& sel : selection) {
-            if (!sel.getObject()->isDerivedFrom(App::FeaturePython::getClassTypeId())) {
-                isDraftSelected = false;
-                break;
-            }
-            else {
-                isDraftSelected = true;
-            }
-        }
-    }
+    bool isDraftSelected = true;
     return isDraftSelected;
 }
 
 bool DrawGuiUtil::needArchSectionSelected(Gui::Command* cmd)
 {
-    bool isArchSectionSelected = false;
-    std::vector<Gui::SelectionObject> selection = cmd->getSelection().getSelectionEx();
-    if (!selection.empty()) {
-        for (auto& sel : selection) {
-            if (!sel.getObject()->isDerivedFrom(App::FeaturePython::getClassTypeId())) {
-                isArchSectionSelected = false;
-                break;
-            }
-            else {
-                isArchSectionSelected = true;
-            }
-        }
-    }
+    bool isArchSectionSelected = true;
     return isArchSectionSelected;
 }
 
