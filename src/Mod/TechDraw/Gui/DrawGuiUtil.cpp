@@ -580,6 +580,12 @@ bool DrawGuiUtil::needSSheetSelected(Gui::Command* cmd)
 bool DrawGuiUtil::needDraftSelected(Gui::Command* cmd)
 {
     bool isDraftSelected = true;
+    std::vector<Gui::SelectionObject> selection = cmd->getSelection().getSelectionEx();
+    if (!selection.empty()) {
+        for (auto& sel : selection) {
+            auto selected = sel.getObject());
+        }
+    }
     return isDraftSelected;
 }
 
