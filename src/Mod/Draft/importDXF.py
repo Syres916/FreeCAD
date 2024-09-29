@@ -64,6 +64,7 @@ import WorkingPlane
 from Draft import _Dimension
 from FreeCAD import Vector
 from FreeCAD import Console as FCC
+from builtins import open as pyopen
 
 # sets the default working plane if Draft hasn't been started yet
 if not hasattr(FreeCAD, "DraftWorkingPlane"):
@@ -87,12 +88,6 @@ else:
 dxfReader = None
 dxfColorMap = None
 dxfLibrary = None
-
-# Save the native open function to avoid collisions
-# with the function declared here
-if open.__module__ in ['__builtin__', 'io']:
-    pythonopen = open
-
 
 def errorDXFLib(gui):
     """Download the files required to convert DXF files.
@@ -233,15 +228,15 @@ def deformat(text):
     # t = re.sub('{([^!}]([^}]|\n)*)}', '', text)
     # print("input text: ",text)
     t = text.strip("{}")
-    t = re.sub("\\\.*?;", "", t)
+    t = re.sub(r"\\\\.*?;", "", t)
     # replace UTF codes by utf chars
     sts = re.split("\\\\(U\+....)", t)
     t = u"".join(sts)
     # replace degrees, diameters chars
-    t = re.sub('%%d', u'°', t)
-    t = re.sub('%%c', u'Ø', t)
-    t = re.sub('%%D', u'°', t)
-    t = re.sub('%%C', u'Ø', t)
+    t = re.sub(r'%%d', u'°', t)
+    t = re.sub(r'%%c', u'Ø', t)
+    t = re.sub(r'%%D', u'°', t)
+    t = re.sub(r'%%C', u'Ø', t)
     # print("output text: ", t)
     return t
 
@@ -3550,7 +3545,7 @@ def export(objectslist, filename, nospline=False, lwPoly=False):
             # arch view: export it "as is"
             dxf = exportList[0].Proxy.getDXF()
             if dxf:
-                f = pythonopen(filename, "w")
+                f = pyopen(filename, "w")
                 f.write(dxf)
                 f.close()
 
@@ -3837,14 +3832,14 @@ def exportPage(page, filename):
         template = os.path.splitext(page.Template)[0] + ".dxf"
         views = page.Group
     if os.path.exists(template):
-        f = pythonopen(template, "U")
+        f = pyopen(template, "U")
         template = f.read()
         f.close()
         # find & replace editable texts
-        f = pythonopen(page.Template, "rb")
+        f = pyopen(page.Template, "rb")
         svgtemplate = f.read()
         f.close()
-        editables = re.findall("freecad:editable=\"(.*?)\"", svgtemplate)
+        editables = re.findall(r"freecad:editable=\"(.*?)\"", svgtemplate)
         values = page.EditableTexts
         for i in range(len(editables)):
             if len(values) > i:
@@ -3863,7 +3858,7 @@ def exportPage(page, filename):
     blocks = ""
     entities = ""
     r12 = False
-    ver = re.findall("\$ACADVER\n.*?\n(.*?)\n", template)
+    ver = re.findall(r"\\$ACADVER\n.*?\n(.*?)\n", template)
     if ver:
         # at the moment this is not used.
         # TODO: if r12, do not print ellipses or splines
@@ -3879,9 +3874,9 @@ def exportPage(page, filename):
     if entities:
         template = template.replace("999\n$entities", entities[:-1])
     c = dxfcounter()
-    pat = re.compile("(_handle_)")
+    pat = re.compile(r"(_handle_)")
     template = pat.sub(c.incr, template)
-    f = pythonopen(filename, "w")
+    f = pyopen(filename, "w")
     f.write(template)
     f.close()
 
