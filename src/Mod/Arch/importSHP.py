@@ -22,10 +22,9 @@
 
 import os
 import FreeCAD
+from builtins import open as pyopen
 translate = FreeCAD.Qt.translate
 
-if open.__module__ in ['__builtin__','io']:
-    pythonopen = open
 
 def open(filename):
 
@@ -144,7 +143,7 @@ def checkShapeFileLibrary():
                 p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Macro")
                 fp = p.GetString("MacroPath",os.path.join(FreeCAD.getUserAppDataDir(),"Macros"))
                 fp = os.path.join(fp,"shapefile.py")
-                f = pythonopen(fp,"wb")
+                f = pyopen(fp,"wb")
                 f.write(b)
                 f.close()
                 try:
