@@ -132,6 +132,12 @@ QMdiArea {
     background-repeat: no-repeat;
 }
 
+/*==================================================================================================
+ Style Links
+ ==================================================================================================*/
+QLabel[haslink="true"] {
+    color: #8bd1ff;
+}
 
 /*==================================================================================================
 Sub windows
@@ -143,7 +149,6 @@ QMdiSubWindow {
     margin-right: 4px;
     margin-bottom:4px;
 }
-
 
 /*==================================================================================================
 MENUS
@@ -239,6 +244,45 @@ QMenu QCheckBox::indicator:disabled {
     border: 1px solid #588AC2;
 }
 
+/* QStatusBar -------------------------------------------------------------
+ *
+ https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qstatusbar
+
+ --------------------------------------------------------------------------- */
+QStatusBar {
+    border: 0px solid #3c3c3c;
+    /* Fixes Spyder #9120, #9121 */
+    background: transparent;
+    /* Fixes #205, white vertical borders separating items */
+}
+
+QStatusBar::item {
+    border: none;
+}
+
+
+QStatusBar > QToolButton:checked:disabled {
+    background-color: #b65555;
+    color: #b8aba0;
+    border-radius: 1.9px;
+    padding: 0px;
+    outline: none;
+}
+
+QStatusBar QToolTip {
+    color: #61D29D;
+    background-color: #2C333D;
+    border: 1px solid #696968;
+    /* Remove padding, for fix combo box tooltip */
+    padding: 0px;
+    /* Reducing transparency to read better */
+    opacity: 230;
+}
+
+QStatusBar QLabel {
+    /* Fixes Spyder #9120, #9121 */
+    background: transparent;
+}
 
 /*==================================================================================================
 Tool bar
@@ -317,13 +361,13 @@ QGroupBox::indicator:unchecked {
 Tooltip
 ==================================================================================================*/
 QToolTip {
-    color: #1e1e1e;
-    background-color: #b4b4b4;
+    color: #61D29D;
+    background-color: #2C333D;
     /*opacity: 90%; doesn't correctly work */
     padding: 4px;
     border-radius: 3px; /* has no effect */
+    font: 8pt;
 }
-
 
 /*==================================================================================================
 Dock widget
@@ -369,12 +413,10 @@ QDockWidget::float-button:pressed {
     background-color: rgba(255,255,255,30);
 }
 
-/* fix for Python Console (probably there is a smarter way to arrive to it) */
-QDockWidget > QFrame {
+QDockWidget[objectName="Python console"] QFrame,  QDockWidget[objectName="Report view"] QFrame {
     background-color: #2C333D;
     border: 1px solid #2C333D;
 }
-
 
 /*==================================================================================================
 Progress bar
@@ -409,22 +451,28 @@ QAbstractScrollArea::corner {
 }
 
 QScrollBar:horizontal {
-    background-color: transparent;
+    background-color: #2C333D;
     height: 15px;
     margin: 0px;
 }
 
 QScrollBar::handle:vertical,
 QScrollBar::handle:horizontal {
-    background-color: rgba(0,0,0,80);
+    background-color: rgba(64,131,224,80);
 }
 
 QScrollBar::handle:vertical:hover,
 QScrollBar::handle:horizontal:hover {
-    background-color: rgba(0,0,0,100);
+    background-color: rgba(69,167,224,255);
 }
 
 QScrollBar::handle:horizontal {
+    min-width: 5px;
+    border-radius: 3px;
+    margin: 4px 15px;
+}
+
+QScrollBar::handle:vertical {
     min-width: 5px;
     border-radius: 3px;
     margin: 4px 15px;
@@ -469,7 +517,7 @@ QScrollBar::sub-page:horizontal {
 }
 
 QScrollBar:vertical {
-    background-color: transparent;
+    background-color: #2C333D;
     width: 15px;
     margin: 0px;
 }
@@ -1461,9 +1509,9 @@ QComboBox {
 
 QComboBox QAbstractItemView {
     color: #bebebe; /* same as regular QComboBox color */
-    background-color: transparent;
+    background-color: #232932;
     selection-color: white;
-    selection-background-color: #65A2E5;
+    selection-background-color:  #8bd1ff;
     border-width: 5px 0px 5px 0px;
     border-style: solid;
     border-color: transparent;
@@ -1561,9 +1609,23 @@ Gui--PropertyEditor--PropertyEditor > QWidget > QWidget > QWidget > QWidget > QF
     padding: 2px 6px;
 }
 
+#CreateNewRow > QPushButton {
+    min-width: -1;
+    min-height: 50px;
+    text-align: center;
+    background-color: transparent;
+    border-bottom-color: #444d58; /* simulates shadow under the button */
+}
+
+#CreateNewRow > QPushButton:hover,
+#CreateNewRow > QPushButton:focus {
+    color: transparent;
+    border-color: #3a7400;
+}
+
 QPushButton:checked {
-    background-color: #65A2E5;
-    border-color: #65A2E5;
+    background-color: #8bd1ff;
+    border-color: #8bd1ff;
 }
 
 /*==================================================================================================
@@ -1733,7 +1795,7 @@ QCheckBox::indicator,
 QGroupBox::indicator {
     color: #61D29D;
     background-color: rgba(255,255,255,20);
-    border: 1px solid #232932;
+    border: 1px solid #565bb626;
     width: 11px;
     height: 11px;
     border-radius:2px;
@@ -1915,8 +1977,8 @@ QSlider::handle:vertical:disabled {
 
 
 /*==================================================================================================
-Toolbar buttons
-==================================================================================================*/
+ Toolbar buttons
+ ==================================================================================================*/
 /*QToolBar > QComboBox,   disabled because creates different margins for body and drop-down button */
 QToolBar > QAbstractSpinBox,
 QToolBar > QSpinBox,
@@ -2026,7 +2088,7 @@ QToolBar > QToolButton#qt_toolbutton_menubutton::menu-button {
 QToolBar > QToolButton#qt_toolbutton_menubutton::menu-button:hover,
 QToolBar > QToolButton#qt_toolbutton_menubutton::menu-button:pressed,
 QToolBar > QToolButton#qt_toolbutton_menubutton::menu-button:open {
-    background-color: qlineargradient(spread:pad, x1:1, y1:0.8, x2:1, y2:0, stop:0 #65A2E5, stop:1 #7cabf9);
+    background-color: qlineargradient(spread:pad, x1:1, y1:0.8, x2:1, y2:0, stop:0  #8bd1ff, stop:1 #7cabf9);
 }
 
 QToolBar > QToolButton::menu-arrow {
@@ -2050,6 +2112,14 @@ QToolBar > QToolButton::menu-arrow:open {
 QToolBar > QToolButton:checked {
     border: 1px solid #7cabf9;
     background-color: rgba(124,171,249,60); /* transparency for #7cabf9 color */
+}
+
+QToolBar > QToolButton:checked:disabled {
+    background-color: #b65555;
+    color: #b8aba0;
+    border-radius: 1.9px;
+    padding: 0px;
+    outline: none;
 }
 
 QToolBar > QToolButton:checked:hover {
@@ -2347,6 +2417,73 @@ Gui--StatefulLabel[state="fully_constrained"] {
     font-weight: bold;
 }
 Gui--UrlLabel {
-    color : rgba(0,91,255,255); /* Deep sky blue */
+    color : rgba(100, 149, 237, 255); /* Cornflower blue */
     text-decoration : underline;
 }
+
+/*==================================================================================================
+ S *ettings menu #groupsTreeView:
+ ==================================================================================================*/
+
+QTreeView::branch#groupsTreeView:closed:has-children:has-siblings  {
+    border-image: none 0;
+}
+
+QTreeView::branch#groupsTreeView:open:has-children:has-siblings  {
+    border-image: none 0;
+}
+
+QTreeView::branch#groupsTreeView:open:has-children:!has-siblings  {
+    border-image: none 0;
+}
+
+QTreeView::branch#groupsTreeView:has-children:!has-siblings:closed  {
+    border-image: none 0;
+}
+
+QTreeView::branch#groupsTreeView:has-siblings:!adjoins-item  {
+    border-image: none 0;
+}
+
+/*==================================================================================================
+ * Special tweak for TechDraw ProjGroup task panel to keep acceptable width
+ * ==================================================================================================*/
+
+QWidget[objectName="TechDrawGui__TaskProjGroup"] QPushButton {
+    min-width: 24px;
+    padding: 4px 6px;
+}
+
+QWidget[objectName="TechDrawGui__TaskProjGroup"] QComboBox[objectName="cmbScaleType"] {
+    min-width: 56px;
+    /*width: 58px;*/
+}
+
+QWidget[objectName="TechDrawGui__TaskProjGroup"] QComboBox QAbstractItemView {
+    color: #bebebe; /* same as regular QComboBox color */
+    background-color: #232932;
+    selection-color: white;
+    selection-background-color:  #8bd1ff;
+    border-width: 5px 0px 5px 0px;
+    border-style: solid;
+    border-color: transparent;
+    margin: 0px -1px 0px 0px; /* hack for Mac... try it on Windows and Linux */
+}
+
+QWidget[objectName="TechDrawGui__TaskProjGroup"] QSpinBox[objectName="sbScaleNum"], QWidget[objectName="TechDrawGui__TaskProjGroup"] QSpinBox[objectName="sbScaleDen"]{
+    min-width: 28px;
+}
+
+QWidget[objectName="TechDrawGui__TaskSurfaceFinishSymbols"] QPushButton {
+    min-width: 50px;
+    min-height: 50px;
+    margin: 1px 3px 0px 3px;
+    padding: 4px 6px;
+}
+
+
+QTableWidget[objectName="PreferencePacks"] QPushButton {
+    min-width: 28px;
+    min-height: 14px;
+}
+
