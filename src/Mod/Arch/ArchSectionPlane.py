@@ -749,7 +749,7 @@ def getCoinSVG(cutplane,objs,cameradata=None,linewidth=0.2,singleface=False,face
     wp.alignToPointAndAxis_SVG(Vector(0,0,0),cutplane.normalAt(0,0),0)
     p = wp.getLocalCoords(markervec)
     orlength = FreeCAD.Vector(p.x,p.y,0).Length
-    marker = re.findall("<line x1=.*?stroke=\"\#ffffff\".*?\/>",svg)
+    marker = re.findall(r"<line x1=.*?stroke=\"\#ffffff\".*?\/>",svg)
     if marker:
         marker = marker[0].split("\"")
         x1 = float(marker[1])
@@ -765,21 +765,21 @@ def getCoinSVG(cutplane,objs,cameradata=None,linewidth=0.2,singleface=False,face
             scaledp1 = FreeCAD.Vector(p1.x*factor,p1.y*factor,0)
             trans = orig.sub(scaledp1)
         # remove marker
-        svg = re.sub("<line x1=.*?stroke=\"\#ffffff\".*?\/>","",svg,count=1)
+        svg = re.sub(r"<line x1=.*?stroke=\"\#ffffff\".*?\/>","",svg,count=1)
 
     # remove background rectangle
-    svg = re.sub("<path.*?>","",svg,count=1,flags=re.MULTILINE|re.DOTALL)
+    svg = re.sub(r"<path.*?>","",svg,count=1,flags=re.MULTILINE|re.DOTALL)
 
     # set face color to white
     if facecolor:
-        res = re.findall("fill:(.*?); stroke:(.*?);",svg)
+        res = re.findall(r"fill:(.*?); stroke:(.*?);",svg)
         pairs = []
         for pair in res:
             if (pair not in pairs) and (pair[0] == pair[1]) and(pair[0] not in ["#0a0a0a"]):
                 # coin seems to be rendering a lot of lines as thin triangles with the #0a0a0a color...
                 pairs.append(pair)
         for pair in pairs:
-            svg = re.sub("fill:"+pair[0]+"; stroke:"+pair[1]+";","fill:"+facecolor+"; stroke:"+facecolor+";",svg)
+            svg = re.sub(r"fill:"+pair[0]+"; stroke:"+pair[1]+";","fill:"+facecolor+"; stroke:"+facecolor+";",svg)
 
     # embed everything in a scale group and scale the viewport
     if factor:
@@ -793,9 +793,9 @@ def getCoinSVG(cutplane,objs,cameradata=None,linewidth=0.2,singleface=False,face
     QtCore.QTimer.singleShot(1,lambda: closeViewer(view_window_name))
 
     # strip svg tags (needed for TD Arch view)
-    svg = re.sub("<\?xml.*?>","",svg,flags=re.MULTILINE|re.DOTALL)
-    svg = re.sub("<svg.*?>","",svg,flags=re.MULTILINE|re.DOTALL)
-    svg = re.sub("<\/svg>","",svg,flags=re.MULTILINE|re.DOTALL)
+    svg = re.sub(r"<\?xml.*?>","",svg,flags=re.MULTILINE|re.DOTALL)
+    svg = re.sub(r"<svg.*?>","",svg,flags=re.MULTILINE|re.DOTALL)
+    svg = re.sub(r"<\/svg>","",svg,flags=re.MULTILINE|re.DOTALL)
 
     ISRENDERING = False
 
