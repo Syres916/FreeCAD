@@ -556,7 +556,7 @@ class _ViewProviderRebar(ArchComponent.ViewProviderComponent):
                     import re
                     self.centerline = coin.SoSeparator()
                     comp = Part.makeCompound(obj.Proxy.wires)
-                    pts = re.findall("point \[(.*?)\]",comp.writeInventor().replace("\n",""))
+                    pts = re.findall(r"point \[(.*?)\]",comp.writeInventor().replace("\n",""))
                     pts = [p.split(",") for p in pts]
                     for pt in pts:
                         ps = coin.SoSeparator()
