@@ -24,18 +24,20 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+#include <QAction>
 #include <QCheckBox>
-#include <QPushButton>
 #include <QLabel>
+#include <QMenu>
+#include <QPushButton>
 #include <sstream>
 #endif
 
-#include "DlgSettingsWorkbenchesImp.h"
-#include "ui_DlgSettingsWorkbenches.h"
 #include "Application.h"
-#include "UserSettings.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
+
+#include "DlgSettingsWorkbenchesImp.h"
+#include "ui_DlgSettingsWorkbenches.h"
 
 
 using namespace Gui::Dialog;
@@ -87,7 +89,7 @@ wbListItem::wbListItem(const QString& wbName, bool enabled, bool startupWb, bool
     if (startupWb) {
         enableCheckBox->setChecked(true);
         enableCheckBox->setEnabled(false);
-        enableCheckBox->setToolTip(tr("This is the current startup module, and must be enabled. See Preferences/General/Autoload to change."));
+        enableCheckBox->setToolTip(tr("This is the current startup module, and must be enabled."));
     }
     connect(enableCheckBox, &QCheckBox::toggled, this, [this](bool checked) { onWbToggled(checked); });
 
@@ -121,6 +123,7 @@ wbListItem::wbListItem(const QString& wbName, bool enabled, bool startupWb, bool
     subLayout->setAlignment(Qt::AlignLeft);
     subLayout->setContentsMargins(5, 0, 0, 5);
     subWidget->setMinimumSize(250, 0);
+    subWidget->setAttribute(Qt::WA_TranslucentBackground);
 
     // 5: Autoloaded checkBox.
     autoloadCheckBox = new QCheckBox(this);
@@ -131,7 +134,7 @@ wbListItem::wbListItem(const QString& wbName, bool enabled, bool startupWb, bool
     if (startupWb) { // Figure out whether to check and/or disable this checkBox:
         autoloadCheckBox->setChecked(true);
         autoloadCheckBox->setEnabled(false);
-        autoloadCheckBox->setToolTip(tr("This is the current startup module, and must be autoloaded. See Preferences/General/Autoload to change."));
+        autoloadCheckBox->setToolTip(tr("This is the current startup module, and must be autoloaded."));
     }
     else if (autoLoad) {
         autoloadCheckBox->setChecked(true);
@@ -162,9 +165,7 @@ wbListItem::wbListItem(const QString& wbName, bool enabled, bool startupWb, bool
     layout->setContentsMargins(10, 0, 0, 0);
 }
 
-wbListItem::~wbListItem()
-{
-}
+wbListItem::~wbListItem() = default;
 
 bool wbListItem::isEnabled()
 {
@@ -235,19 +236,25 @@ DlgSettingsWorkbenchesImp::DlgSettingsWorkbenchesImp( QWidget* parent )
     ui->wbList->setDragEnabled(true);
     ui->wbList->setDefaultDropAction(Qt::MoveAction);
 
+    QAction* sortAction = new QAction(tr("Sort alphabetically"), this);
+    connect(sortAction, &QAction::triggered, this, &DlgSettingsWorkbenchesImp::sortEnabledWorkbenches);
+
+    QMenu* contextMenu = new QMenu(ui->wbList);
+    contextMenu->addAction(sortAction);
+    ui->wbList->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->wbList, &QListWidget::customContextMenuRequested, this, [this, contextMenu](const QPoint& pos) {
+        contextMenu->exec(ui->wbList->mapToGlobal(pos));
+    });
+
     connect(ui->wbList->model(), &QAbstractItemModel::rowsMoved, this, &DlgSettingsWorkbenchesImp::wbItemMoved);
     connect(ui->AutoloadModuleCombo, qOverload<int>(&QComboBox::activated), this, &DlgSettingsWorkbenchesImp::onStartWbChanged);
-    connect(ui->WorkbenchSelectorPosition, qOverload<int>(&QComboBox::activated), this, &DlgSettingsWorkbenchesImp::onWbSelectorChanged);
     connect(ui->CheckBox_WbByTab, &QCheckBox::toggled, this, &DlgSettingsWorkbenchesImp::onWbByTabToggled);
 }
 
 /**
  *  Destroys the object and frees any allocated resources
  */
-DlgSettingsWorkbenchesImp::~DlgSettingsWorkbenchesImp()
-{
-}
-
+DlgSettingsWorkbenchesImp::~DlgSettingsWorkbenchesImp() = default;
 
 void DlgSettingsWorkbenchesImp::saveSettings()
 {
@@ -348,6 +355,8 @@ Build the list of unloaded workbenches.
 void DlgSettingsWorkbenchesImp::buildWorkbenchList()
 {
     QSignalBlocker sigblk(ui->wbList);
+
+    ui->wbList->clear();
 
     QStringList enabledWbs = getEnabledWorkbenches();
     QStringList disabledWbs = getDisabledWorkbenches();
@@ -453,6 +462,7 @@ void DlgSettingsWorkbenchesImp::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::LanguageChange) {
         ui->retranslateUi(this);
+        translateWorkbenchSelector();
     }
     else {
         QWidget::changeEvent(e);
@@ -461,21 +471,53 @@ void DlgSettingsWorkbenchesImp::changeEvent(QEvent *e)
 
 void DlgSettingsWorkbenchesImp::saveWorkbenchSelector()
 {
-    //save workbench selector position
-    auto index = ui->WorkbenchSelectorPosition->currentIndex();
-    WorkbenchSwitcher::setIndex(index);
+    //save workbench selector type
+    ParameterGrp::handle hGrp;
+    hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Workbenches");
+    int prevIndex = hGrp->GetInt("WorkbenchSelectorType", 0);
+    int index = ui->WorkbenchSelectorType->currentIndex();
+    if (prevIndex != index) {
+        hGrp->SetInt("WorkbenchSelectorType", index);
+        requireRestart();
+    }
+
+    // save workbench selector items style
+    prevIndex = hGrp->GetInt("WorkbenchSelectorItem", 0);
+    index = ui->WorkbenchSelectorItem->currentIndex();
+    if (prevIndex != index) {
+        hGrp->SetInt("WorkbenchSelectorItem", index);
+        requireRestart();
+    }
 }
 
 void DlgSettingsWorkbenchesImp::loadWorkbenchSelector()
 {
-    QSignalBlocker sigblk(ui->WorkbenchSelectorPosition);
+    //workbench selector type setup
+    ParameterGrp::handle hGrp;
+    hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Workbenches");
+    int widgetTypeIndex = hGrp->GetInt("WorkbenchSelectorType", 0);
+    ui->WorkbenchSelectorType->clear();
+    ui->WorkbenchSelectorType->addItem(tr("ComboBox"));
+    ui->WorkbenchSelectorType->addItem(tr("TabBar"));
+    ui->WorkbenchSelectorType->setCurrentIndex(widgetTypeIndex);
 
-    //workbench selector position combobox setup
-    ui->WorkbenchSelectorPosition->clear();
-    ui->WorkbenchSelectorPosition->addItem(tr("Toolbar"));
-    ui->WorkbenchSelectorPosition->addItem(tr("Left corner"));
-    ui->WorkbenchSelectorPosition->addItem(tr("Right corner"));
-    ui->WorkbenchSelectorPosition->setCurrentIndex(WorkbenchSwitcher::getIndex());
+    // workbench selector items style
+    int itemStyleIndex = hGrp->GetInt("WorkbenchSelectorItem", 0);
+    ui->WorkbenchSelectorItem->clear();
+    ui->WorkbenchSelectorItem->addItem(tr("Icon & Text"));
+    ui->WorkbenchSelectorItem->addItem(tr("Icon"));
+    ui->WorkbenchSelectorItem->addItem(tr("Text"));
+    ui->WorkbenchSelectorItem->setCurrentIndex(itemStyleIndex);
+}
+
+void DlgSettingsWorkbenchesImp::translateWorkbenchSelector()
+{
+    ui->WorkbenchSelectorType->setItemText(0, tr("ComboBox"));
+    ui->WorkbenchSelectorType->setItemText(1, tr("TabBar"));
+
+    ui->WorkbenchSelectorItem->setItemText(0, tr("Icon & Text"));
+    ui->WorkbenchSelectorItem->setItemText(1, tr("Icon"));
+    ui->WorkbenchSelectorItem->setItemText(2, tr("Text"));
 }
 
 void DlgSettingsWorkbenchesImp::wbToggled(const QString& wbName, bool enabled)
@@ -576,17 +618,20 @@ void DlgSettingsWorkbenchesImp::onStartWbChanged(int index)
     }
 }
 
-void DlgSettingsWorkbenchesImp::onWbSelectorChanged(int index)
-{
-    Q_UNUSED(index);
-    requireRestart();
-}
-
 void DlgSettingsWorkbenchesImp::onWbByTabToggled(bool val)
 {
     Q_UNUSED(val);
     requireRestart();
 }
 
+void DlgSettingsWorkbenchesImp::sortEnabledWorkbenches()
+{
+    ParameterGrp::handle hGrp;
+
+    hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Workbenches");
+    hGrp->SetASCII("Ordered", "");
+
+    buildWorkbenchList();
+}
 #include "moc_DlgSettingsWorkbenchesImp.cpp"
 #include "DlgSettingsWorkbenchesImp.moc"
