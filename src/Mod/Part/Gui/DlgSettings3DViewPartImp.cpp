@@ -45,12 +45,23 @@ DlgSettings3DViewPart::DlgSettings3DViewPart(QWidget* parent)
   : PreferencePage(parent), ui(new Ui_DlgSettings3DViewPart), checkValue(false)
 {
     ui->setupUi(this);
-    connect(ui->maxDeviation, qOverload<double>(&QDoubleSpinBox::valueChanged),
-            this, &DlgSettings3DViewPart::onMaxDeviationValueChanged);
-    ParameterGrp::handle hPart = App::GetApplication().GetParameterGroupByPath
-        ("User parameter:BaseApp/Preferences/Mod/Part");
-    double lowerLimit = hPart->GetFloat("MinimumDeviation", ui->maxDeviation->minimum());
-    ui->maxDeviation->setMinimum(lowerLimit);
+    connect(ui->maxDeviation,
+            qOverload<double>(&QDoubleSpinBox::valueChanged),
+            this,
+            &DlgSettings3DViewPart::onMaxDeviationValueChanged);
+    connect(ui->maxAngularDeflection,
+            qOverload<double>(&QDoubleSpinBox::valueChanged),
+            this,
+            &DlgSettings3DViewPart::onMaxAngularDeflectionValueChanged);
+    ParameterGrp::handle hPart = App::GetApplication().GetParameterGroupByPath(
+        "User parameter:BaseApp/Preferences/Mod/Part");
+    const double minDeviationlowerLimit = hPart->GetFloat(
+
+        "MinimumDeviation", ui->maxDeviation->minimum());
+    ui->maxDeviation->setMinimum(minDeviationlowerLimit);
+    const double minAngleDeflectionlowerLimit = hPart->GetFloat(
+        "MinimumDeviation", ui->maxAngularDeflection->minimum());
+    ui->maxAngularDeflection->setMinimum(minAngleDeflectionlowerLimit);
 }
 
 /**
@@ -61,15 +72,33 @@ DlgSettings3DViewPart::~DlgSettings3DViewPart()
     // no need to delete child widgets, Qt does it all for us
 }
 
-void DlgSettings3DViewPart::onMaxDeviationValueChanged(double v)
+void DlgSettings3DViewPart::onMaxDeviationValueChanged(double vMaxDev)
 {
-    if (!this->isVisible())
+    if (!this->isVisible()) {
         return;
-    if (v < 0.01 && !checkValue) {
+    }
+    const double maxDevMinThreshold = 0.01;
+    if (vMaxDev < maxDevMinThreshold && !checkValue) {
         checkValue = true;
         QMessageBox::warning(this, tr("Deviation"),
             tr("Setting a too small deviation causes the tessellation to take longer"
-               "and thus freezes or slows down the GUI."));
+               " and thus freezes or slows down the GUI."));
+    }
+}
+
+void DlgSettings3DViewPart::onMaxAngularDeflectionValueChanged(double vMaxAngle)
+{
+    if (!this->isVisible()) {
+        return;
+    }
+    const double vMaxAngleMinThreshold = 2.0;
+    if (vMaxAngle < vMaxAngleMinThreshold && !checkValue) {
+        checkValue = true;
+        QMessageBox::warning(
+            this,
+            tr("Angle Deflection"),
+            tr("Setting a too small angle deviation causes the tessellation to take longer"
+               " and thus freezes or slows down the GUI."));
     }
 }
 
