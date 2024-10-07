@@ -230,13 +230,13 @@ def deformat(text):
     t = text.strip("{}")
     t = re.sub(r"\\\\.*?;", "", t)
     # replace UTF codes by utf chars
-    sts = re.split("\\\\(U\+....)", t)
-    t = u"".join(sts)
+    sts = re.split(r"\\\\(U\+....)", t)
+    t = "".join(sts)
     # replace degrees, diameters chars
-    t = re.sub(r'%%d', u'°', t)
-    t = re.sub(r'%%c', u'Ø', t)
-    t = re.sub(r'%%D', u'°', t)
-    t = re.sub(r'%%C', u'Ø', t)
+    t = re.sub(r"%%d", "°", t)
+    t = re.sub(r"%%c", "Ø", t)
+    t = re.sub(r"%%D", "°", t)
+    t = re.sub(r"%%C", "Ø", t)
     # print("output text: ", t)
     return t
 
