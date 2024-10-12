@@ -115,8 +115,8 @@ protected:
     int m_reversePan;
     int m_reverseScroll;
     QPoint panOrigin;
-    QPoint zoomOrigin;
     bool panningActive;
+    QPoint zoomOrigin;
     bool zoomingActive;
     bool m_clickPending;
     bool m_panPending;
