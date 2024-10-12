@@ -41,6 +41,7 @@ public:
     void handleKeyPressEvent(QKeyEvent *event) override;
     void handleKeyReleaseEvent(QKeyEvent *event) override;
     void handleMouseMoveEvent(QMouseEvent *event) override;
+    bool isPanning(QMouseEvent* event);
 
 protected:
     void setAnchor() override;

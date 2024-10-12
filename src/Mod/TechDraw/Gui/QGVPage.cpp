@@ -524,10 +524,17 @@ void QGVPage::mousePressEvent(QMouseEvent* event)
 
 void QGVPage::mouseMoveEvent(QMouseEvent* event)
 {
-    if (toolHandler) {
-        toolHandler->mouseMoveEvent(event);
+    if (m_navStyle->isPanning(event)) {
+        m_navStyle->handleMouseMoveEvent(event);
+        setPanCursor();
     }
-    m_navStyle->handleMouseMoveEvent(event);
+    else {
+        m_navStyle->handleMouseMoveEvent(event);
+        if (toolHandler) {
+            toolHandler->mouseMoveEvent(event);
+            toolHandler->updateCursor();
+        }
+    }
     QGraphicsView::mouseMoveEvent(event);
 }
 
@@ -540,12 +547,7 @@ void QGVPage::mouseReleaseEvent(QMouseEvent* event)
     else {
         m_navStyle->handleMouseReleaseEvent(event);
         QGraphicsView::mouseReleaseEvent(event);
-        if (toolHandler) {
-            toolHandler->updateCursor();
-        }
-        else {
-            resetCursor();
-        }
+        resetCursor();
     }
 }
 

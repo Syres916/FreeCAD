@@ -377,6 +377,11 @@ void QGVNavStyle::stopPan()
     getViewer()->resetCursor();
 }
 
+bool QGVNavStyle::isPanning(QMouseEvent* event)
+{
+    return panningActive;
+}
+
 void QGVNavStyle::startClick(Qt::MouseButton b)
 {
     m_clickPending = true;

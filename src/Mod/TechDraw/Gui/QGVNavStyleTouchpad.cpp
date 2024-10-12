@@ -117,6 +117,11 @@ void QGVNavStyleTouchpad::handleMouseMoveEvent(QMouseEvent *event)
     stopZoom();
 }
 
+bool QGVNavStyleTouchpad::isPanning(QMouseEvent* event)
+{
+    return panningActive;
+}
+
 void QGVNavStyleTouchpad::setAnchor()
 {
     //this navigation style can not anchor under mouse since mouse is moving as part of zoom action

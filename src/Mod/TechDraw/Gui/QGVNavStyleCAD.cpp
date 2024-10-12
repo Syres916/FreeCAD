@@ -30,6 +30,7 @@
 #include "QGVNavStyleCAD.h"
 #include "QGVPage.h"
 
+#include <Base/Console.h>
 
 using namespace TechDrawGui;
 
@@ -95,6 +96,7 @@ void QGVNavStyleCAD::handleMouseMoveEvent(QMouseEvent *event)
 
     //pan mode 1 - MMB + move
     if (QGuiApplication::mouseButtons() & Qt::MiddleButton) {
+        Base::Console().Message("CAD Nav Style pan mode 1 MMB + move\n");
         if (panningActive) {
             pan(event->pos());
             event->accept();
@@ -107,10 +109,12 @@ void QGVNavStyleCAD::handleMouseMoveEvent(QMouseEvent *event)
     //pan mode 2 - CNTL + RMB click + move
     if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier) &&
         panningActive) {
+        Base::Console().Message("CAD Nav Style pan mode 2 Ctrl + RMB + move\n");
         pan(event->pos());
         event->accept();
     } else if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier) &&
         m_panPending) {
+        Base::Console().Message("CAD Nav Style pan *pending* mode 2 Ctrl + RMB + move\n");
         startPan(event->pos());
         event->accept();
     }
@@ -170,6 +174,11 @@ void QGVNavStyleCAD::handleMouseReleaseEvent(QMouseEvent *event)
         m_panPending = true;
         event->accept();
     }
+}
+
+bool QGVNavStyleCAD::isPanning(QMouseEvent* event)
+{
+    return panningActive;
 }
 
 bool QGVNavStyleCAD::allowContextMenu(QContextMenuEvent *event)

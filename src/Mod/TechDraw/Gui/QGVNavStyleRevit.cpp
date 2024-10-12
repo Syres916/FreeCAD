@@ -111,6 +111,11 @@ void QGVNavStyleRevit::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+bool QGVNavStyleRevit::isPanning(QMouseEvent* event)
+{
+    return panningActive;
+}
+
 bool QGVNavStyleRevit::allowContextMenu(QContextMenuEvent *event)
 {
 //    Base::Console().Message("QGVNSRevit::allowContextMenu()\n");

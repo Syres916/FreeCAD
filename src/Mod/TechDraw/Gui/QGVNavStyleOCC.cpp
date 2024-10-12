@@ -126,6 +126,11 @@ void QGVNavStyleOCC::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+bool QGVNavStyleOCC::isPanning(QMouseEvent* event)
+{
+    return panningActive;
+}
+
 bool QGVNavStyleOCC::allowContextMenu(QContextMenuEvent *event)
 {
 //    Base::Console().Message("QGVNSOCC::allowContextMenu()\n");
