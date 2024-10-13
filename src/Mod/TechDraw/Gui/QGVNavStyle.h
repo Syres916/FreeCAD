@@ -98,6 +98,8 @@ public:
     virtual void placeBalloon(QPoint p);
     virtual void balloonCursorMovement(QMouseEvent *event);
 
+    virtual bool isPanning();
+
 protected:
     virtual void initialize();
     virtual void setAnchor();

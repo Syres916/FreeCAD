@@ -80,4 +80,10 @@ void QGVNavStyleTinkerCAD::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+
+bool QGVNavStyleTinkerCAD::isPanning()
+{
+    return panningActive;
+}
+
 }  // namespace TechDrawGui

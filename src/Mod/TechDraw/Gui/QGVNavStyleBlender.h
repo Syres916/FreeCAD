@@ -42,6 +42,7 @@ public:
     void handleMousePressEvent(QMouseEvent *event) override;
     void handleMouseMoveEvent(QMouseEvent *event) override;
     void handleMouseReleaseEvent(QMouseEvent *event) override;
+    bool isPanning() override;
 
     //context menu (RMB) prevents pan mode 2 (LMB + RMB)
     bool allowContextMenu(QContextMenuEvent *event) override;

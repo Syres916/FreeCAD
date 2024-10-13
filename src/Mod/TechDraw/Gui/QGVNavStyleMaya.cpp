@@ -116,6 +116,11 @@ void QGVNavStyleMaya::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+bool QGVNavStyleMaya::isPanning()
+{
+    return panningActive;
+}
+
 bool QGVNavStyleMaya::allowContextMenu(QContextMenuEvent *event)
 {
 //    Base::Console().Message("QGVNSM::allowContextMenu()\n");

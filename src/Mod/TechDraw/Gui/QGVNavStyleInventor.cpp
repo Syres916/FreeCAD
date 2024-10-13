@@ -106,4 +106,9 @@ void QGVNavStyleInventor::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+bool QGVNavStyleInventor::isPanning()
+{
+    return panningActive;
+}
+
 }  // namespace TechDrawGui

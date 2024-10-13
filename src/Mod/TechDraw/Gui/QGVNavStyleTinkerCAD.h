@@ -43,6 +43,7 @@ public:
     void handleMouseMoveEvent(QMouseEvent *event) override;
     void handleMousePressEvent(QMouseEvent *event) override;
     void handleMouseReleaseEvent(QMouseEvent *event) override;
+    bool isPanning() override;
 
 protected:
 private:

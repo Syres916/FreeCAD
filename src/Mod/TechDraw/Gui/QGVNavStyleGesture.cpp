@@ -95,6 +95,11 @@ void QGVNavStyleGesture::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+bool QGVNavStyleGesture::isPanning()
+{
+    return panningActive;
+}
+
 //RMB for pan conflicts with RMB for context menu
 bool QGVNavStyleGesture::allowContextMenu(QContextMenuEvent *event)
 {

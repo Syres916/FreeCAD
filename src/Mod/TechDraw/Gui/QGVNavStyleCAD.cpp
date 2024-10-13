@@ -172,6 +172,11 @@ void QGVNavStyleCAD::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+bool QGVNavStyleCAD::isPanning()
+{
+    return panningActive;
+}
+
 bool QGVNavStyleCAD::allowContextMenu(QContextMenuEvent *event)
 {
 //    Base::Console().Message("QGVNSCAD::allowContextMenu()\n");
