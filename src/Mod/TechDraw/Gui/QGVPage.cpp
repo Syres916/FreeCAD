@@ -524,7 +524,7 @@ void QGVPage::mousePressEvent(QMouseEvent* event)
 
 void QGVPage::mouseMoveEvent(QMouseEvent* event)
 {
-    if (m_navStyle->isPanning(event)) {
+    if (m_navStyle->isPanning()) {
         m_navStyle->handleMouseMoveEvent(event);
         setPanCursor();
     }

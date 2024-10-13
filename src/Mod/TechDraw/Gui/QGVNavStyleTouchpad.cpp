@@ -117,7 +117,7 @@ void QGVNavStyleTouchpad::handleMouseMoveEvent(QMouseEvent *event)
     stopZoom();
 }
 
-bool QGVNavStyleTouchpad::isPanning(QMouseEvent* event)
+bool QGVNavStyleTouchpad::isPanning()
 {
     return panningActive;
 }

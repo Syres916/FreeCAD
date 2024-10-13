@@ -98,7 +98,7 @@ public:
     virtual void placeBalloon(QPoint p);
     virtual void balloonCursorMovement(QMouseEvent *event);
 
-    virtual bool isPanning(QMouseEvent* event);
+    virtual bool isPanning();
 
 protected:
     virtual void initialize();
@@ -115,8 +115,8 @@ protected:
     int m_reversePan;
     int m_reverseScroll;
     QPoint panOrigin;
-    bool panningActive;
     QPoint zoomOrigin;
+    bool panningActive;
     bool zoomingActive;
     bool m_clickPending;
     bool m_panPending;

@@ -172,7 +172,7 @@ void QGVNavStyleCAD::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-bool QGVNavStyleCAD::isPanning(QMouseEvent* event)
+bool QGVNavStyleCAD::isPanning()
 {
     return panningActive;
 }

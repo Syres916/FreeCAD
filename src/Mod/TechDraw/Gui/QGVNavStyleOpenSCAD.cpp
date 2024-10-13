@@ -136,7 +136,7 @@ void QGVNavStyleOpenSCAD::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-bool QGVNavStyleOpenSCAD::isPanning(QMouseEvent* event)
+bool QGVNavStyleOpenSCAD::isPanning()
 {
     return panningActive;
 }

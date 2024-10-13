@@ -377,7 +377,7 @@ void QGVNavStyle::stopPan()
     getViewer()->resetCursor();
 }
 
-bool QGVNavStyle::isPanning(QMouseEvent* event)
+bool QGVNavStyle::isPanning()
 {
     return panningActive;
 }

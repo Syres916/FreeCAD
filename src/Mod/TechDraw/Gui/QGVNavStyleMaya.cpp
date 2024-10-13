@@ -116,7 +116,7 @@ void QGVNavStyleMaya::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-bool QGVNavStyleMaya::isPanning(QMouseEvent* event)
+bool QGVNavStyleMaya::isPanning()
 {
     return panningActive;
 }

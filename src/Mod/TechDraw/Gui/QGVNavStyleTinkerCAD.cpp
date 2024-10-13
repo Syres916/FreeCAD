@@ -81,7 +81,7 @@ void QGVNavStyleTinkerCAD::handleMouseReleaseEvent(QMouseEvent *event)
 }
 
 
-bool QGVNavStyleTinkerCAD::isPanning(QMouseEvent* event)
+bool QGVNavStyleTinkerCAD::isPanning()
 {
     return panningActive;
 }

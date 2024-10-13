@@ -41,7 +41,7 @@ public:
     void handleMousePressEvent(QMouseEvent *event) override;
     void handleMouseMoveEvent(QMouseEvent *event) override;
     void handleMouseReleaseEvent(QMouseEvent *event) override;
-    bool isPanning(QMouseEvent* event);
+    bool isPanning() override;
 
     bool allowContextMenu(QContextMenuEvent *event) override;
 

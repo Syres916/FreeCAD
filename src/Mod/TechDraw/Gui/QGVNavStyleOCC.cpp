@@ -126,7 +126,7 @@ void QGVNavStyleOCC::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-bool QGVNavStyleOCC::isPanning(QMouseEvent* event)
+bool QGVNavStyleOCC::isPanning()
 {
     return panningActive;
 }

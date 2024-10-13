@@ -113,7 +113,7 @@ void QGVNavStyleBlender::handleMouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-bool QGVNavStyleBlender::isPanning(QMouseEvent* event)
+bool QGVNavStyleBlender::isPanning()
 {
     return panningActive;
 }
