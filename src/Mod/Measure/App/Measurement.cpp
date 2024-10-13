@@ -123,6 +123,7 @@ MeasureType Measurement::findType()
     int torus = 0;
     int spheres = 0;
     int vols = 0;
+    int other = 0;
 
     for (; obj != objects.end(); ++obj, ++subEl) {
 
@@ -184,12 +185,16 @@ MeasureType Measurement::findType()
                     }
                 } break;
                 default:
+                    other++;
                     break;
             }
         }
     }
 
-    if (vols > 0) {
+    if (other > 0) {
+        mode = MeasureType::Invalid;
+    }
+    else if (vols > 0) {
         if (verts > 0 || edges > 0 || faces > 0) {
             mode = MeasureType::Invalid;
         }
@@ -287,7 +292,11 @@ TopoDS_Shape Measurement::getShape(App::DocumentObject* rootObj, const char* sub
     std::vector<std::string> names = Base::Tools::splitSubName(subName);
 
     if (names.empty() || names.back() == "") {
-        return Part::Feature::getShape(rootObj);
+        TopoDS_Shape shape = Part::Feature::getShape(rootObj);
+        if (shape.IsNull()) {
+            throw Part::NullShapeException("null shape in measurement");
+        }
+        return shape;
     }
 
     try {

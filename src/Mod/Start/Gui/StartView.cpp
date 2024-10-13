@@ -49,6 +49,8 @@
 #include <Base/Tools.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
+#include <Gui/View3DInventor.h>
+#include <Gui/View3DInventorViewer.h>
 #include <gsl/pointers>
 
 using namespace StartGui;
@@ -122,14 +124,13 @@ StartView::StartView(QWidget* parent)
     firstStartScrollArea->setWidgetResizable(true);
 
     auto firstStartRegion = gsl::owner<QHBoxLayout*>(new QHBoxLayout(firstStartScrollWidget));
-    firstStartRegion->addStretch();
+    firstStartRegion->setAlignment(Qt::AlignCenter);
     auto firstStartWidget = gsl::owner<FirstStartWidget*>(new FirstStartWidget(this));
     connect(firstStartWidget,
             &FirstStartWidget::dismissed,
             this,
             &StartView::firstStartWidgetDismissed);
     firstStartRegion->addWidget(firstStartWidget);
-    firstStartRegion->addStretch();
     _contents->addWidget(firstStartScrollArea);
 
     // Documents page
@@ -477,6 +478,17 @@ void StartView::firstStartWidgetDismissed()
 
 void StartView::changeEvent(QEvent* event)
 {
+    _openFirstStart->setEnabled(true);
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    if (doc) {
+        Gui::View3DInventor* view = static_cast<Gui::View3DInventor*>(doc->getActiveView());
+        if (view) {
+            Gui::View3DInventorViewer* viewer = view->getViewer();
+            if (viewer->isEditing()) {
+                _openFirstStart->setEnabled(false);
+            }
+        }
+    }
     if (event->type() == QEvent::LanguageChange) {
         this->retranslateUi();
     }

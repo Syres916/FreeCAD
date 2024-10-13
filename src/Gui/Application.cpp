@@ -42,6 +42,7 @@
 #endif
 
 #include <QLoggingCategory>
+#include <fmt/format.h>
 
 #include <App/Document.h>
 #include <App/DocumentObjectPy.h>
@@ -637,21 +638,10 @@ void Application::open(const char* FileName, const char* Module)
                 }
             }
             else {
-                // Load using provided python module
-                {
-                    Base::PyGILStateLocker locker;
-                    Py::Module moduleIo(PyImport_ImportModule("freecad.module_io"));
-                    const auto dictS = moduleIo.getDict().keys().as_string();
-                    if (!moduleIo.isNull() && moduleIo.hasAttr("OpenInsertObject"))
-                    {
-                        const Py::TupleN args(
-                            Py::Module(PyImport_ImportModule(Module)),
-                            Py::String(unicodepath),
-                            Py::String("open")
-                        );
-                        moduleIo.callMemberFunction("OpenInsertObject", args);
-                    }
-                }
+                std::string code = fmt::format("from freecad import module_io\n"
+                                               "module_io.OpenInsertObject(\"{}\", \"{}\", \"{}\")\n",
+                                               Module, unicodepath, "open");
+                Gui::Command::runCommand(Gui::Command::App, code.c_str());
 
                 // ViewFit
                 if (sendHasMsgToActiveView("ViewFit")) {
@@ -690,7 +680,7 @@ void Application::importFrom(const char* FileName, const char* DocName, const ch
     wc.setIgnoreEvents(WaitCursor::NoEvents);
     Base::FileInfo File(FileName);
     std::string te = File.extension();
-    string unicodepath = Base::Tools::escapedUnicodeFromUtf8(File.filePath().c_str());
+    string unicodepath = File.filePath().c_str();
     unicodepath = Base::Tools::escapeEncodeFilename(unicodepath);
 
     if (Module) {
@@ -716,22 +706,10 @@ void Application::importFrom(const char* FileName, const char* DocName, const ch
                     }
                 }
 
-                // Load using provided python module
-                {
-                    Base::PyGILStateLocker locker;
-                    Py::Module moduleIo(PyImport_ImportModule("freecad.module_io"));
-                    const auto dictS = moduleIo.getDict().keys().as_string();
-                    if (!moduleIo.isNull() && moduleIo.hasAttr("OpenInsertObject"))
-                    {
-                        const Py::TupleN args(
-                            Py::Module(PyImport_ImportModule(Module)),
-                            Py::String(unicodepath),
-                            Py::String("insert"),
-                            Py::String(DocName)
-                        );
-                        moduleIo.callMemberFunction("OpenInsertObject", args);
-                    }
-                }
+                std::string code = fmt::format("from freecad import module_io\n"
+                                               "module_io.OpenInsertObject(\"{}\", \"{}\", \"{}\", \"{}\")\n",
+                                               Module, unicodepath, "insert", DocName);
+                Gui::Command::runCommand(Gui::Command::App, code.c_str());
 
                 // Commit the transaction
                 if (doc && !pendingCommand) {
@@ -990,6 +968,10 @@ void Application::checkForRecomputes() {
         return;
     WaitCursor wc;
     wc.restoreCursor();
+
+    // Splasher is shown ontop of warnings on macOS so stop it before it's too late
+    getMainWindow()->stopSplasher();
+
     auto res = QMessageBox::warning(getMainWindow(), QObject::tr("Recomputation required"),
                                     QObject::tr("Some document(s) require recomputation for migration purposes. "
                                                 "It is highly recommended to perform a recomputation before "
