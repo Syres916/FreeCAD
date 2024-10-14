@@ -67,6 +67,7 @@ void PropertyPartShape::setValue(const TopoShape& sh)
 {
     aboutToSetValue();
     _Shape = sh;
+
     auto obj = Base::freecad_dynamic_cast<App::DocumentObject>(getContainer());
     if(obj) {
         auto tag = obj->getID();
@@ -78,6 +79,12 @@ void PropertyPartShape::setValue(const TopoShape& sh)
         if (!_Shape.Hasher && _Shape.hasChildElementMap()) {
             _Shape.Hasher = obj->getDocument()->getStringHasher();
             _Shape.hashChildMaps();
+        }
+        static const char* partRuledSurfaceType = "Sketcher::SketchObject";
+        if (strcmp(obj->getTypeId().getName(), partRuledSurfaceType) != 0) {
+            if ( ! _Shape.isNull() && ! _Shape.isValid() ) {
+                _Shape.testSurface();
+            }
         }
     }
     hasSetValue();

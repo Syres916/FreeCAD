@@ -3061,12 +3061,57 @@ void TopoShape::sewShape(double tolerance)
     this->_Shape = sew.SewedShape();
 }
 
-bool TopoShape::fix()
+bool TopoShape::testSurface()
 {
     if (this->_Shape.IsNull()) {
         return false;
     }
 
+    TopAbs_ShapeEnum type = this->_Shape.ShapeType();
+    if (type == TopAbs_FACE) {
+
+        auto copy = makeElementCopy();
+        ShapeFix_Shape fix(copy._Shape);
+        fix.Perform();
+
+        if (fix.Shape().IsSame(copy._Shape)) {
+            return false;
+        }
+
+        BRepCheck_Analyzer aChecker(fix.Shape());
+        if (!aChecker.IsValid()) {
+            return false;
+        }
+
+        ShapeFix_Shape fixThis(this->_Shape);
+        fixThis.Perform();
+
+        aChecker.Init(fixThis.Shape());
+        if (aChecker.IsValid()) {
+            // Must call makESHAPE() (which calls mapSubElement()) to remap element
+            // names because ShapeFix_Shape may delete (e.g. small edges) or modify
+            // the input shape.
+            //
+            // See https://github.com/realthunder/FreeCAD/issues/595. Sketch001
+            // has small edges. Simply recompute the sketch to trigger call of fix()
+            // through makEWires(), and it will remove those edges. Without
+            // remapping, there will be invalid index jumpping in reference in
+            // Sketch002.ExternalEdge5.
+            makeShapeWithElementMap(fixThis.Shape(), MapperHistory(fixThis), {*this});
+        }
+        else {
+           makeShapeWithElementMap(fix.Shape(), MapperHistory(fix), {copy});
+        }
+    }
+    return true;
+}
+
+bool TopoShape::fix()
+{
+    if (this->_Shape.IsNull()) {
+        return false;
+    }
+    Base::Console().Warning("This is a Face\n");
     // First, we do fix regardless if the current shape is valid or not,
     // because not all problems that are handled by ShapeFix_Shape can be
     // recognized by BRepCheck_Analyzer.
