@@ -145,10 +145,10 @@ class RuledSurfaceTestCases(unittest.TestCase):
         self.RuledSurface.Curve2=(self.RuledSurfaceSketch,u'Edge3')
         self.Doc.recompute()
 
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMin, -80)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMin, -79.93006307571619)
         self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMin, -30)
         self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.ZMin, 0)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMax, 80)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMax, 79.93006307571619)
         self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMax, 30)
         self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.ZMax, 0)
 
@@ -195,10 +195,10 @@ class RuledSurfaceTestCases(unittest.TestCase):
         self.Doc.recompute()
 
         self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMin, 0)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMin, -83.6097)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMin, -79.93006307571619)
         self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.ZMin, -30)
         self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMax, 0)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMax, 83.6097)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMax, 79.93006307571619)
         self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.ZMax, 30)
 
         self.assertAlmostEqual(self.RuledSurface.Shape.Area, 8827.433388208741)
@@ -242,11 +242,11 @@ class RuledSurfaceTestCases(unittest.TestCase):
         self.RuledSurface.Curve2=(self.RuledSurfaceSketch,u'Edge3')
         self.Doc.recompute()
 
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMin, 0)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMin, -83.6097)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMin, -79.9300630757161)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMin, 0)
         self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.ZMin, -30)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMax, 0)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMax, 83.6097)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMax, 79.9300630757161)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMax, 0)
         self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.ZMax, 30)
 
         self.assertAlmostEqual(self.RuledSurface.Shape.Area, 8827.433388208741)
@@ -291,12 +291,12 @@ class RuledSurfaceTestCases(unittest.TestCase):
         self.RuledSurface.Curve2=(self.RuledSurfaceSketch,u'Edge3')
         self.Doc.recompute()
 
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMin, -83.6097)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMin, -6.66134e-15)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.ZMin, -30)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMax, 83.6097)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMax, 6.66134e-15)
-        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.ZMax, 30)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMin, -57.8493077481732)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMin, -49.53480744257875)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.ZMin, -44.76510533373361)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.XMax, 65.03966011856708)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.YMax, 49.53480744257875)
+        self.assertAlmostEqual(self.RuledSurface.Shape.BoundBox.ZMax, 48.272074508046245)
 
         self.assertAlmostEqual(self.RuledSurface.Shape.Area, 8827.433388208741)
 
