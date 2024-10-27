@@ -87,16 +87,16 @@ Gui::Action * PartCmdSelectFilter::createAction()
 
     QAction* cmd0 = pcAction->addAction(QString());
     cmd0->setIcon(Gui::BitmapFactory().iconFromTheme("vertex-selection"));
-    cmd0->setShortcut(QKeySequence(QString::fromUtf8("X,S")));
+    cmd0->setShortcut(QKeySequence(QString::fromUtf8("Ctrl+Alt+D")));
     QAction* cmd1 = pcAction->addAction(QString());
     cmd1->setIcon(Gui::BitmapFactory().iconFromTheme("edge-selection"));
-    cmd1->setShortcut(QKeySequence(QString::fromUtf8("E,S")));
+    cmd1->setShortcut(QKeySequence(QString::fromUtf8("Ctrl+Alt+E")));
     QAction* cmd2 = pcAction->addAction(QString());
     cmd2->setIcon(Gui::BitmapFactory().iconFromTheme("face-selection"));
-    cmd2->setShortcut(QKeySequence(QString::fromUtf8("F,S")));
+    cmd2->setShortcut(QKeySequence(QString::fromUtf8("Ctrl+Alt+F")));
     QAction* cmd3 = pcAction->addAction(QString());
     cmd3->setIcon(Gui::BitmapFactory().iconFromTheme("clear-selection"));
-    cmd3->setShortcut(QKeySequence(QString::fromUtf8("C,S")));
+    cmd3->setShortcut(QKeySequence(QString::fromUtf8("Ctrl+Alt+G")));
 
     _pcAction = pcAction;
     languageChange();
@@ -175,7 +175,7 @@ PartCmdVertexSelection::PartCmdVertexSelection()
     sWhatsThis    = "Part_VertexSelection";
     sStatusTip    = QT_TR_NOOP("Only allow the selection of vertices");
     sPixmap       = "vertex-selection";
-    sAccel        = "X, S";
+    sAccel        = "Ctrl+Alt+D";
     eType         = Alter3DView;
 }
 
@@ -200,7 +200,7 @@ PartCmdEdgeSelection::PartCmdEdgeSelection()
     sWhatsThis    = "Part_EdgeSelection";
     sStatusTip    = QT_TR_NOOP("Only allow the selection of edges");
     sPixmap       = "edge-selection";
-    sAccel        = "E, S";
+    sAccel        = "Ctrl+Alt+E";
     eType         = Alter3DView;
 }
 
@@ -225,7 +225,7 @@ PartCmdFaceSelection::PartCmdFaceSelection()
     sWhatsThis    = "Part_FaceSelection";
     sStatusTip    = QT_TR_NOOP("Only allow the selection of faces");
     sPixmap       = "face-selection";
-    sAccel        = "F, S";
+    sAccel        = "Ctrl+Alt+F";
     eType         = Alter3DView;
 }
 
@@ -250,7 +250,7 @@ PartCmdRemoveSelectionGate::PartCmdRemoveSelectionGate()
     sWhatsThis    = "Part_RemoveSelectionGate";
     sStatusTip    = QT_TR_NOOP("All selection filters cleared");
     sPixmap       = "clear-selection";
-    sAccel        = "C, S";
+    sAccel        = "Ctrl+Alt+G";
     eType         = Alter3DView;
 }
 
