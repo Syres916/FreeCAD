@@ -382,19 +382,20 @@ class Edit(gui_base_original.Modifier):
         """
         remove callbacks used during editing if they exist
         """
-        view = Gui.ActiveDocument.ActiveView
-        if self._keyPressedCB:
-            view.removeEventCallbackSWIG(coin.SoKeyboardEvent.getClassTypeId(), self._keyPressedCB)
-            self._keyPressedCB = None
-            #App.Console.PrintMessage("Draft edit keyboard callback unregistered \n")
-        if self._mouseMovedCB:
-            view.removeEventCallbackSWIG(coin.SoLocation2Event.getClassTypeId(), self._mouseMovedCB)
-            self._mouseMovedCB = None
-            #App.Console.PrintMessage("Draft edit location callback unregistered \n")
-        if self._mousePressedCB:
-            view.removeEventCallbackSWIG(coin.SoMouseButtonEvent.getClassTypeId(), self._mousePressedCB)
-            self._mousePressedCB = None
-            #App.Console.PrintMessage("Draft edit mouse button callback unregistered \n")
+        if hasattr(Gui.ActiveDocument, "ActiveView"):
+            view = Gui.ActiveDocument.ActiveView
+            if self._keyPressedCB:
+                view.removeEventCallbackSWIG(coin.SoKeyboardEvent.getClassTypeId(), self._keyPressedCB)
+                self._keyPressedCB = None
+                #App.Console.PrintMessage("Draft edit keyboard callback unregistered \n")
+            if self._mouseMovedCB:
+                view.removeEventCallbackSWIG(coin.SoLocation2Event.getClassTypeId(), self._mouseMovedCB)
+                self._mouseMovedCB = None
+                #App.Console.PrintMessage("Draft edit location callback unregistered \n")
+            if self._mousePressedCB:
+                view.removeEventCallbackSWIG(coin.SoMouseButtonEvent.getClassTypeId(), self._mousePressedCB)
+                self._mousePressedCB = None
+                #App.Console.PrintMessage("Draft edit mouse button callback unregistered \n")
 
     # -------------------------------------------------------------------------
     # SCENE EVENT HANDLERS
