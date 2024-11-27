@@ -2789,6 +2789,35 @@ QWidget#thumbnailWidget[state="pressed"] {
   padding-right: 12px;
  }
 
+QToolBar[objectName="Draft snap"] QToolButton, QToolBar[objectName="draft_snap_widget"] QToolButton {
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 0px;
+}
+
+QToolBar[objectName="Draft snap"] QToolButton:checked, QToolBar[objectName="draft_snap_widget"] QToolButton:checked {
+  border-radius: 3px;
+  padding: 0px;
+  background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #efefef, stop:0.7 #d8d8d8, stop:1 #d8d8d8);
+  border-left: 1px solid #ababab;
+  border-top: 1px solid #ababab;
+  border-right: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+QToolBar[objectName="Draft snap"] QToolButton:checked:disabled, QToolBar[objectName="draft_snap_widget"] QToolButton:checked:disabled {
+  background-color: transparent;
+  border-radius: 3px;
+  padding: 0px;
+  outline: none;
+}
+
+QToolBar[objectName="Draft snap"] QToolButton:checked:hover, QToolBar[objectName="draft_snap_widget"] QToolButton:checked:hover {
+  background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #efefef, stop:0.7 #d8d8d8, stop:1 #d8d8d8);
+  border: 1px solid #ababab;
+  padding: 0px;
+}
+
 /* Below is a fix for indentation in properties, but this is a QT 6 bug only and so is disabled since Windows is as I write this still on QT 5. */
 /* QTreeView::item:selected:active#groupsTreeView {
   background-color: @ThemeAccentColor1;
