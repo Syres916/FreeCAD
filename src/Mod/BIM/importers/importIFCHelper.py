@@ -84,7 +84,7 @@ def getPreferences():
         3 = One compound per storey
     """
     if FreeCAD.GuiUp and params.get_param_arch("ifcShowDialog"):
-        Gui.showPreferences("Import-Export", 0)
+        Gui.showPreferences("Import-Export", "IFCImport")
 
     preferences = {
         'DEBUG': params.get_param_arch("ifcDebug"),
