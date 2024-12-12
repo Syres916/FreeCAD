@@ -504,6 +504,50 @@ void DlgPreferencesImp::activateGroupPage(const QString& group, int index)
 }
 
 /**
+ * Activates the page with name \a pageName of the group with name \a group.
+ */
+void DlgPreferencesImp::activateGroupPageByPageName(const QString& group, const QString& pageName)
+{
+
+    for (int i = 0; i < ui->groupWidgetStack->count(); i++) {
+        auto* pageStackWidget = qobject_cast<QStackedWidget*>(ui->groupWidgetStack->widget(i));
+
+        if (!pageStackWidget) {
+            continue;
+        }
+
+        if (pageStackWidget->property(GroupNameProperty).toString() == group) {
+            ui->groupWidgetStack->setCurrentWidget(pageStackWidget);
+            Base::Console().Warning("activateGroupPage by name \n");
+
+            for (int j = 0; j < pageStackWidget->count(); j++) {
+                // auto pages = qobject_cast<QStackedWidget*>(groupItem->getWidget());
+                auto page = qobject_cast<PreferencePage*>(pageStackWidget->widget(j));
+                if (page) {
+                    std::string currentPageName = page->property(PageNameProperty).toString().toStdString();
+                    // Base::Console().Warning("%s\n", currentPageName);
+                    if (currentPageName == ":/ui/preferences-dxf.ui") {
+                        Base::Console().Warning("%i is the DXF index\n", j);
+                    }
+                    if (currentPageName == ":/ui/preferences-ifc.ui") {
+                        Base::Console().Warning("%i is the IFC index\n", j);
+                    }
+                    if (currentPageName == ":/ui/preferences-ifc-export.ui") {
+                        Base::Console().Warning("%i is the IFC Export index\n", j);
+                    }
+                }
+            }
+
+            pageStackWidget->setCurrentIndex(0);
+
+            updatePageDependentWidgets();
+
+            return;
+        }
+    }
+}
+
+/**
  * Returns the group name \a group and position \a index of the active page.
  */
 void DlgPreferencesImp::activeGroupPage(QString& group, int& index) const
