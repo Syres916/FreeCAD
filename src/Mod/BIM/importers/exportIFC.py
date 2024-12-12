@@ -111,7 +111,7 @@ def getPreferences():
     import ifcopenshell
 
     if FreeCAD.GuiUp and params.get_param_arch("ifcShowDialog"):
-        FreeCADGui.showPreferences("Import-Export", 1)
+        FreeCADGui.showPreferences("Import-Export", "IFCExport")
     ifcunit = params.get_param_arch("ifcUnit")
 
     # Factor to multiply the dimension in millimeters
