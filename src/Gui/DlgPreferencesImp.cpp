@@ -518,27 +518,15 @@ void DlgPreferencesImp::activateGroupPageByPageName(const QString& group, const 
 
         if (pageStackWidget->property(GroupNameProperty).toString() == group) {
             ui->groupWidgetStack->setCurrentWidget(pageStackWidget);
-            Base::Console().Warning("activateGroupPage by name \n");
-
-            for (int j = 0; j < pageStackWidget->count(); j++) {
-                // auto pages = qobject_cast<QStackedWidget*>(groupItem->getWidget());
-                auto page = qobject_cast<PreferencePage*>(pageStackWidget->widget(j));
+            for (int pageIdx = 0; pageIdx < pageStackWidget->count(); pageIdx++) {
+                auto page = qobject_cast<PreferencePage*>(pageStackWidget->widget(pageIdx));
                 if (page) {
-                    std::string currentPageName = page->property(PageNameProperty).toString().toStdString();
-                    // Base::Console().Warning("%s\n", currentPageName);
-                    if (currentPageName == ":/ui/preferences-dxf.ui") {
-                        Base::Console().Warning("%i is the DXF index\n", j);
-                    }
-                    if (currentPageName == ":/ui/preferences-ifc.ui") {
-                        Base::Console().Warning("%i is the IFC index\n", j);
-                    }
-                    if (currentPageName == ":/ui/preferences-ifc-export.ui") {
-                        Base::Console().Warning("%i is the IFC Export index\n", j);
+                    if (page->property(PageNameProperty).toString() == pageName) {
+                        pageStackWidget->setCurrentIndex(pageIdx);
+                        break;
                     }
                 }
             }
-
-            pageStackWidget->setCurrentIndex(0);
 
             updatePageDependentWidgets();
 
