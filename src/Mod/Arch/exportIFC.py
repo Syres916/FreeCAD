@@ -107,7 +107,7 @@ def getPreferences():
     p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch")
 
     if FreeCAD.GuiUp and p.GetBool("ifcShowDialog", False):
-        FreeCADGui.showPreferences("Import-Export", 1)
+        FreeCADGui.showPreferencesByName("Import-Export", ":/ui/preferences-ifc-export.ui")
 
     ifcunit = p.GetInt("ifcUnit", 0)
 
