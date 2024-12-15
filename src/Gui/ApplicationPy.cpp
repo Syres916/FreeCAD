@@ -1362,16 +1362,39 @@ PyObject* Application::sShowDownloads(PyObject * /*self*/, PyObject *args)
     Py_Return;
 }
 
-PyObject* Application::sShowPreferences(PyObject * /*self*/, PyObject *args)
+PyObject* Application::sShowPreferences(PyObject* /*self*/, PyObject* args)
 {
-    char *pstr = nullptr;
-    int idx=0;
-    if (!PyArg_ParseTuple(args, "|si", &pstr, &idx))
+    char* pstr = nullptr;
+    int idx = 0;
+    if (!PyArg_ParseTuple(args, "|si", &pstr, &idx)) {
         return nullptr;
+    }
 
     Gui::Dialog::DlgPreferencesImp cDlg(getMainWindow());
-    if (pstr)
-        cDlg.activateGroupPage(QString::fromUtf8(pstr),idx);
+    if (pstr) {
+        cDlg.activateGroupPage(QString::fromUtf8(pstr), idx);
+    }
+
+    WaitCursor wc;
+    wc.restoreCursor();
+    cDlg.exec();
+    wc.setWaitCursor();
+
+    Py_Return;
+}
+
+PyObject* Application::sShowPreferencesByName(PyObject* /*self*/, PyObject* args)
+{
+    char* pstr = nullptr;
+    const char* prefType = "";
+    if (!PyArg_ParseTuple(args, "s|s", &pstr, &prefType)) {
+        return nullptr;
+    }
+
+    Gui::Dialog::DlgPreferencesImp cDlg(getMainWindow());
+    if (pstr && prefType) {
+        cDlg.activateGroupPageByPageName(QString::fromUtf8(pstr), QString::fromUtf8(prefType));
+    }
 
     WaitCursor wc;
     wc.restoreCursor();
