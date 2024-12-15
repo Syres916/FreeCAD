@@ -127,6 +127,7 @@ public:
     void reject() override;
     void reload();
     void activateGroupPage(const QString& group, int index);
+    void activateGroupPageByPageName(const QString& group, const QString& pageName);
     void activeGroupPage(QString& group, int& index) const;
 
 protected:
