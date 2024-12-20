@@ -280,6 +280,7 @@ void ExportOCAF2::setupObject(TDF_Label label,
                 aColorTool->SetVisibility(nodeLabel, Standard_False);
                 continue;
             }
+            vv.second.a = 1.0 - vv.second.a;
             const App::Color& c = vv.second;
             Quantity_ColorRGBA color = Tools::convertColor(c);
             auto colorType = vv.first[0] == 'F' ? XCAFDoc_ColorSurf : XCAFDoc_ColorCurv;
