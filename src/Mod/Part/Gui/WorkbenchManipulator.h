@@ -39,12 +39,6 @@ protected:
      */
     void modifyMenuBar(Gui::MenuItem* menuBar) override;
     /*!
-     * \brief modifyToolBars
-     * Method to manipulate the toolbar structure of a workbench
-     * The default implementation doesn't change anything.
-     */
-    void modifyToolBars([[maybe_unused]] Gui::ToolBarItem* toolBar) override;
-    /*!
      * \brief modifyDockWindows
      * Method to manipulate the dock window structure of a workbench
      * The default implementation doesn't change anything.
@@ -53,8 +47,6 @@ protected:
 
 private:
     static void addSectionCut(Gui::MenuItem* menuBar);
-    static void addSelectionFilter(Gui::ToolBarItem* toolBar);
-    static void addDatums(Gui::ToolBarItem* toolBar);
 };
 
 } // namespace PartGui

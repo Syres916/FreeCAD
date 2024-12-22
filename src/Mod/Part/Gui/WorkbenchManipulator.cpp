@@ -25,7 +25,6 @@
 #include "PreCompiled.h"
 #include "WorkbenchManipulator.h"
 #include <Gui/MenuManager.h>
-#include <Gui/ToolBarManager.h>
 
 using namespace PartGui;
 
@@ -55,35 +54,5 @@ void WorkbenchManipulator::addSectionCut(Gui::MenuItem* menuBar)
         auto add = new Gui::MenuItem(); // NOLINT
         add->setCommand("Part_SectionCut");
         par->insertItem(item, add);
-    }
-}
-
-void WorkbenchManipulator::addSelectionFilter(Gui::ToolBarItem* toolBar)
-{
-    if (auto view = toolBar->findItem("View")) {
-        auto add = new Gui::ToolBarItem(); // NOLINT
-        add->setCommand("Part_SelectFilter");
-        auto item = view->findItem("Std_TreeViewActions");
-        if (item) {
-            view->insertItem(item, add);
-        }
-        else {
-            view->appendItem(add);
-        }
-    }
-}
-
-void WorkbenchManipulator::addDatums(Gui::ToolBarItem* toolBar)
-{
-    if (auto view = toolBar->findItem("Structure")) {
-        auto add = new Gui::ToolBarItem(); // NOLINT
-        add->setCommand("Part_Datums");
-        auto item = view->findItem("Std_Group");
-        if (item) {
-            view->insertItem(item, add);
-        }
-        else {
-            view->appendItem(add);
-        }
     }
 }
