@@ -826,10 +826,11 @@ ToolBarItem* StdWorkbench::setupToolBars() const
     // Structure
     auto structure = new ToolBarItem( root );
     structure->setCommand("Structure");
+    *structure << "Std_Part";
 #ifdef BUILD_PART
     *structure << "Part_Datums";
 #endif
-    *structure << "Std_Part" << "Std_Group" << "Std_LinkActions" << "Std_VarSet";
+    *structure << "Std_Group" << "Std_LinkActions" << "Std_VarSet";
 
     // Help
     auto help = new ToolBarItem( root );
