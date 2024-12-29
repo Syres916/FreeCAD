@@ -32,6 +32,7 @@ class WorkbenchManipulator: public Gui::WorkbenchManipulator
 {
 protected:
     void modifyMenuBar(Gui::MenuItem* menuBar) override;
+    void modifyToolBars([[maybe_unused]] Gui::ToolBarItem* toolBar) override;
 };
 
 }  // namespace MeasureGui
