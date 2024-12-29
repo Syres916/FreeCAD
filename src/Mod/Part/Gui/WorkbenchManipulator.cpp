@@ -33,6 +33,10 @@ void WorkbenchManipulator::modifyMenuBar([[maybe_unused]] Gui::MenuItem* menuBar
     addSectionCut(menuBar);
 }
 
+void WorkbenchManipulator::modifyToolBars([[maybe_unused]] Gui::ToolBarItem* toolBar)
+{
+}
+
 void WorkbenchManipulator::modifyDockWindows([[maybe_unused]] Gui::DockWindowItems* dockWindow)
 {
 }
