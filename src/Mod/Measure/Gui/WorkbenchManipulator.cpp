@@ -23,6 +23,7 @@
 #include "PreCompiled.h"
 #include "WorkbenchManipulator.h"
 #include <Gui/MenuManager.h>
+#include <Gui/ToolBarManager.h>
 
 using namespace MeasureGui;
 
@@ -35,4 +36,8 @@ void WorkbenchManipulator::modifyMenuBar([[maybe_unused]] Gui::MenuItem* menuBar
     auto itemMeasure = new Gui::MenuItem();
     itemMeasure->setCommand("Std_Measure");
     menuTools->appendItem(itemMeasure);
+}
+
+void WorkbenchManipulator::modifyToolBars([[maybe_unused]] Gui::ToolBarItem* toolBar)
+{
 }
