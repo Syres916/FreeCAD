@@ -516,16 +516,16 @@ class PackageListItemDelegate(QtWidgets.QStyledItemDelegate):
             result += installed_version_string
             result += installed_date_string
         elif repo.status() == Addon.Status.NO_UPDATE_AVAILABLE:
+            result = translate("AddonsInstaller", "Up-to-date")
+            result += installed_version_string
+            result += installed_date_string
+        elif repo.status() == Addon.Status.UPDATE_AVAILABLE:
             style = "style='color:" + utils.warning_color_string() + ";'"
             result += (
                 f"<span {style}> "
                 + translate("AddonsInstaller", "Update available")
                 + "</span>"
             )
-            result += installed_version_string
-            result += installed_date_string
-        elif repo.status() == Addon.Status.UPDATE_AVAILABLE:
-            result = translate("AddonsInstaller", "Update available")
             result += installed_version_string
             result += installed_date_string
             result += available_version_string
