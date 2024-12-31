@@ -314,6 +314,7 @@ class PackageListItemDelegate(QtWidgets.QStyledItemDelegate):
         self.widget.ui.labelPackageName.setText(f"<h1>{addon.display_name}</h1>")
         self.widget.ui.labelIcon.setPixmap(addon.icon.pixmap(QtCore.QSize(48, 48)))
         self.widget.ui.labelStatus.setText(self.get_expanded_update_string(addon))
+        self.set_default_status_color()
         self.widget.ui.labelIcon.setText("")
         self.widget.ui.labelTags.setText("")
         if addon.metadata:
@@ -341,6 +342,7 @@ class PackageListItemDelegate(QtWidgets.QStyledItemDelegate):
         self.widget.ui.labelPackageName.setText(f"<b>{addon.display_name}</b>")
         self.widget.ui.labelIcon.setPixmap(addon.icon.pixmap(QtCore.QSize(16, 16)))
         self.widget.ui.labelStatus.setText(self.get_compact_update_string(addon))
+        self.set_default_status_color()
         self.widget.ui.labelIcon.setText("")
         if addon.metadata:
             self.widget.ui.labelVersion.setText(f"<i>v{addon.metadata.version}</i>")
@@ -358,6 +360,7 @@ class PackageListItemDelegate(QtWidgets.QStyledItemDelegate):
         self.widget.ui.labelPackageName.setText(f"<b>{addon.display_name}</b>")
         self.widget.ui.labelIcon.setPixmap(addon.icon.pixmap(QtCore.QSize(16, 16)))
         self.widget.ui.labelStatus.setText(self.get_compact_update_string(addon))
+        self.set_default_status_color()
         self.widget.ui.labelIcon.setText("")
         if addon.metadata:
             self.widget.ui.labelVersion.setText(f"<i>v{addon.metadata.version}</i>")
@@ -450,13 +453,29 @@ class PackageListItemDelegate(QtWidgets.QStyledItemDelegate):
         elif repo.status() == Addon.Status.NO_UPDATE_AVAILABLE:
             result = translate("AddonsInstaller", "Up-to-date")
         elif repo.status() == Addon.Status.UPDATE_AVAILABLE:
-            result = translate("AddonsInstaller", "Update available")
+            style = "style='color:" + utils.warning_color_string() + ";'"
+            result += (
+                f"<span {style}> "
+                + translate("AddonsInstaller", "Update available")
+                + "</span>"
+            )
         elif repo.status() == Addon.Status.PENDING_RESTART:
-            result = translate("AddonsInstaller", "Pending restart")
+            style = "style='color:" + utils.warning_color_string() + "; font:italic;'"
+            result += (
+                f"<span {style}> "
+                + translate("AddonsInstaller", "Pending restart")
+                + "</span>"
+            )
 
         if repo.is_disabled():
-            style = "style='color:" + utils.warning_color_string() + "; font-weight:bold;'"
-            result += f"<span {style}> [" + translate("AddonsInstaller", "DISABLED") + "]</span>"
+            style = (
+                "style='color:" + utils.warning_color_string() + "; font-weight:bold;'"
+            )
+            result += (
+                f"<span {style}> ["
+                + translate("AddonsInstaller", "DISABLED")
+                + "]</span>"
+            )
 
         return result
 
@@ -504,20 +523,43 @@ class PackageListItemDelegate(QtWidgets.QStyledItemDelegate):
             result += installed_version_string
             result += installed_date_string
         elif repo.status() == Addon.Status.UPDATE_AVAILABLE:
-            result = translate("AddonsInstaller", "Update available")
+            style = "style='color:" + utils.warning_color_string() + ";'"
+            result += (
+                f"<span {style}> "
+                + translate("AddonsInstaller", "Update available")
+            )
             result += installed_version_string
             result += installed_date_string
             result += available_version_string
+            result += "</span>"
         elif repo.status() == Addon.Status.PENDING_RESTART:
-            result = translate("AddonsInstaller", "Pending restart")
+            style = "style='color:" + utils.warning_color_string() + "; font:italic;'"
+            result += (
+                f"<span {style}> "
+                + translate("AddonsInstaller", "Pending restart")
+                + "</span>"
+            )
 
         if repo.is_disabled():
-            style = "style='color:" + utils.warning_color_string() + "; font-weight:bold;'"
+            style = (
+                "style='color:" + utils.warning_color_string() + "; font-weight:bold;'"
+            )
             result += (
-                f"<br/><span {style}>[" + translate("AddonsInstaller", "DISABLED") + "]</span>"
+                f"<br/><span {style}>["
+                + translate("AddonsInstaller", "DISABLED")
+                + "]</span>"
             )
 
         return result
+
+    def set_default_status_color(self):
+        pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/MainWindow")
+        current_stylesheet = pref.GetString("StyleSheet")
+        if current_stylesheet == "":
+            self.widget.ui.labelStatus.setStyleSheet(
+                "color: #2f9e44; font-weight: bold; background-color: transparent;"
+            )
+        return
 
     def paint(
         self,
