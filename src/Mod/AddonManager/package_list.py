@@ -314,6 +314,7 @@ class PackageListItemDelegate(QtWidgets.QStyledItemDelegate):
         self.widget.ui.labelPackageName.setText(f"<h1>{addon.display_name}</h1>")
         self.widget.ui.labelIcon.setPixmap(addon.icon.pixmap(QtCore.QSize(48, 48)))
         self.widget.ui.labelStatus.setText(self.get_expanded_update_string(addon))
+        self.set_default_status_color()
         self.widget.ui.labelIcon.setText("")
         self.widget.ui.labelTags.setText("")
         if addon.metadata:
@@ -341,6 +342,7 @@ class PackageListItemDelegate(QtWidgets.QStyledItemDelegate):
         self.widget.ui.labelPackageName.setText(f"<b>{addon.display_name}</b>")
         self.widget.ui.labelIcon.setPixmap(addon.icon.pixmap(QtCore.QSize(16, 16)))
         self.widget.ui.labelStatus.setText(self.get_compact_update_string(addon))
+        self.set_default_status_color()
         self.widget.ui.labelIcon.setText("")
         if addon.metadata:
             self.widget.ui.labelVersion.setText(f"<i>v{addon.metadata.version}</i>")
@@ -358,6 +360,7 @@ class PackageListItemDelegate(QtWidgets.QStyledItemDelegate):
         self.widget.ui.labelPackageName.setText(f"<b>{addon.display_name}</b>")
         self.widget.ui.labelIcon.setPixmap(addon.icon.pixmap(QtCore.QSize(16, 16)))
         self.widget.ui.labelStatus.setText(self.get_compact_update_string(addon))
+        self.set_default_status_color()
         self.widget.ui.labelIcon.setText("")
         if addon.metadata:
             self.widget.ui.labelVersion.setText(f"<i>v{addon.metadata.version}</i>")
@@ -548,6 +551,15 @@ class PackageListItemDelegate(QtWidgets.QStyledItemDelegate):
             )
 
         return result
+
+    def set_default_status_color(self):
+        pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/MainWindow")
+        current_stylesheet = pref.GetString("StyleSheet")
+        if current_stylesheet == "":
+            self.widget.ui.labelStatus.setStyleSheet(
+                "color: #2f9e44; font-weight: bold; background-color: transparent;"
+            )
+        return
 
     def paint(
         self,
