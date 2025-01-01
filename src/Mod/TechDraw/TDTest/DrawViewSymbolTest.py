@@ -21,7 +21,8 @@ class DrawViewSymbolTest(unittest.TestCase):
         sym = FreeCAD.ActiveDocument.addObject("TechDraw::DrawViewSymbol", "TestSymbol")
         path = os.path.dirname(os.path.abspath(__file__))
         symbolFileSpec = path + "/TestSymbol.svg"
-        f = open(symbolFileSpec, "r")
+        import codecs
+        f = codecs.open(symbolFileSpec, "r", encoding="utf-8")
         svg = f.read()
         f.close()
         sym.Symbol = svg
@@ -39,7 +40,8 @@ class DrawViewSymbolTest(unittest.TestCase):
         sym = FreeCAD.ActiveDocument.addObject("TechDraw::DrawViewSymbol", "NonAsciiSymbol")
         path = os.path.dirname(os.path.abspath(__file__))
         symbolFileSpec = path + "/TestNonAsciiSymbol.svg"
-        f = open(symbolFileSpec, "r")
+        import codecs
+        f = codecs.open(symbolFileSpec, "r", encoding="utf-8")
         svg = f.read()
         f.close()
         sym.Symbol = svg
