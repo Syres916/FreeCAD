@@ -106,7 +106,7 @@
 #include "ViewProviderExtension.h"
 #include "ViewProviderExtern.h"
 #include "ViewProviderFeature.h"
-#include "ViewProviderGeoFeatureGroup.h"
+#include "ViewProviderGeoFeatureGroup.h"Update CommandDoc.cpp
 #include "ViewProviderGeometryObject.h"
 #include "ViewProviderGeometryObjectPy.h"
 #include "ViewProviderGroupExtension.h"
@@ -710,9 +710,9 @@ void Application::importFrom(const char* FileName, const char* DocName, const ch
                 Command::doCommand(Command::App, "%s.open(u\"%s\")", Module, unicodepath.c_str());
                 setStatus(UserInitiatedOpenDocument, false);
                 App::Document* doc = App::GetApplication().getActiveDocument();
-                Gui::Application::checkPartialRestore(doc);
-                Gui::Application::checkRestoreError(doc);
-                Gui::Application::checkForRecomputes();
+                checkPartialRestore(doc);
+                checkRestoreError(doc);
+                checkForRecomputes();
                 if (activeDocument()) {
                     activeDocument()->setModified(false);
                 }
