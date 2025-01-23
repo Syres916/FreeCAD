@@ -106,7 +106,7 @@
 #include "ViewProviderExtension.h"
 #include "ViewProviderExtern.h"
 #include "ViewProviderFeature.h"
-#include "ViewProviderGeoFeatureGroup.h"Update CommandDoc.cpp
+#include "ViewProviderGeoFeatureGroup.h"
 #include "ViewProviderGeometryObject.h"
 #include "ViewProviderGeometryObjectPy.h"
 #include "ViewProviderGroupExtension.h"
