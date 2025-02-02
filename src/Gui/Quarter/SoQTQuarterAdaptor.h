@@ -138,7 +138,12 @@ private:
     SoNode * m_storedcamera;
     
 protected:
-    void draw2DString(const char * str, SbVec2s glsize, SbVec2f position);
+    static void draw2DString(const char* str,
+                             SbVec2s glsize,
+                             SbVec2f position,
+                             double colRed,
+                             double colGreen,
+                             double colBlue);
     void printString(const char * s);
     SbVec2f framesPerSecond;
 };
