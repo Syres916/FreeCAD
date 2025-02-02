@@ -2465,7 +2465,7 @@ void View3DInventorViewer::renderScene()
         else {
             draw2DString(stream.str().c_str(),
                          SbVec2s(10, 10),
-                         SbVec2f(1.25F, 0.1F),
+                         SbVec2f(1.1F, 0.1F),
                          ucRed,
                          ucGreen,
                          ucBlue);  // NOLINT
