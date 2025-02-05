@@ -27,8 +27,9 @@
 #include <Inventor/lists/SoCallbackList.h>
 #include <Inventor/sensors/SoTimerSensor.h>
 
-#include "QuarterWidget.h"
+#include <App/Color.h>
 
+#include "QuarterWidget.h"
 
 class SbViewportRegion;
 class SoCamera;
@@ -138,7 +139,7 @@ private:
     SoNode * m_storedcamera;
     
 protected:
-    void draw2DString(const char * str, SbVec2s glsize, SbVec2f position, double colRed, double colGreen, double colBlue);
+    static void draw2DString(const char * str, SbVec2s glsize, SbVec2f position, App::Color color);
     void printString(const char * s);
     SbVec2f framesPerSecond;
 };
