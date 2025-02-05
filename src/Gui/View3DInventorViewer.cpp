@@ -2222,17 +2222,20 @@ void View3DInventorViewer::renderScene()
         stream.precision(1);
         stream.setf(std::ios::fixed | std::ios::showpoint);
         stream << framesPerSecond[0] << " ms / " << framesPerSecond[1] << " fps";
-        ParameterGrp::handle hGrpOverlayL = App::GetApplication().GetParameterGroupByPath(
-            "User parameter:BaseApp/MainWindow/DockWindows/OverlayLeft");
+        ParameterGrp::handle hGrpOverlayL = App::GetApplication().GetParameterGroupByPath
+            ("User parameter:BaseApp/MainWindow/DockWindows/OverlayLeft");
         std::string overlayLeftWidgets = hGrpOverlayL->GetASCII("Widgets", "");
-        ParameterGrp::handle hGrpView = App::GetApplication().GetParameterGroupByPath(
-            "User parameter:BaseApp/Preferences/View");
-        unsigned long axisLetterColor =
-            hGrpView->GetUnsigned("AxisLetterColor", 4294902015);  // default FPS color (yellow)
+        ParameterGrp::handle hGrpView = App::GetApplication().GetParameterGroupByPath
+            ("User parameter:BaseApp/Preferences/View");
+        unsigned long axisLetterColor = hGrpView->GetUnsigned("AxisLetterColor", 4294902015); //default FPS color (yellow)
+        QColor color = App::Color::fromPackedRGBA<QColor>(axisLetterColor);
+        double ucRed = float(color.redF());
+        double ucGreen = float(color.greenF());
+        double ucBlue = float(color.blueF());
         draw2DString(stream.str().c_str(),
                      SbVec2s(10, 10),
                      SbVec2f((overlayLeftWidgets.empty() ? 0.1f : 1.1f), 0.1f),
-                     App::Color(static_cast<uint32_t>(axisLetterColor)));  // NOLINT
+                     ucRed, ucGreen, ucBlue);  // NOLINT
     }
 
     if (naviCubeEnabled)
