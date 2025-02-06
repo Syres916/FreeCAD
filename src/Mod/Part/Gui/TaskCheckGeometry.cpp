@@ -1199,6 +1199,7 @@ void TaskCheckGeometryDialog::onClicked(QAbstractButton *btn)
 
 void TaskCheckGeometryDialog::modifyStandardButtons(QDialogButtonBox* box)
 {
+    box->setObjectName(QStringLiteral("CheckGeometryBtnBox"));
     okBtn = box->button(QDialogButtonBox::Ok);
     okBtn->setText(tr("Run check"));
     settingsBtn = box->addButton(tr("Settings"),QDialogButtonBox::ActionRole);
