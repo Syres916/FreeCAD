@@ -195,6 +195,7 @@ private:
     bool reject() override;
     void modifyStandardButtons(QDialogButtonBox*) override;
     QPushButton *okBtn;
+    QPushButton *closeBtn;
     QPushButton *settingsBtn;
     QPushButton *resultsBtn;
 };

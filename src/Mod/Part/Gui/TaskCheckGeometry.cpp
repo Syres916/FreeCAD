@@ -1201,7 +1201,9 @@ void TaskCheckGeometryDialog::modifyStandardButtons(QDialogButtonBox* box)
 {
     box->setObjectName(QStringLiteral("CheckGeometryBtnBox"));
     okBtn = box->button(QDialogButtonBox::Ok);
-    okBtn->setText(tr("Run check"));
+    okBtn->setText(tr("Run"));
+    closeBtn = box->button(QDialogButtonBox::Close);
+    closeBtn->setText(QStringLiteral(""));
     settingsBtn = box->addButton(tr("Settings"),QDialogButtonBox::ActionRole);
     ParameterGrp::handle group = App::GetApplication().GetUserParameter().
     GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("Mod")->GetGroup("Part")->GetGroup("CheckGeometry");
