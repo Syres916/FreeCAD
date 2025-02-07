@@ -41,11 +41,11 @@
 #include <BRepTools.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAlgoAPI_BooleanOperation.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepAlgoAPI_Section.hxx>
+#include <Mod/Part/App/FCBRepAlgoAPI_BooleanOperation.h>
+#include <Mod/Part/App/FCBRepAlgoAPI_Common.h>
+#include <Mod/Part/App/FCBRepAlgoAPI_Cut.h>
+#include <Mod/Part/App/FCBRepAlgoAPI_Fuse.h>
+#include <Mod/Part/App/FCBRepAlgoAPI_Section.h>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRepBuilderAPI_GTransform.hxx>
@@ -474,11 +474,11 @@ std::vector<TopoShape> TopoShape::findSubShapesWithSharedVertex(const TopoShape&
                     return res;
                 }
                 if (shapeType == TopAbs_EDGE) {
-                    isLine = (geom->isDerivedFrom(GeomLine::getClassTypeId())
-                              || geom->isDerivedFrom(GeomLineSegment::getClassTypeId()));
+                    isLine = (geom->isDerivedFrom<GeomLine>()
+                              || geom->isDerivedFrom<GeomLineSegment>());
                 }
                 else {
-                    isPlane = geom->isDerivedFrom(GeomPlane::getClassTypeId());
+                    isPlane = geom->isDerivedFrom<GeomPlane>();
                 }
             }
 
@@ -491,8 +491,8 @@ std::vector<TopoShape> TopoShape::findSubShapesWithSharedVertex(const TopoShape&
                     // For lines, don't compare geometry, just check the
                     // vertices below instead, because the exact same edge
                     // may have different geometrical representation.
-                    if (!g2->isDerivedFrom(GeomLine::getClassTypeId())
-                        && !g2->isDerivedFrom(GeomLineSegment::getClassTypeId())) {
+                    if (!g2->isDerivedFrom<GeomLine>()
+                        && !g2->isDerivedFrom<GeomLineSegment>()) {
                         return false;
                     }
                 }
@@ -500,7 +500,7 @@ std::vector<TopoShape> TopoShape::findSubShapesWithSharedVertex(const TopoShape&
                     // For planes, don't compare geometry either, so that
                     // we don't need to worry about orientation and so on.
                     // Just check the edges.
-                    if (!g2->isDerivedFrom(GeomPlane::getClassTypeId())) {
+                    if (!g2->isDerivedFrom<GeomPlane>()) {
                         return false;
                     }
                 }
@@ -603,8 +603,8 @@ std::vector<TopoShape> TopoShape::findSubShapesWithSharedVertex(const TopoShape&
                             }
                             bool isLine2 = false;
                             gp_Pnt pt1, pt2;
-                            if (geom2->isDerivedFrom(GeomLine::getClassTypeId())
-                                || geom2->isDerivedFrom(GeomLineSegment::getClassTypeId())) {
+                            if (geom2->isDerivedFrom<GeomLine>()
+                                || geom2->isDerivedFrom<GeomLineSegment>()) {
                                 pt1 = BRep_Tool::Pnt(TopExp::FirstVertex(TopoDS::Edge(edge)));
                                 pt2 = BRep_Tool::Pnt(TopExp::LastVertex(TopoDS::Edge(edge)));
                                 isLine2 = true;
@@ -624,8 +624,8 @@ std::vector<TopoShape> TopoShape::findSubShapesWithSharedVertex(const TopoShape&
                                     }
                                 }
                                 if (isLine2) {
-                                    if (g1->isDerivedFrom(GeomLine::getClassTypeId())
-                                        || g1->isDerivedFrom(GeomLineSegment::getClassTypeId())) {
+                                    if (g1->isDerivedFrom<GeomLine>()
+                                        || g1->isDerivedFrom<GeomLineSegment>()) {
                                         auto p1 =
                                             BRep_Tool::Pnt(TopExp::FirstVertex(TopoDS::Edge(e1)));
                                         auto p2 =
@@ -2203,8 +2203,8 @@ TopoShape& TopoShape::makeElementRuledSurface(const std::vector<TopoShape>& shap
     // if both shapes are sub-elements of one common shape then the fill
     // algorithm leads to problems if the shape has set a placement. The
     // workaround is to copy the sub-shape
-    S1 = S1.makeElementCopy();
-    S2 = S2.makeElementCopy();
+    S1.setTransform(S1.getTransform());
+    S2.setTransform(S2.getTransform());
 
     if (orientation == 0) {
         // Automatic
@@ -3119,6 +3119,9 @@ TopoShape& TopoShape::makeElementWires(const std::vector<TopoShape>& shapes,
     return makeElementCompound(wires, nullptr, SingleShapeCompoundCreationPolicy::returnShape);
 }
 
+namespace
+{
+
 
 struct EdgePoints
 {
@@ -3144,6 +3147,8 @@ struct EdgePoints
         }
     }
 };
+
+}
 
 TopoShape TopoShape::reverseEdge(const TopoShape& edge)
 {
@@ -3422,6 +3427,7 @@ TopoShape::makeElementCopy(const TopoShape& shape, const char* op, bool copyGeom
 
     TopoShape tmp(shape);
     tmp.setShape(BRepBuilderAPI_Copy(shape.getShape(), copyGeom, copyMesh).Shape(), false);
+
     if (op || (shape.Tag && shape.Tag != Tag)) {
         setShape(tmp._Shape);
         initCache();
@@ -4055,15 +4061,13 @@ TopoShape& TopoShape::makeElementGeneralFuse(const std::vector<TopoShape>& _shap
         if (shape.isNull()) {
             FC_THROWM(NullShapeException, "Null input shape");
         }
-        if (tol > 0.0) {
-            // workaround for http://dev.opencascade.org/index.php?q=node/1056#comment-520
-            shape = shape.makeElementCopy();
-        }
         GFAArguments.Append(shape.getShape());
     }
     mkGFA.SetArguments(GFAArguments);
     if (tol > 0.0) {
         mkGFA.SetFuzzyValue(tol);
+    } else if (tol < 0.0) {
+        FCBRepAlgoAPIHelper::setAutoFuzzy(&mkGFA);
     }
     mkGFA.SetNonDestructive(Standard_True);
     mkGFA.Build();
@@ -4626,7 +4630,7 @@ public:
             if (it.Key().IsNull()) {
                 continue;
             }
-            mapper.populate(MappingStatus::Generated, it.Key(), it.Value());
+            mapper.populate(MappingStatus::Modified, it.Key(), it.Value());
         }
     }
 };
@@ -5666,7 +5670,7 @@ TopoShape& TopoShape::makeElementBoolean(const char* maker,
         }
     }
 
-    if (tolerance > 0.0 && _shapes.empty()) {
+    if (tolerance != 0.0 && _shapes.empty()) {
         _shapes = shapes;
     }
 
@@ -5686,16 +5690,16 @@ TopoShape& TopoShape::makeElementBoolean(const char* maker,
 
     std::unique_ptr<BRepAlgoAPI_BooleanOperation> mk;
     if (strcmp(maker, Part::OpCodes::Fuse) == 0) {
-        mk.reset(new BRepAlgoAPI_Fuse);
+        mk.reset(new FCBRepAlgoAPI_Fuse);
     }
     else if (strcmp(maker, Part::OpCodes::Cut) == 0) {
-        mk.reset(new BRepAlgoAPI_Cut);
+        mk.reset(new FCBRepAlgoAPI_Cut);
     }
     else if (strcmp(maker, Part::OpCodes::Common) == 0) {
-        mk.reset(new BRepAlgoAPI_Common);
+        mk.reset(new FCBRepAlgoAPI_Common);
     }
     else if (strcmp(maker, Part::OpCodes::Section) == 0) {
-        mk.reset(new BRepAlgoAPI_Section);
+        mk.reset(new FCBRepAlgoAPI_Section);
         buildShell = false;
     }
     else {
@@ -5711,12 +5715,6 @@ TopoShape& TopoShape::makeElementBoolean(const char* maker,
         }
         if (++i == 0) {
             shapeArguments.Append(shape.getShape());
-        }
-        else if (tolerance > 0.0) {
-            auto& s = _shapes[i];
-            // workaround for http://dev.opencascade.org/index.php?q=node/1056#comment-520
-            s.setShape(BRepBuilderAPI_Copy(s.getShape()).Shape(), false);
-            shapeTools.Append(s.getShape());
         }
         else {
             shapeTools.Append(shape.getShape());
@@ -5739,6 +5737,8 @@ TopoShape& TopoShape::makeElementBoolean(const char* maker,
     mk->SetTools(shapeTools);
     if (tolerance > 0.0) {
         mk->SetFuzzyValue(tolerance);
+    } else if (tolerance < 0.0) {
+        FCBRepAlgoAPIHelper::setAutoFuzzy(mk.get());
     }
     mk->Build();
     makeElementShape(*mk, inputs, op);
@@ -5751,7 +5751,7 @@ TopoShape& TopoShape::makeElementBoolean(const char* maker,
 
 bool TopoShape::isSame(const Data::ComplexGeoData& _other) const
 {
-    if (!_other.isDerivedFrom(TopoShape::getClassTypeId())) {
+    if (!_other.isDerivedFrom<TopoShape>()) {
         return false;
     }
 
@@ -5823,6 +5823,38 @@ bool TopoShape::getRelatedElementsCached(const Data::MappedName& name,
     }
     names = it->second;
     return true;
+}
+
+Data::MappedElement TopoShape::chooseMatchingSubShapeByPlaneOrLine(const TopoShape& shapeToFind, const TopoShape& shapeToLookIn)
+{
+    Data::MappedElement result;
+    // See if we have a Face.  If so, try to match using a plane.
+    auto targetShape = shapeToFind.getSubTopoShape("Face", true);
+    if ( ! targetShape.isNull() ) {
+        int index = 0;
+        for ( const auto& searchFace : shapeToLookIn.getSubTopoShapes(TopAbs_FACE)) {
+            index++;    // We have to generate the element index.
+            if ( targetShape.isCoplanar(searchFace) ) {
+                if ( ! result.name.empty() )
+                    return {};  // Found more than one, invalidate our guess.  Future: return all matches to the UI?
+                result = shapeToLookIn.getElementName(("Face"+std::to_string(index)).c_str());
+            }
+        }
+    }
+    // Alternatively, try to locate an Edge, and try to match.  Currently by exact equivalence; later can improve.
+    targetShape = shapeToFind.getSubTopoShape("Edge", true);
+    if ( ! targetShape.isNull() ) { // Try to match edges
+        int index = 0;
+        for ( const auto& searchEdge : shapeToLookIn.getSubTopoShapes(TopAbs_EDGE)) {
+            index++;
+            if ( targetShape.isSame(searchEdge) ) { // TODO: Test for edges that are collinear as really what we want
+                if ( ! result.name.empty() )
+                    return {}; // Found more than one
+                result = shapeToLookIn.getElementName(("Edge"+std::to_string(index)).c_str());
+            }
+        }
+    }
+    return result;
 }
 
 }  // namespace Part

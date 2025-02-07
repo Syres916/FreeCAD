@@ -534,10 +534,10 @@ void InteractiveScale::setDistance(const SbVec3f& pos3d)
 
     // Update the displayed distance
     double factor {};
-    QString unitStr;
-    QString valueStr;
+    std::string unitStr;
+    std::string valueStr;
     valueStr = quantity.getUserString(factor, unitStr);
-    measureLabel->label->string = SbString(valueStr.toUtf8().constData());
+    measureLabel->label->string = SbString(valueStr.c_str());
     measureLabel->label->setPoints(getCoordsOnImagePlane(points[0]), getCoordsOnImagePlane(pos3d));
 }
 
@@ -679,9 +679,7 @@ TaskImageDialog::TaskImageDialog(Image::ImagePlane* obj)
 {
     addTaskBox(Gui::BitmapFactory().pixmap("image-plane"), widget);
 
-    auto doc = obj->getDocument();
-    setDocumentName(doc->getName());
-    setAutoCloseOnDeletedDocument(true);
+    associateToObject3dView(obj);
 }
 
 void TaskImageDialog::open()

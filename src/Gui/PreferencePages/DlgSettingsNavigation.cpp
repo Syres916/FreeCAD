@@ -34,7 +34,7 @@
 #include <Base/Tools.h>
 #include <Gui/MainWindow.h>
 #include <Gui/View3DSettings.h>
-#include <Gui/NavigationStyle.h>
+#include <Gui/Navigation/NavigationStyle.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
 
@@ -60,6 +60,9 @@ DlgSettingsNavigation::DlgSettingsNavigation(QWidget* parent)
     ui->naviCubeBaseColor->setAllowTransparency(true);
     ui->rotationCenterColor->setAllowTransparency(true);
     retranslate();
+#if !defined(_USE_3DCONNEXION_SDK) && !defined(SPNAV_FOUND)
+    ui->legacySpaceMouseDevices->setDisabled(true);
+#endif
 }
 
 /**
@@ -97,6 +100,10 @@ void DlgSettingsNavigation::saveSettings()
     ui->prefCubeSize->onSave();
     ui->naviCubeBaseColor->onSave();
     ui->naviCubeInactiveOpacity->onSave();
+    ui->legacySpaceMouseDevices->onSave();
+    if (property("LegacySpaceMouse").toBool() != ui->legacySpaceMouseDevices->isChecked()) {
+        requireRestart();
+    }
 
     bool showNaviCube = ui->groupBoxNaviCube->isChecked();
     hGrp->SetBool("ShowNaviCube", showNaviCube);
@@ -143,6 +150,8 @@ void DlgSettingsNavigation::loadSettings()
     ui->prefCubeSize->onRestore();
     ui->naviCubeBaseColor->onRestore();
     ui->naviCubeInactiveOpacity->onRestore();
+    ui->legacySpaceMouseDevices->onRestore();
+    setProperty("LegacySpaceMouse", ui->legacySpaceMouseDevices->isChecked());
 
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath
         ("User parameter:BaseApp/Preferences/View");

@@ -51,8 +51,8 @@
 #include <Gui/FileDialog.h>
 #include <Gui/MainWindow.h>
 #include <Gui/MouseSelection.h>
-#include <Gui/NavigationStyle.h>
-#include <Gui/Selection.h>
+#include <Gui/Navigation/NavigationStyle.h>
+#include <Gui/Selection/Selection.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
 #include <Gui/WaitCursor.h>
@@ -151,7 +151,7 @@ void CmdMeshUnion::activated(int)
 
 bool CmdMeshUnion::isActive()
 {
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
+    return getSelection().countObjectsOfType<Mesh::Feature>() == 2;
 }
 
 //--------------------------------------------------------------------------------------
@@ -230,7 +230,7 @@ void CmdMeshDifference::activated(int)
 
 bool CmdMeshDifference::isActive()
 {
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
+    return getSelection().countObjectsOfType<Mesh::Feature>() == 2;
 }
 
 //--------------------------------------------------------------------------------------
@@ -309,7 +309,7 @@ void CmdMeshIntersection::activated(int)
 
 bool CmdMeshIntersection::isActive()
 {
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
+    return getSelection().countObjectsOfType<Mesh::Feature>() == 2;
 }
 
 //--------------------------------------------------------------------------------------
@@ -445,7 +445,7 @@ void CmdMeshExport::activated(int)
 
 bool CmdMeshExport::isActive()
 {
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    return getSelection().countObjectsOfType<Mesh::Feature>() == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -516,7 +516,7 @@ bool CmdMeshFromGeometry::isActive()
     if (!doc) {
         return false;
     }
-    return getSelection().countObjectsOfType(App::GeoFeature::getClassTypeId()) >= 1;
+    return getSelection().countObjectsOfType<App::GeoFeature>() >= 1;
 }
 
 //===========================================================================
@@ -598,7 +598,7 @@ void CmdMeshVertexCurvature::activated(int)
 bool CmdMeshVertexCurvature::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    return getSelection().countObjectsOfType<Mesh::Feature>() > 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -636,12 +636,12 @@ void CmdMeshVertexCurvatureInfo::activated(int)
 bool CmdMeshVertexCurvatureInfo::isActive()
 {
     App::Document* doc = App::GetApplication().getActiveDocument();
-    if (!doc || doc->countObjectsOfType(Mesh::Curvature::getClassTypeId()) == 0) {
+    if (!doc || doc->countObjectsOfType<Mesh::Curvature>() == 0) {
         return false;
     }
 
     Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+    if (view && view->isDerivedFrom<Gui::View3DInventor>()) {
         Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
         return !viewer->isEditing();
     }
@@ -696,12 +696,12 @@ void CmdMeshPolySegm::activated(int)
 bool CmdMeshPolySegm::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0) {
+    if (getSelection().countObjectsOfType<Mesh::Feature>() == 0) {
         return false;
     }
 
     Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+    if (view && view->isDerivedFrom<Gui::View3DInventor>()) {
         Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
         return !viewer->isEditing();
     }
@@ -744,12 +744,12 @@ void CmdMeshAddFacet::activated(int)
 bool CmdMeshAddFacet::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) != 1) {
+    if (getSelection().countObjectsOfType<Mesh::Feature>() != 1) {
         return false;
     }
 
     Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+    if (view && view->isDerivedFrom<Gui::View3DInventor>()) {
         Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
         return !viewer->isEditing();
     }
@@ -809,12 +809,12 @@ void CmdMeshPolyCut::activated(int)
 bool CmdMeshPolyCut::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0) {
+    if (getSelection().countObjectsOfType<Mesh::Feature>() == 0) {
         return false;
     }
 
     Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+    if (view && view->isDerivedFrom<Gui::View3DInventor>()) {
         Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
         return !viewer->isEditing();
     }
@@ -874,12 +874,12 @@ void CmdMeshPolyTrim::activated(int)
 bool CmdMeshPolyTrim::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0) {
+    if (getSelection().countObjectsOfType<Mesh::Feature>() == 0) {
         return false;
     }
 
     Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+    if (view && view->isDerivedFrom<Gui::View3DInventor>()) {
         Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
         return !viewer->isEditing();
     }
@@ -913,11 +913,7 @@ void CmdMeshTrimByPlane::activated(int)
 bool CmdMeshTrimByPlane::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) != 1) {
-        return false;
-    }
-
-    return true;
+    return getSelection().countObjectsOfType<Mesh::Feature>() == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -946,11 +942,7 @@ void CmdMeshSectionByPlane::activated(int)
 bool CmdMeshSectionByPlane::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) != 1) {
-        return false;
-    }
-
-    return true;
+    return getSelection().countObjectsOfType<Mesh::Feature>() == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -978,7 +970,7 @@ void CmdMeshCrossSections::activated(int)
 
 bool CmdMeshCrossSections::isActive()
 {
-    return (Gui::Selection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0
+    return (Gui::Selection().countObjectsOfType<Mesh::Feature>() > 0
             && !Gui::Control().activeDialog());
 }
 
@@ -1026,12 +1018,12 @@ void CmdMeshPolySplit::activated(int)
 bool CmdMeshPolySplit::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    if (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0) {
+    if (getSelection().countObjectsOfType<Mesh::Feature>() == 0) {
         return false;
     }
 
     Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+    if (view && view->isDerivedFrom<Gui::View3DInventor>()) {
         Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
         return !viewer->isEditing();
     }
@@ -1078,7 +1070,7 @@ void CmdMeshEvaluation::activated(int)
 bool CmdMeshEvaluation::isActive()
 {
     App::Document* doc = App::GetApplication().getActiveDocument();
-    if (!doc || doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0) {
+    if (!doc || doc->countObjectsOfType<Mesh::Feature>() == 0) {
         return false;
     }
     return true;
@@ -1117,12 +1109,12 @@ void CmdMeshEvaluateFacet::activated(int)
 bool CmdMeshEvaluateFacet::isActive()
 {
     App::Document* doc = App::GetApplication().getActiveDocument();
-    if (!doc || doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0) {
+    if (!doc || doc->countObjectsOfType<Mesh::Feature>() == 0) {
         return false;
     }
 
     Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+    if (view && view->isDerivedFrom<Gui::View3DInventor>()) {
         Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
         return !viewer->isEditing();
     }
@@ -1160,7 +1152,7 @@ bool CmdMeshRemoveComponents::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
     App::Document* doc = getDocument();
-    if (!(doc && doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0)) {
+    if (!(doc && doc->countObjectsOfType<Mesh::Feature>() > 0)) {
         return false;
     }
     Gui::Document* viewDoc = Gui::Application::Instance->getDocument(doc);
@@ -1209,7 +1201,7 @@ void CmdMeshRemeshGmsh::activated(int)
 
 bool CmdMeshRemeshGmsh::isActive()
 {
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    return getSelection().countObjectsOfType<Mesh::Feature>() == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1245,7 +1237,7 @@ void CmdMeshRemoveCompByHand::activated(int)
 bool CmdMeshRemoveCompByHand::isActive()
 {
     App::Document* doc = App::GetApplication().getActiveDocument();
-    if (!doc || doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0) {
+    if (!doc || doc->countObjectsOfType<Mesh::Feature>() == 0) {
         return false;
     }
 
@@ -1297,7 +1289,7 @@ void CmdMeshEvaluateSolid::activated(int)
 bool CmdMeshEvaluateSolid::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    return getSelection().countObjectsOfType<Mesh::Feature>() == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1326,7 +1318,7 @@ bool CmdMeshSmoothing::isActive()
     if (Gui::Control().activeDialog()) {
         return false;
     }
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    return getSelection().countObjectsOfType<Mesh::Feature>() > 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1358,7 +1350,7 @@ bool CmdMeshDecimating::isActive()
     }
 #endif
     // Check for the selected mesh feature (all Mesh types)
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    return getSelection().countObjectsOfType<Mesh::Feature>() > 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1394,7 +1386,7 @@ void CmdMeshHarmonizeNormals::activated(int)
 bool CmdMeshHarmonizeNormals::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    return getSelection().countObjectsOfType<Mesh::Feature>() > 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1430,7 +1422,7 @@ void CmdMeshFlipNormals::activated(int)
 bool CmdMeshFlipNormals::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    return getSelection().countObjectsOfType<Mesh::Feature>() > 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1482,7 +1474,7 @@ void CmdMeshBoundingBox::activated(int)
 bool CmdMeshBoundingBox::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    return getSelection().countObjectsOfType<Mesh::Feature>() == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1565,7 +1557,7 @@ void CmdMeshFillupHoles::activated(int)
 bool CmdMeshFillupHoles::isActive()
 {
     // Check for the selected mesh feature (all Mesh types)
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    return getSelection().countObjectsOfType<Mesh::Feature>() > 0;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1604,12 +1596,12 @@ void CmdMeshFillInteractiveHole::activated(int)
 bool CmdMeshFillInteractiveHole::isActive()
 {
     App::Document* doc = App::GetApplication().getActiveDocument();
-    if (!doc || doc->countObjectsOfType(Mesh::Feature::getClassTypeId()) == 0) {
+    if (!doc || doc->countObjectsOfType<Mesh::Feature>() == 0) {
         return false;
     }
 
     Gui::MDIView* view = Gui::getMainWindow()->activeWindow();
-    if (view && view->isDerivedFrom(Gui::View3DInventor::getClassTypeId())) {
+    if (view && view->isDerivedFrom<Gui::View3DInventor>()) {
         Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(view)->getViewer();
         return !viewer->isEditing();
     }
@@ -1648,7 +1640,7 @@ bool CmdMeshSegmentation::isActive()
     if (Gui::Control().activeDialog()) {
         return false;
     }
-    return Gui::Selection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    return Gui::Selection().countObjectsOfType<Mesh::Feature>() == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1684,7 +1676,7 @@ bool CmdMeshSegmentationBestFit::isActive()
     if (Gui::Control().activeDialog()) {
         return false;
     }
-    return Gui::Selection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    return Gui::Selection().countObjectsOfType<Mesh::Feature>() == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1730,7 +1722,7 @@ void CmdMeshMerge::activated(int)
 
 bool CmdMeshMerge::isActive()
 {
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) >= 2;
+    return getSelection().countObjectsOfType<Mesh::Feature>() >= 2;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1779,7 +1771,7 @@ void CmdMeshSplitComponents::activated(int)
 
 bool CmdMeshSplitComponents::isActive()
 {
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+    return getSelection().countObjectsOfType<Mesh::Feature>() == 1;
 }
 
 //--------------------------------------------------------------------------------------
@@ -1837,7 +1829,7 @@ void CmdMeshScale::activated(int)
 
 bool CmdMeshScale::isActive()
 {
-    return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+    return getSelection().countObjectsOfType<Mesh::Feature>() > 0;
 }
 
 

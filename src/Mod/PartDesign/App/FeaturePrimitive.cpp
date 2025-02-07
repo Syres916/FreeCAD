@@ -24,8 +24,8 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <BRepPrim_Cylinder.hxx>
-# include <BRepAlgoAPI_Cut.hxx>
-# include <BRepAlgoAPI_Fuse.hxx>
+# include <Mod/Part/App/FCBRepAlgoAPI_Cut.h>
+# include <Mod/Part/App/FCBRepAlgoAPI_Fuse.h>
 # include <BRepBuilderAPI_GTransform.hxx>
 # include <BRepBuilderAPI_MakeFace.hxx>
 # include <BRepBuilderAPI_MakePolygon.hxx>
@@ -68,6 +68,12 @@ FeaturePrimitive::FeaturePrimitive()
 
 App::DocumentObjectExecReturn* FeaturePrimitive::execute(const TopoDS_Shape& primitive)
 {
+    if (onlyHasToRefine()){
+        TopoShape result = refineShapeIfActive(rawShape);
+        Shape.setValue(result);
+        return App::DocumentObject::StdReturn;
+    }
+
     try {
         //transform the primitive in the correct coordinance
         FeatureAddSub::execute();
@@ -126,6 +132,9 @@ App::DocumentObjectExecReturn* FeaturePrimitive::execute(const TopoDS_Shape& pri
             return new App::DocumentObjectExecReturn(
                 QT_TRANSLATE_NOOP("Exception", "Resulting shape is not a solid"));
         }
+        // store shape before refinement
+        this->rawShape = boolOp;
+      
         if (solidBoolOp == base){
             //solidBoolOp is misplaced but boolOp is ok
             Shape.setValue(boolOp);
@@ -360,7 +369,7 @@ App::DocumentObjectExecReturn* Cone::execute()
             //Build a cylinder
             BRepPrimAPI_MakeCylinder mkCylr(Radius1.getValue(),
                                             Height.getValue(),
-                                            2.0 * M_PI);
+                                            Base::toRadians<double>(Angle.getValue()));
             return FeaturePrimitive::execute(mkCylr.Shape());
         }
         // Build a cone

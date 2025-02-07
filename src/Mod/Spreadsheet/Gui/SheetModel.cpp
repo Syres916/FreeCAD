@@ -57,12 +57,12 @@ SheetModel::SheetModel(Sheet* _sheet, QObject* parent)
     ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath(
         "User parameter:BaseApp/Preferences/Mod/Spreadsheet");
     aliasBgColor =
-        QColor(Base::Tools::fromStdString(hGrp->GetASCII("AliasedCellBackgroundColor", "#feff9e")));
-    textFgColor = QColor(Base::Tools::fromStdString(hGrp->GetASCII("TextColor", "#000000")));
+        QColor(QString::fromStdString(hGrp->GetASCII("AliasedCellBackgroundColor", "#feff9e")));
+    textFgColor = QColor(QString::fromStdString(hGrp->GetASCII("TextColor", "#000000")));
     positiveFgColor =
-        QColor(Base::Tools::fromStdString(hGrp->GetASCII("PositiveNumberColor", "#000000")));
+        QColor(QString::fromStdString(hGrp->GetASCII("PositiveNumberColor", "#000000")));
     negativeFgColor =
-        QColor(Base::Tools::fromStdString(hGrp->GetASCII("NegativeNumberColor", "#000000")));
+        QColor(QString::fromStdString(hGrp->GetASCII("NegativeNumberColor", "#000000")));
 }
 
 SheetModel::~SheetModel()
@@ -145,7 +145,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
     if (!cell->hasException() && role == Qt::ToolTipRole) {
         std::string alias;
         if (cell->getAlias(alias)) {
-            return QVariant(Base::Tools::fromStdString(alias));
+            return QVariant(QString::fromStdString(alias));
         }
     }
 #endif
@@ -153,7 +153,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
     if (cell->hasException()) {
         switch (role) {
             case Qt::ToolTipRole: {
-                QString txt(Base::Tools::fromStdString(cell->getException()).toHtmlEscaped());
+                QString txt(QString::fromStdString(cell->getException()).toHtmlEscaped());
                 return QVariant(QString::fromLatin1("<pre>%1</pre>").arg(txt));
             }
             case Qt::DisplayRole: {
@@ -286,7 +286,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
                 return {};
         }
     }
-    else if (prop->isDerivedFrom(App::PropertyString::getClassTypeId())) {
+    else if (prop->isDerivedFrom<App::PropertyString>()) {
         /* String */
         const App::PropertyString* stringProp = static_cast<const App::PropertyString*>(prop);
 
@@ -321,7 +321,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
                 return {};
         }
     }
-    else if (prop->isDerivedFrom(App::PropertyQuantity::getClassTypeId())) {
+    else if (prop->isDerivedFrom<App::PropertyQuantity>()) {
         /* Number */
         const App::PropertyQuantity* floatProp = static_cast<const App::PropertyQuantity*>(prop);
 
@@ -367,7 +367,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
                                                Base::UnitsApi::getDecimals());
                         // QString number = QString::number(floatProp->getValue() /
                         // displayUnit.scaler);
-                        v = number + Base::Tools::fromStdString(" " + displayUnit.stringRep);
+                        v = number + QString::fromStdString(" " + displayUnit.stringRep);
                     }
                     else {
                         v = QString::fromUtf8("#ERR: unit");
@@ -378,7 +378,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
                     // When displaying a quantity then use the globally set scheme
                     // See: https://forum.freecad.org/viewtopic.php?f=3&t=50078
                     Base::Quantity value = floatProp->getQuantityValue();
-                    v = value.getUserString();
+                    v = QString::fromStdString(value.getUserString());
                 }
                 return formatCellDisplay(v, cell);
             }
@@ -386,13 +386,13 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
                 return {};
         }
     }
-    else if (prop->isDerivedFrom(App::PropertyFloat::getClassTypeId())
-             || prop->isDerivedFrom(App::PropertyInteger::getClassTypeId())) {
+    else if (prop->isDerivedFrom<App::PropertyFloat>()
+             || prop->isDerivedFrom<App::PropertyInteger>()) {
         /* Number */
         double d {};
         long l {};
         bool isInteger = false;
-        if (prop->isDerivedFrom(App::PropertyFloat::getClassTypeId())) {
+        if (prop->isDerivedFrom<App::PropertyFloat>()) {
             d = static_cast<const App::PropertyFloat*>(prop)->getValue();
         }
         else {
@@ -439,7 +439,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
                                                         'f',
                                                         Base::UnitsApi::getDecimals());
                     // QString number = QString::number(d / displayUnit.scaler);
-                    v = number + Base::Tools::fromStdString(" " + displayUnit.stringRep);
+                    v = number + QString::fromStdString(" " + displayUnit.stringRep);
                 }
                 else if (!isInteger) {
                     v = QLocale::system().toString(d, 'f', Base::UnitsApi::getDecimals());
@@ -454,7 +454,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
                 return {};
         }
     }
-    else if (prop->isDerivedFrom(App::PropertyPythonObject::getClassTypeId())) {
+    else if (prop->isDerivedFrom<App::PropertyPythonObject>()) {
         auto pyProp = static_cast<const App::PropertyPythonObject*>(prop);
 
         switch (role) {

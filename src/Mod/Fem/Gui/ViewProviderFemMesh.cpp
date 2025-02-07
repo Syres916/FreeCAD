@@ -220,6 +220,8 @@ ViewProviderFemMesh::ViewProviderFemMesh()
                       App::Prop_Hidden,
                       "Node diffuse color array");
 
+    suppressibleExt.initExtension(this);
+
     ColorMode.setEnums(colorModeEnum);
     onlyEdges = false;
 
@@ -377,7 +379,7 @@ std::vector<std::string> ViewProviderFemMesh::getDisplayModes() const
 
 void ViewProviderFemMesh::updateData(const App::Property* prop)
 {
-    if (prop->isDerivedFrom(Fem::PropertyFemMesh::getClassTypeId())) {
+    if (prop->isDerivedFrom<Fem::PropertyFemMesh>()) {
         ViewProviderFEMMeshBuilder builder;
         resetColorByNodeId();
         resetDisplacementByNodeId();

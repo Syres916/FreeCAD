@@ -50,7 +50,7 @@
 #include "Application.h"
 #include "BitmapFactory.h"
 #include "Control.h"
-#include "DlgUndoRedo.h"
+#include "Dialogs/DlgUndoRedo.h"
 #include "Document.h"
 #include "frameobject.h"
 #include "Macro.h"
@@ -251,7 +251,7 @@ bool Command::isViewOfType(Base::Type t) const
     Gui::BaseView *v = d->getActiveView();
     if (!v)
         return false;
-    if (v->getTypeId().isDerivedFrom(t))
+    if (v->isDerivedFrom(t))
         return true;
     else
         return false;

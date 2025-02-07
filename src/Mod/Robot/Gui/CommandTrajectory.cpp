@@ -31,7 +31,7 @@
 #include <Gui/Document.h>
 #include <Gui/MainWindow.h>
 #include <Gui/Placement.h>
-#include <Gui/Selection.h>
+#include <Gui/Selection/Selection.h>
 #include <Mod/Robot/App/Edge2TracObject.h>
 #include <Mod/Robot/App/RobotObject.h>
 #include <Mod/Robot/App/TrajectoryCompound.h>
@@ -98,8 +98,8 @@ CmdRobotInsertWaypoint::CmdRobotInsertWaypoint()
 
 void CmdRobotInsertWaypoint::activated(int)
 {
-    unsigned int n1 = getSelection().countObjectsOfType(Robot::RobotObject::getClassTypeId());
-    unsigned int n2 = getSelection().countObjectsOfType(Robot::TrajectoryObject::getClassTypeId());
+    unsigned int n1 = getSelection().countObjectsOfType<Robot::RobotObject>();
+    unsigned int n2 = getSelection().countObjectsOfType<Robot::TrajectoryObject>();
 
     if (n1 != 1 || n2 != 1) {
         QMessageBox::warning(Gui::getMainWindow(),

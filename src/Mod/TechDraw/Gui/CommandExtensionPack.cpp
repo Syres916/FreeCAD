@@ -33,7 +33,6 @@
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <Base/Console.h>
-#include <Base/Tools.h>
 #include <Base/Type.h>
 #include <Gui/Action.h>
 #include <Gui/Application.h>
@@ -42,8 +41,8 @@
 #include <Gui/Control.h>
 #include <Gui/Document.h>
 #include <Gui/MainWindow.h>
-#include <Gui/Selection.h>
-#include <Gui/SelectionObject.h>
+#include <Gui/Selection/Selection.h>
+#include <Gui/Selection/SelectionObject.h>
 #include <Gui/ViewProvider.h>
 #include <Mod/Part/App/Geometry2d.h>
 #include <Mod/TechDraw/App/CenterLine.h>
@@ -1460,7 +1459,7 @@ void CmdTechDrawExtensionLockUnlockView::activated(int iMsg)
         return;
     }
     Gui::Command::openCommand(QT_TRANSLATE_NOOP("Command", "Lock/Unlock View"));
-    if (objFeat->isDerivedFrom(TechDraw::DrawViewPart::getClassTypeId())) {
+    if (objFeat->isDerivedFrom<TechDraw::DrawViewPart>()) {
         bool lockPosition = objFeat->LockPosition.getValue();
         lockPosition = !lockPosition;
         objFeat->LockPosition.setValue(lockPosition);
@@ -1812,12 +1811,12 @@ void CmdTechDrawExtensionAreaAnnotation::activated(int iMsg)
     asQuantity.setValue(totalArea);
     asQuantity.setUnit(Base::Unit::Area);
 
-    QString qUserString = asQuantity.getUserString();
+    QString qUserString = QString::fromStdString(asQuantity.getUserString());
     if (qUserString.endsWith(QString::fromUtf8("^2"))) {
         qUserString.chop(2);
         qUserString.append(QString::fromUtf8("²"));
     }
-    std::string sUserString = Base::Tools::toStdString(qUserString);
+    std::string sUserString = qUserString.toStdString();
 
     // set the attributes in the data tab's fields
     //    balloon->SourceView.setValue(objFeat);

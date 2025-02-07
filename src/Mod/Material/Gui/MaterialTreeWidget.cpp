@@ -255,7 +255,7 @@ void MaterialTreeWidget::editorClicked(bool checked)
         setMaterial(material->getUUID());
     }
 
-    // Gui::Application::Instance->commandManager().runCommandByName("Materials_Edit");
+    // Gui::Application::Instance->commandManager().runCommandByName("Material_Edit");
     // Toggle the open state
     // setExpanded(!m_expanded);
 }
@@ -324,10 +324,6 @@ QModelIndex MaterialTreeWidget::findInTree(const QString& uuid)
 
 void MaterialTreeWidget::setMaterial(const QString& uuid)
 {
-    if (uuid == m_uuid) {
-        return;
-    }
-
     if (uuid.isEmpty()) {
         // Nothing is selected
         QItemSelectionModel* selectionModel = m_materialTree->selectionModel();
@@ -486,6 +482,9 @@ void MaterialTreeWidget::saveRecents()
 
 void MaterialTreeWidget::addRecent(const QString& uuid)
 {
+    if (uuid.isEmpty()) {
+        return;
+    }
     // Ensure it is a material. New, unsaved materials will not be
     try {
         auto material = _materialManager.getMaterial(uuid);

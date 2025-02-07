@@ -54,10 +54,10 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/QuantitySpinBox.h>
-#include <Gui/Selection.h>
-#include <Gui/SelectionFilter.h>
-#include <Gui/SelectionObject.h>
-#include <Gui/SoFCUnifiedSelection.h>
+#include <Gui/Selection/Selection.h>
+#include <Gui/Selection/SelectionFilter.h>
+#include <Gui/Selection/SelectionObject.h>
+#include <Gui/Selection/SoFCUnifiedSelection.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
 #include <Gui/Window.h>
@@ -155,7 +155,7 @@ QVariant FilletRadiusModel::data(const QModelIndex& index, int role) const
     QVariant value = QStandardItemModel::data(index, role);
     if (role == Qt::DisplayRole && index.column() >= 1) {
         Base::Quantity q = value.value<Base::Quantity>();
-        QString str = q.getUserString();
+        QString str = QString::fromStdString(q.getUserString());
         return str;
     }
     return value;

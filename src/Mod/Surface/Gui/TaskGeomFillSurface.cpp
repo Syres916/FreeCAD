@@ -38,7 +38,7 @@
 #include <Gui/Command.h>
 #include <Gui/Control.h>
 #include <Gui/Document.h>
-#include <Gui/SelectionObject.h>
+#include <Gui/Selection/SelectionObject.h>
 #include <Gui/Widgets.h>
 #include <Mod/Part/Gui/ViewProvider.h>
 
@@ -70,7 +70,7 @@ bool ViewProviderGeomFillSurface::setEdit(int ModNum)
         // object unsets and sets its edit mode without closing
         // the task panel
 
-        Surface::GeomFillSurface* obj = static_cast<Surface::GeomFillSurface*>(this->getObject());
+        Surface::GeomFillSurface* obj = this->getObject<Surface::GeomFillSurface>();
 
         Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
 
@@ -110,7 +110,7 @@ QIcon ViewProviderGeomFillSurface::getIcon() const
 
 void ViewProviderGeomFillSurface::highlightReferences(bool on)
 {
-    Surface::GeomFillSurface* surface = static_cast<Surface::GeomFillSurface*>(getObject());
+    Surface::GeomFillSurface* surface = getObject<Surface::GeomFillSurface>();
     auto bounds = surface->BoundaryList.getSubListValues();
     for (const auto& it : bounds) {
         Part::Feature* base = dynamic_cast<Part::Feature*>(it.first);
@@ -168,7 +168,7 @@ bool GeomFillSurface::EdgeSelection::allow(App::Document*,
     if (pObj == editedObject) {
         return false;
     }
-    if (!pObj->isDerivedFrom(Part::Feature::getClassTypeId())) {
+    if (!pObj->isDerivedFrom<Part::Feature>()) {
         return false;
     }
 

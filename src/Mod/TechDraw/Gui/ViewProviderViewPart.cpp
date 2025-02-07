@@ -36,7 +36,7 @@
 #include <Base/Parameter.h>
 #include <Gui/Control.h>
 #include <Gui/MainWindow.h>
-#include <Gui/Selection.h>
+#include <Gui/Selection/Selection.h>
 
 #include <Mod/TechDraw/App/DrawGeomHatch.h>
 #include <Mod/TechDraw/App/DrawHatch.h>
@@ -169,7 +169,7 @@ ViewProviderViewPart::~ViewProviderViewPart()
 
 void ViewProviderViewPart::onChanged(const App::Property* prop)
 {
-    if (auto part = getViewPart(); part && part->isDerivedFrom(TechDraw::DrawViewDetail::getClassTypeId()) &&
+    if (auto part = getViewPart(); part && part->isDerivedFrom<TechDraw::DrawViewDetail>() &&
         prop == &(HighlightAdjust)) {
         auto detail = static_cast<DrawViewDetail*>(getViewPart());
         auto baseDvp = dynamic_cast<DrawViewPart*>(detail->BaseView.getValue());
@@ -299,7 +299,7 @@ bool ViewProviderViewPart::setEdit(int ModNum)
                                         dvd->getNameInDocument());
     }
     else {
-        auto* view = dynamic_cast<TechDraw::DrawView*>(getObject());
+        auto* view = getObject<TechDraw::DrawView>();
         Gui::Control().showDialog(new TaskDlgProjGroup(view, false));
     }
 

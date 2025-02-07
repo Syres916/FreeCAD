@@ -39,9 +39,9 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/Document.h>
-#include <Gui/Selection.h>
-#include <Gui/SelectionFilter.h>
-#include <Gui/SelectionObject.h>
+#include <Gui/Selection/Selection.h>
+#include <Gui/Selection/SelectionFilter.h>
+#include <Gui/Selection/SelectionObject.h>
 #include <Mod/Part/App/PartFeature.h>
 
 #include "TaskShapeBuilder.h"
@@ -67,7 +67,7 @@ namespace PartGui {
         }
         bool allow(App::Document*, App::DocumentObject* obj, const char*sSubName) override
         {
-            if (!obj || !obj->isDerivedFrom(Part::Feature::getClassTypeId()))
+            if (!obj || !obj->isDerivedFrom<Part::Feature>())
                 return false;
             if (!sSubName || sSubName[0] == '\0')
                 return (mode == ALL);

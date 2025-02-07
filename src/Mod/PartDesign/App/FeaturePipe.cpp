@@ -23,8 +23,8 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <BRepAlgoAPI_Cut.hxx>
-# include <BRepAlgoAPI_Fuse.hxx>
+# include <Mod/Part/App/FCBRepAlgoAPI_Cut.h>
+# include <Mod/Part/App/FCBRepAlgoAPI_Fuse.h>
 # include <BRepBndLib.hxx>
 # include <BRepBuilderAPI_Sewing.hxx>
 # include <BRepBuilderAPI_MakeSolid.hxx>
@@ -104,16 +104,22 @@ short Pipe::mustExecute() const
 
 App::DocumentObjectExecReturn *Pipe::execute()
 {
+    if (onlyHasToRefine()){
+        TopoShape result = refineShapeIfActive(rawShape);
+        Shape.setValue(result);
+        return App::DocumentObject::StdReturn;
+    }
+
     auto getSectionShape = [](App::DocumentObject* feature,
                               const std::vector<std::string>& subs) -> TopoDS_Shape {
-        if (!feature || !feature->isDerivedFrom(Part::Feature::getClassTypeId()))
+        if (!feature || !feature->isDerivedFrom<Part::Feature>())
             throw Base::TypeError("Pipe: Invalid profile/section");
 
         auto subName = subs.empty() ? "" : subs.front();
 
         // only take the entire shape when we have a sketch selected, but
         // not a point of the sketch
-        if (feature->isDerivedFrom(Part::Part2DObject::getClassTypeId())
+        if (feature->isDerivedFrom<Part::Part2DObject>()
             && subName.compare(0, 6, "Vertex") != 0)
             return static_cast<Part::Part2DObject*>(feature)->Shape.getValue();
         else {
@@ -231,7 +237,7 @@ App::DocumentObjectExecReturn *Pipe::execute()
             // TODO: we need to order the sections to prevent occ from crashing,
             // as makepipeshell connects the sections in the order of adding
             for (auto& subSet : multisections) {
-                if (!subSet.first->isDerivedFrom(Part::Feature::getClassTypeId()))
+                if (!subSet.first->isDerivedFrom<Part::Feature>())
                     return new App::DocumentObjectExecReturn(QT_TRANSLATE_NOOP("Exception",
                                                                                "Pipe: All sections need to be part features"));
 
@@ -380,6 +386,8 @@ App::DocumentObjectExecReturn *Pipe::execute()
                 return new App::DocumentObjectExecReturn(
                     QT_TRANSLATE_NOOP("Exception", "Pipe: There is nothing to subtract from"));
 
+            // store shape before refinement
+            this->rawShape = result;
             auto ts_result = refineShapeIfActive(result);
             Shape.setValue(getSolid(ts_result));
             return App::DocumentObject::StdReturn;
@@ -387,7 +395,7 @@ App::DocumentObjectExecReturn *Pipe::execute()
 
         if (getAddSubType() == FeatureAddSub::Additive) {
 
-            BRepAlgoAPI_Fuse mkFuse(base.getShape(), result);
+            FCBRepAlgoAPI_Fuse mkFuse(base.getShape(), result);
             if (!mkFuse.IsDone())
                 return new App::DocumentObjectExecReturn(QT_TRANSLATE_NOOP("Exception", "Adding the pipe failed"));
             // we have to get the solids (fuse sometimes creates compounds)
@@ -402,12 +410,14 @@ App::DocumentObjectExecReturn *Pipe::execute()
                                                                            "Result has multiple solids: that is not currently supported."));
             }
 
+            // store shape before refinement
+            this->rawShape = boolOp;
             boolOp = refineShapeIfActive(boolOp);
             Shape.setValue(getSolid(boolOp));
         }
         else if (getAddSubType() == FeatureAddSub::Subtractive) {
 
-            BRepAlgoAPI_Cut mkCut(base.getShape(), result);
+            FCBRepAlgoAPI_Cut mkCut(base.getShape(), result);
             if (!mkCut.IsDone())
                 return new App::DocumentObjectExecReturn(QT_TRANSLATE_NOOP("Exception", "Subtracting the pipe failed"));
             // we have to get the solids (fuse sometimes creates compounds)
@@ -422,6 +432,8 @@ App::DocumentObjectExecReturn *Pipe::execute()
                                                                            "Result has multiple solids: that is not currently supported."));
             }
 
+            // store shape before refinement
+            this->rawShape = boolOp;
             boolOp = refineShapeIfActive(boolOp);
             Shape.setValue(getSolid(boolOp));
         }

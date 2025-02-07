@@ -36,7 +36,7 @@
 #include <Gui/Command.h>
 #include <Gui/Control.h>
 #include <Gui/Document.h>
-#include <Gui/Selection.h>
+#include <Gui/Selection/Selection.h>
 #include <Gui/WaitCursor.h>
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Mesh/Gui/ViewProvider.h>
@@ -254,7 +254,7 @@ bool Tessellation::accept()
             shapeObjects.emplace_back(sel.pObject, sel.SubName);
         }
         else if (sel.pObject) {
-            if (sel.pObject->isDerivedFrom(Part::Feature::getClassTypeId())) {
+            if (sel.pObject->isDerivedFrom<Part::Feature>()) {
                 partWithNoFace = true;
             }
             if (auto body = dynamic_cast<Part::BodyBase*>(sel.pObject)) {
@@ -384,7 +384,7 @@ void Tessellation::setFaceColors(int method, App::Document* doc, App::DocumentOb
                 }
 
                 vpmesh->highlightSegments(diff_col);
-                addFaceColors(dynamic_cast<Mesh::Feature*>(vpmesh->getObject()), diff_col);
+                addFaceColors(vpmesh->getObject<Mesh::Feature>(), diff_col);
             }
         }
     }

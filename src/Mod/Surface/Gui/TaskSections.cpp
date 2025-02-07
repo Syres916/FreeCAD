@@ -36,7 +36,7 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/Control.h>
-#include <Gui/SelectionObject.h>
+#include <Gui/Selection/SelectionObject.h>
 #include <Gui/Widgets.h>
 #include <Mod/Part/Gui/ViewProvider.h>
 
@@ -66,7 +66,7 @@ bool ViewProviderSections::setEdit(int ModNum)
         // object unsets and sets its edit mode without closing
         // the task panel
 
-        Surface::Sections* obj = static_cast<Surface::Sections*>(this->getObject());
+        Surface::Sections* obj = this->getObject<Surface::Sections>();
 
         Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
 
@@ -212,7 +212,7 @@ public:
         if (pObj == editedObject) {
             return false;
         }
-        if (!pObj->isDerivedFrom(Part::Feature::getClassTypeId())) {
+        if (!pObj->isDerivedFrom<Part::Feature>()) {
             return false;
         }
 

@@ -67,7 +67,7 @@ from Draft import LinearDimension
 from draftobjects.dimension import _Dimension
 from draftutils import params
 from draftutils import utils
-from builtins import open as pyopen
+from draftutils.utils import pyopen
 
 gui = FreeCAD.GuiUp
 draftui = None
@@ -1807,7 +1807,7 @@ def drawInsert(insert, num=None, clone=False):
     return None
 
 
-def drawLayerBlock(objlist):
+def drawLayerBlock(objlist, name="LayerBlock"):
     """Return a Draft Block (compound) from the given object list.
 
     Parameters
@@ -1836,7 +1836,9 @@ def drawLayerBlock(objlist):
     obj = None
     if (dxfCreateDraft or dxfCreateSketch) and isObj:
         try:
-            obj = Draft.make_block(objlist)
+            # obj = Draft.make_block(objlist)
+            obj = doc.addObject("Part::Compound", name)
+            obj.Links = objlist
         except Part.OCCError:
             pass
     else:
@@ -1942,7 +1944,7 @@ def addObject(shape, name="Shape", layer=None):
             else:
                 l = layerObjects[lay]
             l.append(newob)
-            
+
 
 
     formatObject(newob)
@@ -2739,17 +2741,13 @@ def processdxf(document, filename, getShapes=False, reComputeFlag=True):
                         formatObject(newob, insert)
             num += 1
 
-    # Move layer contents to layers
-    for (l, contents) in layerObjects.items():
-        l.Group += contents
-
     # Make blocks, if any
     if dxfMakeBlocks:
         print("creating layerblocks...")
         for k, l in layerBlocks.items():
-            shape = drawLayerBlock(l)
+            shape = drawLayerBlock(l, "LayerBlock_" + k)
             if shape:
-                newob = addObject(shape, k)
+                newob = addObject(shape, "LayerBlock_" + k, k)
     del layerBlocks
 
     # Hide block objects, if any
@@ -2757,6 +2755,10 @@ def processdxf(document, filename, getShapes=False, reComputeFlag=True):
         if o.ViewObject:
             o.ViewObject.hide()
     del blockobjects
+
+    # Move layer contents to layers
+    for (l, contents) in layerObjects.items():
+        l.Group += contents
 
     # Finishing
     print("done processing")
@@ -3718,7 +3720,12 @@ def export(objectslist, filename, nospline=False, lwPoly=False):
                     p2 = FreeCAD.Vector(_v)
                     lspc = FreeCAD.Vector(_h)
                     p1 = ob.Placement.multVec(p2 + lspc)
-                    dxf.append(dxfLibrary.Text(t1, p1, height=h1 * 0.8,
+                    justifyhor = ("Left", "Center", "Right").index(vobj.TextAlign)
+                    dxf.append(dxfLibrary.Text(t1,
+                                               p1,
+                                               alignment=p1 if justifyhor else None,
+                                               height=h1 * 0.8,
+                                               justifyhor=justifyhor,
                                                rotation=rotation,
                                                color=getACI(ob, text=True),
                                                style='STANDARD',
@@ -3728,7 +3735,11 @@ def export(objectslist, filename, nospline=False, lwPoly=False):
                         if rotation:
                             Z = FreeCAD.Vector(0, 0, 1)
                             ofs = FreeCAD.Rotation(Z, rotation).multVec(ofs)
-                        dxf.append(dxfLibrary.Text(t2, p1.add(ofs), height=h2 * 0.8,
+                        dxf.append(dxfLibrary.Text(t2,
+                                                   p1.add(ofs),
+                                                   alignment=p1.add(ofs) if justifyhor else None,
+                                                   height=h2 * 0.8,
+                                                   justifyhor=justifyhor,
                                                    rotation=rotation,
                                                    color=getACI(ob, text=True),
                                                    style='STANDARD',
@@ -3746,12 +3757,14 @@ def export(objectslist, filename, nospline=False, lwPoly=False):
                     h = 1
                     if gui:
                         vobj = ob.ViewObject
-                        h = float(ob.ViewObject.FontSize)
+                        h = float(vobj.FontSize)
                         for text in vobj.Proxy.getTextData():
-                            pos = text[1].add(FreeCAD.Vector(-h/2,-h/2,0))
+                            pos = text[1].add(FreeCAD.Vector(0,-h/2,0))
                             dxf.append(dxfLibrary.Text(text[0],
                                                        pos,
+                                                       alignment=pos,
                                                        height=h,
+                                                       justifyhor=1,
                                                        color=getACI(ob),
                                                        style='STANDARD',
                                                        layer=getStrGroup(ob)))
@@ -3833,9 +3846,15 @@ def export(objectslist, filename, nospline=False, lwPoly=False):
                                                          ob.Position.z))
                         if gui:
                             height = float(ob.ViewObject.FontSize)
+                            justifyhor = ("Left", "Center", "Right").index(ob.ViewObject.Justification)
                         else:
                             height = 1
-                        dxf.append(dxfLibrary.Text(text, point, height=height,
+                            justifyhor = 0
+                        dxf.append(dxfLibrary.Text(text,
+                                                   point,
+                                                   alignment=point if justifyhor else None,
+                                                   height=height,
+                                                   justifyhor=justifyhor,
                                                    color=getACI(ob, text=True),
                                                    style='STANDARD',
                                                    layer=getStrGroup(ob)))
@@ -3844,16 +3863,20 @@ def export(objectslist, filename, nospline=False, lwPoly=False):
                     # texts
                     if gui:
                         height = float(ob.ViewObject.FontSize)
+                        justifyhor = ("Left", "Center", "Right").index(ob.ViewObject.Justification)
                     else:
                         height = 1
-                    for text in ob.Text:
+                        justifyhor = 0
+                    for idx, text in enumerate(ob.Text):
                         point = DraftVecUtils.tup(Vector(ob.Placement.Base.x,
-                                                         ob.Placement.Base.y - (height * 1.2 * ob.Text.index(text)),
+                                                         ob.Placement.Base.y - (height * 1.2 * idx),
                                                          ob.Placement.Base.z))
                         rotation = math.degrees(ob.Placement.Rotation.Angle)
                         dxf.append(dxfLibrary.Text(text,
                                                    point,
+                                                   alignment=point if justifyhor else None,
                                                    height=height * 0.8,
+                                                   justifyhor=justifyhor,
                                                    rotation=rotation,
                                                    color=getACI(ob, text=True),
                                                    style='STANDARD',
@@ -4146,7 +4169,7 @@ def readPreferences():
     """
     # reading parameters
     if gui and params.get_param("dxfShowDialog"):
-        FreeCADGui.showPreferences("Import-Export", 3)
+        FreeCADGui.showPreferencesByName("Import-Export", ":/ui/preferences-dxf.ui")
     global dxfCreatePart, dxfCreateDraft, dxfCreateSketch
     global dxfDiscretizeCurves, dxfStarBlocks
     global dxfMakeBlocks, dxfJoin, dxfRenderPolylineWidth

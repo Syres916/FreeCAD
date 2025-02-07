@@ -277,7 +277,7 @@ QGIViewBalloon::QGIViewBalloon()
     arrow->setPrettyNormal();
     arrow->setStyle(prefDefaultArrow());
 
-    balloonLabel->setZValue(ZVALUE::LABEL);
+    balloonLabel->setZValue(ZVALUE::BALLOON);
     arrow->setZValue(ZVALUE::DIMENSION);
 
     balloonLines->setZValue(ZVALUE::DIMENSION);
@@ -617,7 +617,7 @@ void QGIViewBalloon::drawBalloon(bool originDrag)
 
     TechDraw::DrawViewBalloon* balloon = dynamic_cast<TechDraw::DrawViewBalloon*>(getViewObject());
     if ((!balloon) ||
-        (!balloon->isDerivedFrom(TechDraw::DrawViewBalloon::getClassTypeId()))) {
+        (!balloon->isDerivedFrom<TechDraw::DrawViewBalloon>())) {
         //nothing to draw, don't try
         return;
     }
@@ -925,6 +925,7 @@ void QGIViewBalloon::setPens(void)
 {
     balloonLines->setWidth(m_lineWidth);
     balloonShape->setWidth(m_lineWidth);
+    balloonShape->setFillColor(PreferencesGui::pageQColor());
     arrow->setWidth(m_lineWidth);
 }
 

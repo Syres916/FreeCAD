@@ -36,7 +36,7 @@
 #include <Gui/Application.h>
 #include <Gui/CommandT.h>
 #include <Gui/Document.h>
-#include <Gui/Selection.h>
+#include <Gui/Selection/Selection.h>
 #include <Gui/ViewProvider.h>
 #include <Mod/Part/App/DatumFeature.h>
 #include <Mod/PartDesign/App/FeatureSketchBased.h>
@@ -238,7 +238,7 @@ QString TaskSketchBasedParameters::getFaceReference(const QString& obj, const QS
 QString TaskSketchBasedParameters::make2DLabel(const App::DocumentObject* section,
                                                const std::vector<std::string>& subValues)
 {
-    if (section->isDerivedFrom(Part::Part2DObject::getClassTypeId())) {
+    if (section->isDerivedFrom<Part::Part2DObject>()) {
         return QString::fromUtf8(section->Label.getValue());
     }
     else if (subValues.empty()) {

@@ -40,7 +40,7 @@
 #include <Gui/Command.h>
 #include <Gui/Control.h>
 #include <Gui/Document.h>
-#include <Gui/SelectionObject.h>
+#include <Gui/Selection/SelectionObject.h>
 #include <Gui/Widgets.h>
 #include <Mod/Part/Gui/ViewProvider.h>
 
@@ -72,7 +72,7 @@ bool ViewProviderFilling::setEdit(int ModNum)
         // object unsets and sets its edit mode without closing
         // the task panel
 
-        Surface::Filling* obj = static_cast<Surface::Filling*>(this->getObject());
+        Surface::Filling* obj = this->getObject<Surface::Filling>();
 
         Gui::TaskView::TaskDialog* dlg = Gui::Control().activeDialog();
 
@@ -212,7 +212,7 @@ public:
         if (pObj == editedObject) {
             return false;
         }
-        if (!pObj->isDerivedFrom(Part::Feature::getClassTypeId())) {
+        if (!pObj->isDerivedFrom<Part::Feature>()) {
             return false;
         }
 

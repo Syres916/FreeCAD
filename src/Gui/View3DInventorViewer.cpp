@@ -35,6 +35,8 @@
 # include <GL/glu.h>
 # endif
 
+# include <fmt/format.h>
+
 # include <Inventor/SbBox.h>
 # include <Inventor/SoEventManager.h>
 # include <Inventor/SoPickedPoint.h>
@@ -91,6 +93,7 @@
 #include <Base/Sequencer.h>
 #include <Base/Tools.h>
 #include <Base/UnitsApi.h>
+#include <Base/Tools2D.h>
 #include <Quarter/devices/InputDevice.h>
 #include <Quarter/eventhandlers/EventFilter.h>
 
@@ -98,14 +101,15 @@
 #include "Application.h"
 #include "Document.h"
 #include "GLPainter.h"
+#include "Inventor/SoAxisCrossKit.h"
+#include "Inventor/SoFCBackgroundGradient.h"
+#include "Inventor/SoFCBoundingBox.h"
 #include "MainWindow.h"
 #include "Multisample.h"
 #include "NaviCube.h"
-#include "NavigationStyle.h"
+#include "Navigation/NavigationStyle.h"
 #include "Selection.h"
-#include "SoAxisCrossKit.h"
-#include "SoFCBackgroundGradient.h"
-#include "SoFCBoundingBox.h"
+#include "SoDevicePixelRatioElement.h"
 #include "SoFCDB.h"
 #include "SoFCInteractiveElement.h"
 #include "SoFCOffscreenRenderer.h"
@@ -122,9 +126,11 @@
 #include "ViewProvider.h"
 #include "ViewProviderDocumentObject.h"
 #include "ViewProviderLink.h"
-#include "NavigationAnimator.h"
-#include "NavigationAnimation.h"
+#include "Navigation/NavigationAnimator.h"
+#include "Navigation/NavigationAnimation.h"
 #include "Utilities.h"
+
+#include <Inventor/So3DAnnotation.h>
 
 
 FC_LOG_LEVEL_INIT("3DViewer", true, true)
@@ -439,6 +445,7 @@ void View3DInventorViewer::init()
     backgroundroot = new SoSeparator;
     backgroundroot->ref();
     this->backgroundroot->addChild(cam);
+    this->backgroundroot->setName("backgroundroot");
 
     // Background stuff
     pcBackGround = new SoFCBackgroundGradient;
@@ -447,6 +454,7 @@ void View3DInventorViewer::init()
     // Set up foreground, overlaid scenegraph.
     this->foregroundroot = new SoSeparator;
     this->foregroundroot->ref();
+    this->foregroundroot->setName("foregroundroot");
 
     auto lm = new SoLightModel;
     lm->model = SoLightModel::BASE_COLOR;
@@ -478,8 +486,6 @@ void View3DInventorViewer::init()
     // increase refcount before passing it to setScenegraph(), to avoid
     // premature destruction
     pcViewProviderRoot->ref();
-    // is not really working with Coin3D.
-    //redrawOverlayOnSelectionChange(pcSelection);
     setSceneGraph(pcViewProviderRoot);
     // Event callback node
     pEventCallback = new SoEventCallback();
@@ -489,9 +495,14 @@ void View3DInventorViewer::init()
     pEventCallback->addEventCallback(SoEvent::getClassTypeId(), handleEventCB, this);
 
     dimensionRoot = new SoSwitch(SO_SWITCH_NONE);
+    dimensionRoot->setName("RootDimensions");
     pcViewProviderRoot->addChild(dimensionRoot);
-    dimensionRoot->addChild(new SoSwitch()); //first one will be for the 3d dimensions.
-    dimensionRoot->addChild(new SoSwitch()); //second one for the delta dimensions.
+    auto dimensions3d = new SoSwitch();
+    dimensions3d->setName("_3dDimensions");
+    dimensionRoot->addChild(dimensions3d); //first one will be for the 3d dimensions.
+    auto dimensionsDelta = new SoSwitch();
+    dimensionsDelta->setName("DeltaDimensions");
+    dimensionRoot->addChild(dimensionsDelta); //second one for the delta dimensions.
 
     // This is a callback node that logs all action that traverse the Inventor tree.
 #if defined (FC_DEBUG) && defined(FC_LOGGING_CB)
@@ -517,6 +528,7 @@ void View3DInventorViewer::init()
     // Create group for the physical object
     objectGroup = new SoGroup();
     objectGroup->ref();
+    objectGroup->setName("ObjectGroup");
     pcViewProviderRoot->addChild(objectGroup);
 
     // Set our own render action which show a bounding box if
@@ -555,7 +567,11 @@ void View3DInventorViewer::init()
     //filter a few qt events
     viewerEventFilter = new ViewerEventFilter;
     installEventFilter(viewerEventFilter);
-    getEventFilter()->registerInputDevice(new SpaceNavigatorDevice);
+    ParameterGrp::handle hViewGrp = App::GetApplication().GetParameterGroupByPath(
+        "User parameter:BaseApp/Preferences/View");
+    if (hViewGrp->GetBool("LegacySpaceMouseDevices", false)) {
+        getEventFilter()->registerInputDevice(new SpaceNavigatorDevice);
+    }
     getEventFilter()->registerInputDevice(new GesturesDevice(this));
 
     try{
@@ -574,6 +590,8 @@ void View3DInventorViewer::init()
 
     naviCube = new NaviCube(this);
     naviCubeEnabled = true;
+
+    updateColors();
 }
 
 View3DInventorViewer::~View3DInventorViewer()
@@ -790,7 +808,7 @@ bool View3DInventorViewer::searchNode(SoNode* node) const
     searchAction.setInterest(SoSearchAction::FIRST);
     searchAction.apply(this->getSceneGraph());
     SoPath* selectionPath = searchAction.getPath();
-    return selectionPath ? true : false;
+    return selectionPath != nullptr;
 }
 
 bool View3DInventorViewer::hasViewProvider(ViewProvider* pcProvider) const
@@ -2359,6 +2377,7 @@ void View3DInventorViewer::renderScene()
     // Render our scenegraph with the image.
     SoGLRenderAction* glra = this->getSoRenderManager()->getGLRenderAction();
     SoState* state = glra->getState();
+    SoDevicePixelRatioElement::set(state, devicePixelRatio());
     SoGLWidgetElement::set(state, qobject_cast<QtGLWidget*>(this->getGLWidget()));
     SoGLRenderActionElement::set(state, glra);
     SoGLVBOActivatedElement::set(state, this->vboEnabled);
@@ -2374,6 +2393,11 @@ void View3DInventorViewer::renderScene()
     try {
         // Render normal scenegraph.
         inherited::actualRedraw();
+
+        So3DAnnotation::render = true;
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glra->apply(SoDelayedAnnotationsElement::getDelayedPaths(state));
+        So3DAnnotation::render = false;
     }
     catch (const Base::MemoryException&) {
         // FIXME: If this exception appears then the background and camera position get broken somehow. (Werner 2006-02-01)
@@ -2507,7 +2531,7 @@ void View3DInventorViewer::printDimension() const
     float fWidth = -1.0;
     getDimensions(fHeight, fWidth);
 
-    QString dim;
+    std::string dim;
 
     if (fWidth >= 0.0 && fHeight >= 0.0) {
         // Translate screen units into user's unit schema
@@ -2515,14 +2539,14 @@ void View3DInventorViewer::printDimension() const
         Base::Quantity qHeight(Base::Quantity::MilliMetre);
         qWidth.setValue(fWidth);
         qHeight.setValue(fHeight);
-        QString wStr = Base::UnitsApi::schemaTranslate(qWidth);
-        QString hStr = Base::UnitsApi::schemaTranslate(qHeight);
+        auto wStr = Base::UnitsApi::schemaTranslate(qWidth);
+        auto hStr = Base::UnitsApi::schemaTranslate(qHeight);
 
         // Create final string and update window
-        dim = QString::fromLatin1("%1 x %2").arg(wStr, hStr);
+        dim = fmt::format("{} x {}", wStr, hStr);
     }
 
-    getMainWindow()->setPaneText(2, dim);
+    getMainWindow()->setPaneText(2, QString::fromStdString(dim));
 }
 
 void View3DInventorViewer::selectAll()
@@ -2657,14 +2681,82 @@ SbVec2f View3DInventorViewer::getNormalizedPosition(const SbVec2s& pnt) const
     return {pX, pY};
 }
 
-SbVec3f View3DInventorViewer::getPointOnXYPlaneOfPlacement(const SbVec2s& pnt, Base::Placement& plc) const
+Base::BoundBox2d View3DInventorViewer::getViewportOnXYPlaneOfPlacement(Base::Placement plc) const
+{
+    auto projBBox = Base::BoundBox3d();
+    projBBox.SetVoid();
+
+    SoCamera* pCam = this->getSoRenderManager()->getCamera();
+
+    if (!pCam) {
+        // Return empty box.
+        return Base::BoundBox2d(0, 0, 0, 0);
+    }
+
+    Base::Vector3d pos = plc.getPosition();
+    Base::Rotation rot = plc.getRotation();
+
+    // Transform the plane LCS into the global one.
+    Base::Vector3d zAxis(0, 0, 1);
+    rot.multVec(zAxis, zAxis);
+
+    // Get the position and convert Base::Vector3d to SbVec3f
+    SbVec3f planeNormal(zAxis.x, zAxis.y, zAxis.z);
+    SbVec3f planePosition(pos.x, pos.y, pos.z);
+    SbPlane xyPlane(planeNormal, planePosition);
+
+    const SbViewportRegion& vp = this->getSoRenderManager()->getViewportRegion();
+    SbViewVolume vol = pCam->getViewVolume();
+
+    float fRatio = vp.getViewportAspectRatio();
+    float dX, dY;
+    vp.getViewportSize().getValue(dX, dY);
+
+    // Projects a pair of normalized coordinates on the XY plane.
+    auto projectPoint =
+            [&](float x, float y) {
+                if (fRatio > 1.f) {
+                    x = (x - 0.5f * dX) * fRatio + 0.5f * dX;
+                }
+                else if (fRatio < 1.f) {
+                    y = (y - 0.5f * dY) / fRatio + 0.5f * dY;
+                }
+
+                SbLine line;
+                vol.projectPointToLine(SbVec2f(x, y), line);
+
+                SbVec3f pt;
+                // Intersection point on the XY plane.
+                if (!xyPlane.intersect(line, pt)) {
+                    return;
+                }
+
+                projBBox.Add(Base::convertTo<Base::Vector3d>(pt));
+            };
+
+    // Project the four corners of the viewport plane.
+    projectPoint(0.f, 0.f);
+    projectPoint(1.f, 0.f);
+    projectPoint(0.f, 1.f);
+    projectPoint(1.f, 1.f);
+
+    if (!projBBox.IsValid()) {
+        // Return empty box.
+        return Base::BoundBox2d(0, 0, 0, 0);
+    }
+
+    plc.invert();
+    Base::ViewOrthoProjMatrix proj(plc.toMatrix());
+    return projBBox.ProjectBox(&proj);
+}
+
+SbVec3f View3DInventorViewer::getPointOnXYPlaneOfPlacement(const SbVec2s& pnt, const Base::Placement& plc) const
 {
     SbVec2f pnt2d = getNormalizedPosition(pnt);
     SoCamera* pCam = this->getSoRenderManager()->getCamera();
 
     if (!pCam) {
-        // return invalid point
-        return {};
+        throw Base::RuntimeError("No camera node found");
     }
 
     SbViewVolume  vol = pCam->getViewVolume();
@@ -2674,23 +2766,19 @@ SbVec3f View3DInventorViewer::getPointOnXYPlaneOfPlacement(const SbVec2s& pnt, B
     // Calculate the plane using plc
     Base::Rotation rot = plc.getRotation();
     Base::Vector3d normalVector = rot.multVec(Base::Vector3d(0, 0, 1));
-    SbVec3f planeNormal(normalVector.x, normalVector.y, normalVector.z);
+    SbVec3f planeNormal = Base::convertTo<SbVec3f>(normalVector);
 
     // Get the position and convert Base::Vector3d to SbVec3f
     Base::Vector3d pos = plc.getPosition();
-    SbVec3f planePosition(pos.x, pos.y, pos.z);
+    SbVec3f planePosition = Base::convertTo<SbVec3f>(pos);
     SbPlane xyPlane(planeNormal, planePosition);
 
     SbVec3f pt;
     if (xyPlane.intersect(line, pt)) {
         return pt; // Intersection point on the XY plane
     }
-    else {
-        // No intersection found
-        return {};
-    }
 
-    return pt;
+    throw Base::RuntimeError("No intersection found");
 }
 
 SbVec3f projectPointOntoPlane(const SbVec3f& point, const SbPlane& plane) {
@@ -3622,6 +3710,25 @@ void View3DInventorViewer::setAxisLetterColor(const SbColor& color)
     recolor(ZPM_PIXEL_MASK, ZPM_pixel_data, ZPM_WIDTH, ZPM_HEIGHT, ZPM_BYTES_PER_PIXEL);
 }
 
+void View3DInventorViewer::updateColors()
+{
+    unsigned long colorLong;
+
+    colorLong = Gui::ViewParams::instance()->getAxisXColor();
+    m_xColor = App::Color(static_cast<uint32_t>(colorLong));
+    colorLong = Gui::ViewParams::instance()->getAxisYColor();
+    m_yColor = App::Color(static_cast<uint32_t>(colorLong));
+    colorLong = Gui::ViewParams::instance()->getAxisZColor();
+    m_zColor = App::Color(static_cast<uint32_t>(colorLong));
+
+    naviCube->updateColors();
+
+    if(hasAxisCross()) {
+        setAxisCross(false);  // Force redraw
+        setAxisCross(true);
+    }
+}
+
 void View3DInventorViewer::drawAxisCross()
 {
     // NOLINTBEGIN
@@ -3729,10 +3836,10 @@ void View3DInventorViewer::drawAxisCross()
             glPushMatrix();
 
             if (i == XAXIS) {                        // X axis.
-                if (stereoMode() != Quarter::SoQTQuarterAdaptor::MONO)
-                    glColor3f(0.500F, 0.5F, 0.5F);
+                if (stereoMode() != Quarter::SoQTQuarterAdaptor::MONO)  // What is this
+                    glColor3f(0.500F, 0.5F, 0.5F);  // Why different colors??
                 else
-                    glColor3f(0.500F, 0.125F, 0.125F);
+                    glColor3f(m_xColor.r, m_xColor.g, m_xColor.b);
             }
             else if (i == YAXIS) {                   // Y axis.
                 glRotatef(90, 0, 0, 1);
@@ -3740,7 +3847,7 @@ void View3DInventorViewer::drawAxisCross()
                 if (stereoMode() != Quarter::SoQTQuarterAdaptor::MONO)
                     glColor3f(0.400F, 0.4F, 0.4F);
                 else
-                    glColor3f(0.125F, 0.500F, 0.125F);
+                    glColor3f(m_yColor.r, m_yColor.g, m_yColor.b);
             }
             else {                                        // Z axis.
                 glRotatef(-90, 0, 1, 0);
@@ -3748,7 +3855,7 @@ void View3DInventorViewer::drawAxisCross()
                 if (stereoMode() != Quarter::SoQTQuarterAdaptor::MONO)
                     glColor3f(0.300F, 0.3F, 0.3F);
                 else
-                    glColor3f(0.125F, 0.125F, 0.500F);
+                    glColor3f(m_zColor.r, m_zColor.g, m_zColor.b);
             }
 
             drawArrow();

@@ -143,7 +143,7 @@ void TextureMapping::onFileChooserFileNameSelected(const QString& s)
         Gui::Document* doc = Gui::Application::Instance->activeDocument();
         if (doc) {
             Gui::MDIView* mdi = doc->getActiveView();
-            if (mdi && mdi->isDerivedFrom(View3DInventor::getClassTypeId())) {
+            if (mdi && mdi->isDerivedFrom<View3DInventor>()) {
                 Gui::View3DInventorViewer* view = static_cast<View3DInventor*>(mdi)->getViewer();
                 this->grp = static_cast<SoGroup *>(view->getSceneGraph());
                 this->grp->ref();
@@ -155,7 +155,7 @@ void TextureMapping::onFileChooserFileNameSelected(const QString& s)
     }
 
     if (!this->grp) {
-        QMessageBox::warning(this, tr("No 3d view"), tr("No active 3d view found."));
+        QMessageBox::warning(this, tr("No 3D view"), tr("No active 3D view found."));
         return;
     }
 

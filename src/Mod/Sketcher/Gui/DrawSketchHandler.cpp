@@ -194,16 +194,14 @@ std::vector<Base::Vector2d> CurveConverter::toVector2D(const Part::Geometry* geo
 {
     std::vector<Base::Vector2d> vector2d;
 
-    const auto type = geometry->getTypeId();
-
     auto emplaceasvector2d = [&vector2d](const Base::Vector3d& point) {
         vector2d.emplace_back(point.x, point.y);
     };
 
-    auto isconic = type.isDerivedFrom(Part::GeomConic::getClassTypeId());
-    auto isbounded = type.isDerivedFrom(Part::GeomBoundedCurve::getClassTypeId());
+    auto isconic = geometry->isDerivedFrom<Part::GeomConic>();
+    auto isbounded = geometry->isDerivedFrom<Part::GeomBoundedCurve>();
 
-    if (type == Part::GeomLineSegment::getClassTypeId()) {  // add a line
+    if (geometry->is<Part::GeomLineSegment>()) {  // add a line
         auto geo = static_cast<const Part::GeomLineSegment*>(geometry);
 
         emplaceasvector2d(geo->getStartPoint());
@@ -435,6 +433,7 @@ int DrawSketchHandler::seekAutoConstraint(std::vector<AutoConstraint>& suggested
     }
     // direction of hit shape (if it is a line, the direction of the line)
     Base::Vector3d hitShapeDir = Base::Vector3d(0, 0, 0);
+    bool preselectIsLine = false;
 
     // Get Preselection
     int preSelPnt = getPreselectPoint();
@@ -454,8 +453,9 @@ int DrawSketchHandler::seekAutoConstraint(std::vector<AutoConstraint>& suggested
         if (geom) {
             GeoId = preSelCrv;
             if (geom->is<Part::GeomLineSegment>()) {
-                const Part::GeomLineSegment* line = static_cast<const Part::GeomLineSegment*>(geom);
+                auto* line = static_cast<const Part::GeomLineSegment*>(geom);
                 hitShapeDir = line->getEndPoint() - line->getStartPoint();
+                preselectIsLine = true;
             }
         }
     }
@@ -468,11 +468,13 @@ int DrawSketchHandler::seekAutoConstraint(std::vector<AutoConstraint>& suggested
         // x axis
         GeoId = Sketcher::GeoEnum::HAxis;
         hitShapeDir = Base::Vector3d(1, 0, 0);
+        preselectIsLine = true;
     }
     else if (preSelCrs == 2) {
         // y axis
         GeoId = Sketcher::GeoEnum::VAxis;
         hitShapeDir = Base::Vector3d(0, 1, 0);
+        preselectIsLine = true;
     }
 
     if (GeoId != GeoEnum::GeoUndef) {
@@ -511,7 +513,7 @@ int DrawSketchHandler::seekAutoConstraint(std::vector<AutoConstraint>& suggested
             constr.Type = Sketcher::Tangent;
         }
 
-        if (constr.Type == Sketcher::Tangent) {
+        if (constr.Type == Sketcher::Tangent && preselectIsLine) {
             if (Dir.Length() < 1e-8 || hitShapeDir.Length() < 1e-8) {
                 // Direction not set so return;
                 return suggestedConstraints.size();

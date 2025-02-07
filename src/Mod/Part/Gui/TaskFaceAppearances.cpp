@@ -46,10 +46,10 @@
 #include <App/Document.h>
 #include <Gui/Application.h>
 #include <Gui/Control.h>
-#include <Gui/DlgMaterialPropertiesImp.h>
+#include <Gui/Dialogs/DlgMaterialPropertiesImp.h>
 #include <Gui/Document.h>
 #include <Gui/MainWindow.h>
-#include <Gui/Selection.h>
+#include <Gui/Selection/Selection.h>
 #include <Gui/Tools.h>
 #include <Gui/Utilities.h>
 #include <Gui/View3DInventor.h>
@@ -426,7 +426,7 @@ int FaceAppearances::getFirstIndex() const
 }
 
 /**
- * Opens a dialog that allows to modify the 'ShapeMaterial' property of all selected view providers.
+ * Opens a dialog that allows one to modify the 'ShapeMaterial' property of all selected view providers.
  */
 void FaceAppearances::onButtonCustomAppearanceClicked()
 {

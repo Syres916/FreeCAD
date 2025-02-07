@@ -42,8 +42,8 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/Notifications.h>
-#include <Gui/Selection.h>
-#include <Gui/SelectionObject.h>
+#include <Gui/Selection/Selection.h>
+#include <Gui/Selection/SelectionObject.h>
 #include <Gui/ViewProvider.h>
 #include <Mod/Sketcher/App/GeometryFacade.h>
 #include <Mod/Sketcher/App/SketchObject.h>
@@ -578,7 +578,7 @@ void ElementView::changeLayer(int layer)
     doc->openTransaction("Geometry Layer Change");
     std::vector<Gui::SelectionObject> sel = Gui::Selection().getSelectionEx(doc->getName());
     for (std::vector<Gui::SelectionObject>::iterator ft = sel.begin(); ft != sel.end(); ++ft) {
-        auto sketchobject = dynamic_cast<Sketcher::SketchObject*>(ft->getObject());
+        auto sketchobject = ft->getObject<Sketcher::SketchObject>();
 
         auto geoids = getGeoIdsOfEdgesFromNames(sketchobject, ft->getSubNames());
 

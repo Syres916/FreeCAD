@@ -39,6 +39,7 @@
 
 #include <Base/Interpreter.h>
 #include <App/Document.h>
+#include <App/Application.h>
 
 #include "MDIView.h"
 #include "MDIViewPy.h"
@@ -209,6 +210,8 @@ void MDIView::closeEvent(QCloseEvent *e)
 {
     if (canClose()) {
         e->accept();
+        Application::Instance->viewClosed(this);
+
         if (!bIsPassive) {
             // must be detached so that the last view can get asked
             Document* doc = this->getGuiDocument();
@@ -262,6 +265,7 @@ void MDIView::printPdf()
         printer.setPdfVersion(QPagedPaintDevice::PdfVersion_A1b);
         printer.setOutputFormat(QPrinter::PdfFormat);
         printer.setOutputFileName(filename);
+        printer.setCreator(QString::fromStdString(App::Application::getNameWithVersion()));
         print(&printer);
     }
 }

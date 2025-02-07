@@ -34,7 +34,7 @@
 
 #include <Gui/Application.h>
 #include <Gui/Document.h>
-#include <Gui/Selection.h>
+#include <Gui/Selection/Selection.h>
 #include <Gui/GLPainter.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
@@ -69,9 +69,6 @@ public:
 
         view->getSoRenderManager()->scheduleRedraw();
     }
- #ifndef GL_MULTISAMPLE
- #define GL_MULTISAMPLE  0x809D
- #endif
     void paintGL()
     {
     const SbViewportRegion vp = view->getSoRenderManager()->getViewportRegion();
@@ -313,7 +310,7 @@ void paintSelection()
 }
 
 // ---------------------------------------
-#include <Gui/NavigationStyle.h>
+#include <Gui/Navigation/NavigationStyle.h>
 
 DrawingPlane::DrawingPlane()
 {

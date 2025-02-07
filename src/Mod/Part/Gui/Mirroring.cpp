@@ -57,14 +57,15 @@
 #include <Gui/BitmapFactory.h>
 #include <Gui/Command.h>
 #include <Gui/Document.h>
-#include <Gui/Selection.h>
+#include <Gui/Selection/Selection.h>
 #include <Gui/Utilities.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/WaitCursor.h>
 #include <Mod/Part/App/PartFeature.h>
 #include <Mod/Part/App/PrimitiveFeature.h>
 #include <Mod/Part/App/DatumFeature.h>
-#include <App/OriginFeature.h>
+#include <Mod/Part/App/FeatureMirroring.h>
+#include <App/Datums.h>
 
 #include "Mirroring.h"
 
@@ -93,8 +94,8 @@ public:
     {
         std::string subString(sSubName);
 
-        if (pObj->isDerivedFrom(Part::Plane::getClassTypeId()) || pObj->isDerivedFrom<App::Plane>()
-                || (strstr(pObj->getNameInDocument(), "Plane") && pObj->isDerivedFrom(Part::Datum::getClassTypeId()))) {
+        if (pObj->isDerivedFrom<Part::Plane>() || pObj->isDerivedFrom<App::Plane>()
+                || (strstr(pObj->getNameInDocument(), "Plane") && pObj->isDerivedFrom<Part::Datum>())) {
             return true;
             // reference is an app::link or a part::feature or some subobject
         } else if (pObj->isDerivedFrom<Part::Feature>() || pObj->isDerivedFrom<App::Link>()) {
@@ -289,7 +290,7 @@ bool Mirroring::accept()
     }
 
     Gui::WaitCursor wc;
-    unsigned int count = activeDoc->countObjectsOfType(Base::Type::fromName("Part::Mirroring"));
+    unsigned int count = activeDoc->countObjectsOfType<Part::Mirroring>();
     activeDoc->openTransaction("Mirroring");
 
     QString shape, label, selectionString;

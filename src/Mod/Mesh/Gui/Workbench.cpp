@@ -29,7 +29,7 @@
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/MenuManager.h>
-#include <Gui/Selection.h>
+#include <Gui/Selection/Selection.h>
 #include <Gui/TaskView/TaskView.h>
 #include <Gui/ToolBarManager.h>
 #include <Mod/Mesh/App/MeshFeature.h>
@@ -158,7 +158,7 @@ void Workbench::deactivated()
 void Workbench::setupContextMenu(const char* recipient, Gui::MenuItem* item) const
 {
     StdWorkbench::setupContextMenu(recipient, item);
-    if (Gui::Selection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0) {
+    if (Gui::Selection().countObjectsOfType<Mesh::Feature>() > 0) {
         *item << "Separator"
               << "Mesh_Import"
               << "Mesh_Export"
