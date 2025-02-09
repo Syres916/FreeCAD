@@ -25,6 +25,7 @@ set(TechDraw_ToolsScripts
     TechDrawTools/CommandFillTemplateFields.py
     TechDrawTools/CommandVertexCreations.py
     TechDrawTools/CommandHoleShaftFit.py
+    TechDrawTools/CommandBIMSelectAllChildren.py
     TechDrawTools/TaskMoveView.py
     TechDrawTools/TaskShareView.py
     TechDrawTools/TaskFillTemplateFields.py
