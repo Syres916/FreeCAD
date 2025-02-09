@@ -1,5 +1,5 @@
 # ***************************************************************************
-# *   Copyright (c) 2025                               *
+# *   Copyright (c) 2025 Syres                                              *
 # *                                                                         *
 # *   This program is free software; you can redistribute it and/or modify  *
 # *   it under the terms of the GNU Lesser General Public License (LGPL)    *
@@ -23,7 +23,7 @@ Assists the user in selecting all BIM objects below the selected Site/Building/W
 """
 
 __title__ = "TechDrawTools.CommandBIMSelectAllChildren"
-__author__ = ""
+__author__ = "Syres"
 __url__ = "https://www.freecad.org"
 __version__ = "00.01"
 __date__ = "2025/02/09"
