@@ -614,22 +614,25 @@ void Pipe::handleChangedPropertyType(Base::XMLReader& reader, const char* TypeNa
     }
 }
 
-void Pipe::handleChangedPropertyName(Base::XMLReader &reader, const char * TypeName, const char *PropName)
+void Pipe::handleChangedPropertyName(Base::XMLReader& reader,
+                                     const char* TypeName,
+                                     const char* PropName)
 {
     // The AuxiliarySpine property was AuxillerySpine in the past
+    std::string strAuxillerySpine("AuxillerySpine");
     // The AuxiliarySpineTangent property was AuxillerySpineTangent in the past
+    std::string strAuxillerySpineTangent("AuxillerySpineTangent");
     // The AuxiliaryCurvelinear property was AuxilleryCurvelinear in the past
+    std::string strAuxilleryCurvelinear("AuxilleryCurvelinear");
     Base::Type type = Base::Type::fromName(TypeName);
-    if (AuxiliarySpine.getClassTypeId() == type && strcmp(PropName, "AuxillerySpine") == 0) {
+    if (AuxiliarySpine.getClassTypeId() == type && strAuxillerySpine == PropName) {
         AuxiliarySpine.Restore(reader);
     }
-    else if (AuxiliarySpineTangent.getClassTypeId() == type && strcmp(PropName, "AuxillerySpineTangent") == 0) {
+    else if (AuxiliarySpineTangent.getClassTypeId() == type
+             && strAuxillerySpineTangent == PropName) {
         AuxiliarySpineTangent.Restore(reader);
     }
-    else if (AuxiliaryCurvelinear.getClassTypeId() == type && strcmp(PropName, "AuxilleryCurvelinear") == 0) {
+    else if (AuxiliaryCurvelinear.getClassTypeId() == type && strAuxilleryCurvelinear == PropName) {
         AuxiliaryCurvelinear.Restore(reader);
-    }
-    else {
-        Pipe::handleChangedPropertyName(reader, TypeName, PropName);
     }
 }
