@@ -613,3 +613,23 @@ void Pipe::handleChangedPropertyType(Base::XMLReader& reader, const char* TypeNa
         ProfileBased::handleChangedPropertyType(reader, TypeName, prop);
     }
 }
+
+void Pipe::handleChangedPropertyName(Base::XMLReader &reader, const char * TypeName, const char *PropName)
+{
+    // The AuxiliarySpine property was AuxillerySpine in the past
+    // The AuxiliarySpineTangent property was AuxillerySpineTangent in the past
+    // The AuxiliaryCurvelinear property was AuxilleryCurvelinear in the past
+    Base::Type type = Base::Type::fromName(TypeName);
+    if (AuxiliarySpine.getClassTypeId() == type && strcmp(PropName, "AuxillerySpine") == 0) {
+        AuxiliarySpine.Restore(reader);
+    }
+    else if (AuxiliarySpineTangent.getClassTypeId() == type && strcmp(PropName, "AuxillerySpineTangent") == 0) {
+        AuxiliarySpineTangent.Restore(reader);
+    }
+    else if (AuxiliaryCurvelinear.getClassTypeId() == type && strcmp(PropName, "AuxilleryCurvelinear") == 0) {
+        AuxiliaryCurvelinear.Restore(reader);
+    }
+    else {
+        Pipe::handleChangedPropertyName(reader, TypeName, PropName);
+    }
+}
