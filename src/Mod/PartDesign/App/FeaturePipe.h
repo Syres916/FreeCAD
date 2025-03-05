@@ -74,6 +74,8 @@ protected:
     void setupAlgorithm(BRepOffsetAPI_MakePipeShell& mkPipeShell, const TopoDS_Shape& auxshape);
     /// handle changed property
     void handleChangedPropertyType(Base::XMLReader& reader, const char* TypeName, App::Property* prop) override;
+    void handleChangedPropertyName(Base::XMLReader& reader, const char* TypeName,
+                                   const char* PropName) override;
 
 private:
     static const char* TypeEnums[];
