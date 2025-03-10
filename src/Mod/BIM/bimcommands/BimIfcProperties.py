@@ -145,7 +145,7 @@ class BIM_IfcProperties:
         self.form.searchField.editTextChanged.connect(self.update)
         self.form.comboProperty.currentIndexChanged.connect(self.addProperty)
         self.form.comboPset.currentIndexChanged.connect(self.addPset)
-        self.form.buttonDelete.clicked.connect(self.removeProperty)
+        self.form.buttonIFCPropertiesDelete.clicked.connect(self.removeProperty)
         self.form.treeProperties.setSortingEnabled(True)
 
         # center the dialog over FreeCAD window
