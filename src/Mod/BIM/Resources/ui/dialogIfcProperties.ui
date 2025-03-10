@@ -177,7 +177,7 @@
        <widget class="QComboBox" name="comboPset"/>
       </item>
       <item>
-       <widget class="QPushButton" name="buttonDelete">
+       <widget class="QPushButton" name="buttonIFCPropertiesDelete">
         <property name="text">
          <string>Delete selected property/set</string>
         </property>
