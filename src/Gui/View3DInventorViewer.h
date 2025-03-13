@@ -457,7 +457,7 @@ public:
 
     //! Update colors of axis in corner to match preferences
     void updateColors();
-
+    void refresh3Lights();
     void getDimensions(float& fHeight, float& fWidth) const;
     float getMaxDimension() const;
     SbVec3f getCenterPointOnFocalPlane() const;
