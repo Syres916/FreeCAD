@@ -91,6 +91,7 @@
 
 #include <App/Document.h>
 #include <App/GeoFeatureGroupExtension.h>
+#include <Base/Builder3D.h>
 #include <Base/Console.h>
 #include <Base/FileInfo.h>
 #include <Base/Sequencer.h>
@@ -2544,6 +2545,7 @@ void View3DInventorViewer::renderScene()
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
     glPopAttrib();
+    refresh3Lights();
 }
 
 void View3DInventorViewer::setSeekMode(bool on)
@@ -3826,6 +3828,82 @@ void View3DInventorViewer::updateColors()
         setAxisCross(true);
     }
 }
+
+
+void View3DInventorViewer::refresh3Lights()
+{
+    ParameterGrp::handle lGrp =
+        App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
+    ParameterGrp::handle ldGrp = App::GetApplication().GetParameterGroupByPath(
+        "User parameter:BaseApp/Preferences/View/LightSources");
+    float transparency;
+    SbColor singleLightColor;
+    long value;
+
+    unsigned long ambientlight =
+        lGrp->GetUnsigned("AmbientLightColor", 0xFFFFFFFF);  // default color (white)
+    singleLightColor.setPackedValue((uint32_t)ambientlight, transparency);
+    this->getEnvironment()->ambientColor.setValue(singleLightColor);
+    value = lGrp->GetInt("AmbientLightIntensity", 20);
+    this->getEnvironment()->ambientIntensity.setValue(Base::fromPercent(value));
+
+    static constexpr auto defaultHeadLightDirection = "(0.6841049,-0.12062616,-0.7193398)";
+    static constexpr auto defaultFillLightDirection = "(-0.6403416,0.7631294,0.087155744)";
+    static constexpr auto defaultBackLightDirection = "(-0.7544065,-0.63302225,-0.17364818)";
+
+    unsigned long filllight = lGrp->GetUnsigned("FillLightColor", 0xE6FAFFFF);
+    singleLightColor.setPackedValue((uint32_t)filllight, transparency);
+    this->fillLight->on.setValue(lGrp->GetBool("EnableFillLight", true));
+    this->fillLight->color.setValue(singleLightColor);
+    value = lGrp->GetInt("FillLightIntensity", 40);
+    this->fillLight->intensity.setValue(Base::fromPercent(value));
+    try {
+        std::string pos = ldGrp->GetASCII("FillLightDirection", defaultFillLightDirection);
+        if (!pos.empty()) {
+            Base::Vector3f dir = Base::stringToVector(pos);
+            this->fillLight->direction.setValue(dir.x, dir.y, dir.z);
+        }
+    }
+    catch (const std::exception&) {
+        // ignore exception
+    }
+
+    unsigned long headlight =
+        lGrp->GetUnsigned("HeadlightColor", 0xFFFFFFFF);  // default color (white)
+    singleLightColor.setPackedValue((uint32_t)headlight, transparency);
+    this->getHeadlight()->on.setValue(lGrp->GetBool("EnableHeadlight", true));
+    this->getHeadlight()->color.setValue(singleLightColor);
+    value = lGrp->GetInt("HeadlightIntensity", 90);
+    this->getHeadlight()->intensity.setValue(Base::fromPercent(value));
+    try {
+        std::string pos = ldGrp->GetASCII("HeadlightDirection", defaultHeadLightDirection);
+        if (!pos.empty()) {
+            Base::Vector3f dir = Base::stringToVector(pos);
+            this->getHeadlight()->direction.setValue(dir.x, dir.y, dir.z);
+        }
+    }
+    catch (const std::exception&) {
+        // ignore exception
+    }
+
+    unsigned long backlight = lGrp->GetUnsigned("BacklightColor", 0xF5F5EEFF);
+    singleLightColor.setPackedValue((uint32_t)backlight, transparency);
+    this->backlight->on.setValue(lGrp->GetBool("EnableBackLight", true));
+    this->backlight->color.setValue(singleLightColor);
+    value = lGrp->GetInt("BackLightIntensity", 60);
+    this->backlight->intensity.setValue(Base::fromPercent(value));
+    try {
+        std::string pos = ldGrp->GetASCII("BackLightDirection", defaultBackLightDirection);
+        if (!pos.empty()) {
+            Base::Vector3f dir = Base::stringToVector(pos);
+            this->backlight->direction.setValue(dir.x, dir.y, dir.z);
+        }
+    }
+    catch (const std::exception&) {
+        // ignore exception
+    }
+}
+
 
 void View3DInventorViewer::drawAxisCross()
 {
