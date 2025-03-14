@@ -2545,7 +2545,7 @@ void View3DInventorViewer::renderScene()
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
     glPopAttrib();
-    refresh3Lights();
+    updateLights();
 }
 
 void View3DInventorViewer::setSeekMode(bool on)
@@ -3830,7 +3830,7 @@ void View3DInventorViewer::updateColors()
 }
 
 
-void View3DInventorViewer::refresh3Lights()
+void View3DInventorViewer::updateLights()
 {
     ParameterGrp::handle lGrp =
         App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
