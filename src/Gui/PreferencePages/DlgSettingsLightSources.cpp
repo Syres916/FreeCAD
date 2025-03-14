@@ -286,6 +286,14 @@ void DlgSettingsLightSources::saveSettings()
     saveAngles(ui->mainLightHorizontalAngle, ui->mainLightVerticalAngle, "HeadlightDirection");
     saveAngles(ui->backLightHorizontalAngle, ui->backLightVerticalAngle, "BacklightDirection");
     saveAngles(ui->fillLightHorizontalAngle, ui->fillLightVerticalAngle, "FillLightDirection");
+
+
+    // the user should see the new settings reflected in the preview after clicking Apply
+    View3DSettings(hGrp, view).applySettings();
+    view->setRedirectToSceneGraph(true);
+    view->setViewing(true);
+    view->setPopupMenuEnabled(false);
+    view->setEnabledNaviCube(false);
 }
 
 void DlgSettingsLightSources::loadSettings()
