@@ -61,6 +61,25 @@ class DrawViewDimensionTest(unittest.TestCase):
         print("finished length dimension")
         self.document.recompute()
         self.assertTrue("Up-to-date" in dimension.State)
+        correct_dimension_output = [
+            ("10.00 mm", 1.0, "mm"),
+            ("10.00 mm", 1.0, "mm"),
+            ("0.39″", 25.4, "″"),
+            ("0.39 in", 25.4, "in"),
+            ("1.00 cm", 10.0, "cm"),
+            ("3/8″", 0.0, ""),
+            ("10.00 mm", 1.0, "mm"),
+            ("10.00 mm", 1.0, "mm"),
+            ("10.00 mm", 1.0, "mm"),
+            ("0.01 m", 1000.0, "m"),
+        ]
+        for i in range(len(FreeCAD.Units.listSchemas())):
+            self.assertEqual(
+                FreeCAD.Units.schemaTranslate(
+                    FreeCAD.Units.Quantity(str(dimension.getRawValue()) + " mm"), i
+                ),
+                correct_dimension_output[i],
+            )
 
     def testRadiusDimension(self):
         """Tests if a radius dimension can be added to view1"""
@@ -72,7 +91,25 @@ class DrawViewDimensionTest(unittest.TestCase):
         dimension.References2D = [(self.view1, "Edge0")]
         self.document.recompute()
         self.assertTrue("Up-to-date" in dimension.State)
-
+        correct_dimension_output = [
+            ("5.00 mm", 1.0, "mm"),
+            ("5.00 mm", 1.0, "mm"),
+            ("0.20″", 25.4, "″"),
+            ("0.20 in", 25.4, "in"),
+            ("0.50 cm", 10.0, "cm"),
+            ("1/4″", 0.0, ""),
+            ("5.00 mm", 1.0, "mm"),
+            ("5.00 mm", 1.0, "mm"),
+            ("5.00 mm", 1.0, "mm"),
+            ("0.01 m", 1000.0, "m"),
+        ]
+        for i in range(len(FreeCAD.Units.listSchemas())):
+            self.assertEqual(
+                FreeCAD.Units.schemaTranslate(
+                    FreeCAD.Units.Quantity(str(dimension.getRawValue()) + " mm"), i
+                ),
+                correct_dimension_output[i],
+            )
 
 if __name__ == "__main__":
     unittest.main()
