@@ -250,8 +250,8 @@ def show(obj):
                         ),
                     )
                 )
-            result = dia.exec_()
-            # exec_() returns 0 or 1 depending on the button pressed (Ok or
+            result = dia.exec()
+            # exec() returns 0 or 1 depending on the button pressed (Ok or
             # Cancel)
             if result:
                 p = Path.Path(dia.editor.toPlainText())

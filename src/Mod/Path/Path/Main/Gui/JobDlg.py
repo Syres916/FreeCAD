@@ -286,7 +286,7 @@ class JobCreate:
         # segfault when python is shutdown. To keep it symmetric I also put the callback
         # registration here
         self.model.dataChanged.connect(self.updateData)
-        rc = self.dialog.exec_()
+        rc = self.dialog.exec()
         self.model.dataChanged.disconnect()
         return rc
 
@@ -441,4 +441,4 @@ class JobTemplateExport:
         return ops
 
     def exec_(self):
-        return self.dialog.exec_()
+        return self.dialog.exec()

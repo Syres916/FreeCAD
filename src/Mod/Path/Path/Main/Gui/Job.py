@@ -997,7 +997,7 @@ class TaskPanel:
         for item in self.form.toolControllerList.selectedItems():
             tc = item.data(self.DataObject)
             dlg = PathToolControllerGui.DlgToolControllerEdit(tc)
-            dlg.exec_()
+            dlg.exec()
         self.setFields()
         self.toolControllerSelect()
 
@@ -1409,7 +1409,7 @@ class TaskPanel:
         dialog = PathJobDlg.JobCreate()
         dialog.setupTitle(translate("Path_Job", "Model Selection"))
         dialog.setupModel(self.obj)
-        if dialog.exec_() == 1:
+        if dialog.exec() == 1:
             models = dialog.getModels()
             if models:
                 obj = self.obj
@@ -1604,7 +1604,7 @@ class TaskPanel:
             )
             msgbox.addButton(txtOk, QtGui.QMessageBox.AcceptRole)  # Add 'Ok' button
             msgbox.addButton(txtAdd, QtGui.QMessageBox.ActionRole)  # Add 'Add' button
-            return msgbox.exec_()
+            return msgbox.exec()
 
         # Check if at least on base model is present
         if len(self.obj.Model.Group) == 0:
