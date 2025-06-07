@@ -2312,7 +2312,7 @@ def processdxf(document, filename, getShapes=False, reComputeFlag=True):
                 d.setStandardButtons(QtGui.QMessageBox.Ok
                                      | QtGui.QMessageBox.Cancel)
                 d.setDefaultButton(QtGui.QMessageBox.Cancel)
-                res = d.exec_()
+                res = d.exec()
                 if res == QtGui.QMessageBox.Cancel:
                     FCC.PrintMessage("Aborted\n")
                     return

@@ -760,7 +760,7 @@ class svgHandler(xml.sax.ContentHandler):
                         msgBox.setStandardButtons(QtGui.QMessageBox.Yes
                                                   | QtGui.QMessageBox.No)
                         msgBox.setDefaultButton(QtGui.QMessageBox.No)
-                        ret = msgBox.exec_()
+                        ret = msgBox.exec()
                         if ret == QtGui.QMessageBox.Yes:
                             self.svgdpi = 96.0
                         else:
