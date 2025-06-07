@@ -32,6 +32,7 @@
 #include "DlgCreateNewPreferencePackImp.h"
 #include "ui_DlgCreateNewPreferencePack.h"
 
+#include "FileDialog.h"
 
 using namespace Gui::Dialog;
 
@@ -48,18 +49,17 @@ DlgCreateNewPreferencePackImp::DlgCreateNewPreferencePackImp(QWidget* parent)
 {
     ui->setupUi(this);
 
-    QRegularExpression validNames(QString::fromUtf8("[^/\\\\?%*:|\"<>]+"));
+    QRegularExpression validNames(QStringLiteral(R"([^/\\?%*:|"<>]+)"));
     _nameValidator.setRegularExpression(validNames);
     ui->lineEdit->setValidator(&_nameValidator);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     connect(ui->treeWidget, &QTreeWidget::itemChanged, this, &DlgCreateNewPreferencePackImp::onItemChanged);
     connect(ui->lineEdit, &QLineEdit::textEdited, this, &DlgCreateNewPreferencePackImp::onLineEditTextEdited);
+    connect(ui->pushButton, &QPushButton::clicked, this, &DlgCreateNewPreferencePackImp::onBrowseButtonClicked);
 }
 
 
-DlgCreateNewPreferencePackImp::~DlgCreateNewPreferencePackImp()
-{
-}
+DlgCreateNewPreferencePackImp::~DlgCreateNewPreferencePackImp() = default;
 
 void DlgCreateNewPreferencePackImp::setPreferencePackTemplates(const std::vector<Gui::PreferencePackManager::TemplateFile>& availableTemplates)
 {
@@ -116,6 +116,11 @@ std::string DlgCreateNewPreferencePackImp::preferencePackName() const
     return ui->lineEdit->text().toStdString();
 }
 
+std::string Gui::Dialog::DlgCreateNewPreferencePackImp::preferencePackDirectory() const
+{
+    return _cfgFileDirectory.toStdString();
+}
+
 void DlgCreateNewPreferencePackImp::onItemChanged(QTreeWidgetItem* item, int column)
 {
     Q_UNUSED(column);
@@ -151,6 +156,11 @@ void DlgCreateNewPreferencePackImp::onItemChanged(QTreeWidgetItem* item, int col
 void DlgCreateNewPreferencePackImp::onLineEditTextEdited(const QString& text)
 {
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(text.isEmpty());
+}
+
+void DlgCreateNewPreferencePackImp::onBrowseButtonClicked()
+{
+    _cfgFileDirectory = FileDialog::getExistingDirectory(this, tr("Export Config"), _cfgFileDirectory);
 }
 
 void Gui::Dialog::DlgCreateNewPreferencePackImp::accept()
