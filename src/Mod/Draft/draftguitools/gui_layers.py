@@ -49,7 +49,11 @@ def getColorIcon(color):
 
     from PySide import QtCore,QtGui
     c = QtGui.QColor(int(color[0]*255),int(color[1]*255),int(color[2]*255))
-    im = QtGui.QImage(48,48,QtGui.QImage.Format_ARGB32)
+    render_size = QtCore.QSize(48, 48)
+    if hasattr(QtGui.QImage.Format, "Format_RGB888"):
+        im = QtGui.QImage(render_size, QtGui.QImage.Format.Format_RGB888)
+    else:
+        im = QtGui.QImage(render_size, QtGui.QImage.Format_RGB888)
     im.fill(c)
     px = QtGui.QPixmap.fromImage(im)
     return QtGui.QIcon(px)
@@ -144,7 +148,7 @@ class LayerManager:
         self.update()
 
         # rock 'n roll!!!
-        self.dialog.exec_()
+        self.dialog.exec()
 
     def accept(self):
 
