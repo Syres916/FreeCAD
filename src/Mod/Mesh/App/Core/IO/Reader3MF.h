@@ -31,10 +31,20 @@
 #include <Mod/Mesh/App/Core/MeshKernel.h>
 #include <Mod/Mesh/MeshGlobal.h>
 
+#ifndef XERCES_CPP_NAMESPACE_BEGIN
+#define XERCES_CPP_NAMESPACE_QUALIFIER
+using namespace XERCES_CPP_NAMESPACE;
+namespace XERCES_CPP_NAMESPACE
+{
+class DOMDocument;
+class DOMNodeList;
+}  // namespace XERCES_CPP_NAMESPACE
+#else
 XERCES_CPP_NAMESPACE_BEGIN
 class DOMDocument;
 class DOMNodeList;
 XERCES_CPP_NAMESPACE_END
+#endif
 
 namespace MeshCore
 {
