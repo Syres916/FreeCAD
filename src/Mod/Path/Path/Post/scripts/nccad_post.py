@@ -123,7 +123,7 @@ def export(objectslist, filename, argstring):
     if FreeCAD.GuiUp:
         dia = PostUtils.GCodeEditorDialog()
         dia.editor.setText(gcode)
-        result = dia.exec_()
+        result = dia.exec()
         if result:
             gcode = dia.editor.toPlainText()
 
