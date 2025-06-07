@@ -699,7 +699,6 @@ def load_texture(filename, size=None, gui=App.GuiUp):
         # from PySide import QtGui, QtSvg
         try:
             p = QtGui.QImage(filename)
-
             if p.isNull():
                 _wrn("load_texture: " + translate("draft", "image is Null"))
 
@@ -727,14 +726,13 @@ def load_texture(filename, size=None, gui=App.GuiUp):
             # else:
             #    p = QtGui.QImage(filename)
             size = coin.SbVec2s(p.width(), p.height())
-            buffersize = p.byteCount()
+            buffersize = p.sizeInBytes()
             width = size[0]
             height = size[1]
             numcomponents = int(buffersize / (width * height))
 
             img = coin.SoSFImage()
             byteList = bytearray()
-
             # The SoSFImage needs to be filled with bytes.
             # The pixel information is converted into a Qt color, gray,
             # red, green, blue, or transparency (alpha),

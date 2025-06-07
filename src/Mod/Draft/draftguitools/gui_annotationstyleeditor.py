@@ -129,7 +129,7 @@ class AnnotationStyleEditor(gui_base.GuiCommandSimplest):
 
         # show editor dialog
         self.fill_editor()
-        result = self.form.exec_()
+        result = self.form.exec()
 
         # process if OK was clicked
         if result:

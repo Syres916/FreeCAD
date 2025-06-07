@@ -1266,7 +1266,7 @@ class SectionPlaneTaskPanel:
         return True
 
     def getStandardButtons(self):
-        return int(QtGui.QDialogButtonBox.Ok)
+        return QtGui.QDialogButtonBox.Ok
 
     def getIcon(self,obj):
         if hasattr(obj.ViewObject,"Proxy"):

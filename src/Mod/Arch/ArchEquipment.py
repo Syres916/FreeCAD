@@ -249,7 +249,7 @@ class _Command3Views:
                     msgBox.setInformativeText(translate("Arch","This operation can take a long time. Proceed?"))
                     msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
                     msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
-                    ret = msgBox.exec_()
+                    ret = msgBox.exec()
                     if ret == QtGui.QMessageBox.Cancel:
                         return
                 elif obj.Mesh.CountFacets >= 500:

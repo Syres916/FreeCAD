@@ -443,7 +443,11 @@ class _ViewProviderArchMaterial:
                 c = obj.Color
                 matcolor = QtGui.QColor(int(c[0]*255),int(c[1]*255),int(c[2]*255))
                 darkcolor = QtGui.QColor(int(c[0]*125),int(c[1]*125),int(c[2]*125))
-                im = QtGui.QImage(48,48,QtGui.QImage.Format_ARGB32)
+                render_size = QtCore.QSize(48, 48)
+                if hasattr(QtGui.QImage.Format, "Format_RGB888"):
+                    im = QtGui.QImage(render_size, QtGui.QImage.Format.Format_RGB888)
+                else:
+                    im = QtGui.QImage(render_size, QtGui.QImage.Format_RGB888)
                 im.fill(QtCore.Qt.transparent)
                 pt = QtGui.QPainter(im)
                 pt.setPen(QtGui.QPen(QtCore.Qt.black, 2, QtCore.Qt.SolidLine, QtCore.Qt.FlatCap))
