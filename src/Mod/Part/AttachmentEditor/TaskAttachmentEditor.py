@@ -216,7 +216,7 @@ class AttachmentEditorTaskPanel(FrozenClass):
             btnAbort = mb.addButton(QtGui.QMessageBox.StandardButton.Abort)
             btnOK = mb.addButton(translate('AttachmentEditor',"Continue",None),QtGui.QMessageBox.ButtonRole.ActionRole)
             mb.setDefaultButton(btnOK)
-            mb.exec_()
+            mb.exec()
             if mb.clickedButton() is btnAbort:
                 if self.callback_Cancel:
                     self.callback_Cancel()
@@ -306,7 +306,7 @@ class AttachmentEditorTaskPanel(FrozenClass):
 
     # task dialog handling
     def getStandardButtons(self):
-        return int(QtGui.QDialogButtonBox.Ok) | int(QtGui.QDialogButtonBox.Cancel)| int(QtGui.QDialogButtonBox.Apply)
+        return QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Apply
 
     def clicked(self,button):
         if button == QtGui.QDialogButtonBox.Apply:
