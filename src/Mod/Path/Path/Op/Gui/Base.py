@@ -1274,11 +1274,7 @@ class TaskPanel(object):
 
     def getStandardButtons(self):
         """getStandardButtons() ... returns the Buttons for the task panel."""
-        return int(
-            QtGui.QDialogButtonBox.Ok
-            | QtGui.QDialogButtonBox.Apply
-            | QtGui.QDialogButtonBox.Cancel
-        )
+        return QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Apply | QtGui.QDialogButtonBox.Cancel
 
     def setupUi(self):
         """setupUi() ... internal function to initialise all pages."""
@@ -1389,7 +1385,7 @@ def Create(res):
         )
         diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, "Error", msg)
         diag.setWindowModality(QtCore.Qt.ApplicationModal)
-        diag.exec_()
+        diag.exec()
     except PathOp.PathNoTCException:
         Path.Log.warning(
             translate("PathOp", "No tool controller, aborting op creation")
