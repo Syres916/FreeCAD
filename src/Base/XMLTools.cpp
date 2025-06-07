@@ -31,7 +31,12 @@ std::unique_ptr<XERCES_CPP_NAMESPACE::XMLTranscoder> XMLTools::transcoder;
 
 void XMLTools::initialize()
 {
-    XERCES_CPP_NAMESPACE_USE;
+#ifndef XERCES_CPP_NAMESPACE_BEGIN
+#define XERCES_CPP_NAMESPACE_QUALIFIER
+    using namespace XERCES_CPP_NAMESPACE;
+#else
+    XERCES_CPP_NAMESPACE_USE
+#endif
     if (!transcoder.get()) {
         XMLTransService::Codes  res;
         transcoder.reset(XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgTransService->makeNewTranscoderFor(XERCES_CPP_NAMESPACE_QUALIFIER XMLRecognizer::UTF_8, res, 4096, XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgMemoryManager));
@@ -44,7 +49,12 @@ std::string XMLTools::toStdString(const XMLCh* const toTranscode)
 {
     std::string str;
 
-    XERCES_CPP_NAMESPACE_USE;
+#ifndef XERCES_CPP_NAMESPACE_BEGIN
+#define XERCES_CPP_NAMESPACE_QUALIFIER
+    using namespace XERCES_CPP_NAMESPACE;
+#else
+    XERCES_CPP_NAMESPACE_USE
+#endif
     initialize();
 
     //char outBuff[128];
@@ -75,7 +85,12 @@ std::basic_string<XMLCh> XMLTools::toXMLString(const char* const fromTranscode)
     if (!fromTranscode)
         return str;
 
-    XERCES_CPP_NAMESPACE_USE;
+#ifndef XERCES_CPP_NAMESPACE_BEGIN
+#define XERCES_CPP_NAMESPACE_QUALIFIER
+        using namespace XERCES_CPP_NAMESPACE;
+#else
+        XERCES_CPP_NAMESPACE_USE
+#endif
     initialize();
 
     static XMLCh outBuff[128];
