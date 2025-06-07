@@ -50,7 +50,7 @@ def displayGui(report, title=None, text=None):
         mw = Gui.getMainWindow()
         dialog = reportdialog.ReportDialog(
             report, title, text, mw)
-        dialog.exec_()
+        dialog.exec()
 
 
 def displayLog(report):
