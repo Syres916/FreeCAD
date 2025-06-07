@@ -34,7 +34,7 @@ class DrawViewSectionTest(unittest.TestCase):
         timer.timeout.connect(loop.quit)
 
         timer.start(2000)   #2 second delay
-        loop.exec_()
+        loop.exec()
 
         print("DrawViewSection test: view created")
 
@@ -64,7 +64,7 @@ class DrawViewSectionTest(unittest.TestCase):
         timer.timeout.connect(loop.quit)
 
         timer.start(2000)   #2 second delay
-        loop.exec_()
+        loop.exec()
 
         edges = section.getVisibleEdges()
         self.assertEqual(len(edges), 4, "DrawViewSection has wrong number of edges")

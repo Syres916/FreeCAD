@@ -288,7 +288,7 @@ class PathWorkbench(Workbench):
                     translate("Path", "Don't Show This Anymore"),
                     QtGui.QMessageBox.ActionRole,
                 )
-                if msgbox.exec_() == 1:
+                if msgbox.exec() == 1:
                     preferences().SetBool("WarningSuppressVelocity", True)
 
     def GetClassName(self):

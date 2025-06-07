@@ -60,9 +60,9 @@ class RemoteDebugger():
         self.dialog.reject()
 
     def exec_(self):
-        self.dialog.exec_()
+        self.dialog.exec()
 
 
 def attachToRemoteDebugger():
     dlg = RemoteDebugger(Gui.getMainWindow())
-    dlg.exec_()
+    dlg.exec()

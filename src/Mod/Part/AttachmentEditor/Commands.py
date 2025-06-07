@@ -89,7 +89,7 @@ class CommandEditAttachment:
             mb.setIcon(mb.Icon.Warning)
             mb.setText(str(err))
             mb.setWindowTitle("Error")
-            mb.exec_()
+            mb.exec()
 
     def IsActive(self):
         sel = Gui.Selection.getSelectionEx()

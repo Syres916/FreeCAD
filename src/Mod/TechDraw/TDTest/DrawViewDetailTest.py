@@ -37,7 +37,7 @@ class DrawViewDetailTest(unittest.TestCase):
         timer.timeout.connect(loop.quit)
 
         timer.start(2000)   #2 second delay
-        loop.exec_()
+        loop.exec()
         print("DrawViewDetail test: view created")
 
     def tearDown(self):
@@ -66,7 +66,7 @@ class DrawViewDetailTest(unittest.TestCase):
         timer.timeout.connect(loop.quit)
 
         timer.start(2000)   #2 second delay
-        loop.exec_()
+        loop.exec()
 
         edges = detail.getVisibleEdges()
 

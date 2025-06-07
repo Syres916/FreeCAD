@@ -87,7 +87,7 @@ class _TaskPanel:
             msgBox.setWindowTitle("FreeCAD FEM Constraint Tie")
             retryButton = msgBox.addButton(QtGui.QMessageBox.Retry)
             ignoreButton = msgBox.addButton(QtGui.QMessageBox.Ignore)
-            msgBox.exec_()
+            msgBox.exec()
 
             if msgBox.clickedButton() == retryButton:
                 return False

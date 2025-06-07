@@ -117,7 +117,7 @@ class ViewProvider(object):
             )
             diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, "Error", msg)
             diag.setWindowModality(QtCore.Qt.ApplicationModal)
-            diag.exec_()
+            diag.exec()
 
 
 class TaskPanel:
@@ -197,7 +197,7 @@ def GetNewToolFile(parent=None):
             msgBox = QtGui.QMessageBox()
             msg = translate("Path", "Invalid Filename")
             msgBox.setText(msg)
-            msgBox.exec_()
+            msgBox.exec()
         else:
             Path.Preferences.setLastPathToolBit(os.path.dirname(foo[0]))
             return foo[0]

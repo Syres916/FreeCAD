@@ -43,7 +43,7 @@ class DrawViewDimensionTest(unittest.TestCase):
         timer.timeout.connect(loop.quit)
 
         timer.start(5000)   #5 second delay
-        loop.exec_()
+        loop.exec()
 
     def tearDown(self):
         print("DVDTest.tearDown()")

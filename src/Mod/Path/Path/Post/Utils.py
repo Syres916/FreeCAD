@@ -185,7 +185,7 @@ def editor(gcode):
                 ),
             )
         )
-    result = dia.exec_()
+    result = dia.exec()
     if result:  # If user selected 'OK' get modified G Code
         final = dia.editor.toPlainText()
     else:

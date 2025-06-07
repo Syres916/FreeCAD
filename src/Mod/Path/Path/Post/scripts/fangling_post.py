@@ -244,7 +244,7 @@ def export(objectslist, filename, argstring):
     if FreeCAD.GuiUp and SHOW_EDITOR:
         dia = PostUtils.GCodeEditorDialog()
         dia.editor.setText(gcode)
-        if dia.exec_():
+        if dia.exec():
             final = dia.editor.toPlainText()
         else:
             final = gcode

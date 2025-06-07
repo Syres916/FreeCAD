@@ -655,6 +655,6 @@ if __name__ == "__main__":
     for test_url in urls:
         AM_NETWORK_MANAGER.submit_unmonitored_get(test_url)
 
-    app.exec_()
+    app.exec()
 
     print("Done with all requests.")

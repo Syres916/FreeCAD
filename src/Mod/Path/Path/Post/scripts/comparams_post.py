@@ -110,4 +110,4 @@ def export(obj, filename, argstring):
         FreeCAD.Console.PrintMessage("Editor Activated\n")
         dia = PostUtils.GCodeEditorDialog()
         dia.editor.setText(gcode)
-        dia.exec_()
+        dia.exec()

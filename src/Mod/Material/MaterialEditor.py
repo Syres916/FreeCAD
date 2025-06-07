@@ -609,7 +609,7 @@ class MaterialEditor:
         return self.widget.show()
 
     def exec_(self):
-        return self.widget.exec_()
+        return self.widget.exec()
 
 
 # ************************************************************************************************
@@ -855,7 +855,7 @@ def openEditor(obj=None, prop=None):
     """openEditor([obj,prop]): opens the editor, optionally with
     an object name and material property name to edit"""
     editor = MaterialEditor(obj, prop)
-    editor.exec_()
+    editor.exec()
 
 
 def editMaterial(material=None, card_path=None, category="Solid"):
@@ -869,7 +869,7 @@ def editMaterial(material=None, card_path=None, category="Solid"):
     # TODO: if card_path is None, all known cards could be checked,
     # if one fits exact ALL provided data, this card name could be displayed
     editor = MaterialEditor(material=material, card_path=card_path, category=category)
-    result = editor.exec_()
+    result = editor.exec()
     if result:
         return editor.getDict()
     else:

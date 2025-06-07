@@ -255,7 +255,7 @@ def export_common(values, objectslist, filename):
         else:
             dia = PostUtils.GCodeEditorDialog()
             dia.editor.setText(gcode)
-            result = dia.exec_()
+            result = dia.exec()
             if result:
                 final = dia.editor.toPlainText()
     else:
