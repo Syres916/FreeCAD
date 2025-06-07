@@ -572,7 +572,7 @@ class ToolBitLibrary(object):
 
     def open(self):
         Path.Log.track()
-        return self.form.exec_()
+        return self.form.exec()
 
     def libraryPath(self):
         Path.Log.track()

@@ -351,7 +351,7 @@ class DlgToolControllerEdit:
         restoreTC = self.obj.Proxy.templateAttrs(self.obj)
 
         rc = False
-        if not self.editor.form.exec_():
+        if not self.editor.form.exec():
             Path.Log.info("revert")
             self.obj.Proxy.setFromTemplate(self.obj, restoreTC)
             rc = True
