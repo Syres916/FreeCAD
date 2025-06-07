@@ -447,7 +447,7 @@ class DlgSelectPostProcessor:
         self.dialog.lwPostProcessor.setToolTip(tooltip)
 
     def exec_(self):
-        if self.dialog.exec_() == 1:
+        if self.dialog.exec() == 1:
             posts = self.dialog.lwPostProcessor.selectedItems()
             return posts[0].text()
         return None
@@ -464,7 +464,7 @@ class CommandPathPost:
             if post and PostProcessor.exists(post):
                 return post
         dlg = DlgSelectPostProcessor()
-        return dlg.exec_()
+        return dlg.exec()
 
     def GetResources(self):
         return {
