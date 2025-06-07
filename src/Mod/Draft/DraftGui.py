@@ -217,7 +217,7 @@ class DraftTaskPanel:
         else:
             self.form = widget
     def getStandardButtons(self):
-        return int(QtGui.QDialogButtonBox.Close)
+        return QtGui.QDialogButtonBox.Close
     def accept(self):
         if hasattr(FreeCADGui,"draftToolBar"):
             return FreeCADGui.draftToolBar.validatePoint()
@@ -406,7 +406,10 @@ class DraftToolBar:
         self.promptlabel = self._label("promptlabel", self.layout, hide=task)
         self.cmdlabel = self._label("cmdlabel", self.layout, hide=task)
         boldtxt = QtGui.QFont()
-        boldtxt.setWeight(75)
+        if hasattr(QtGui.QFont.Weight, "Bold"):
+            boldtxt.setWeight(QtGui.QFont.Weight.Bold)
+        else:
+            boldtxt.setWeight(75)
         boldtxt.setBold(True)
         self.cmdlabel.setFont(boldtxt)
 
@@ -1031,7 +1034,7 @@ class DraftToolBar:
                     self.form = [extra]
                 self.callback = callback
             def getStandardButtons(self):
-                return int(QtGui.QDialogButtonBox.Close)
+                return Qtgui.QDialogButtonBox.Close
             def reject(self):
                 if self.callback:
                     self.callback()
@@ -1479,7 +1482,11 @@ class DraftToolBar:
         facecolor = QtGui.QColor(
             FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View")
             .GetUnsigned( "DefaultShapeColor",4294967295)>>8)
-        im = QtGui.QImage(32,32,QtGui.QImage.Format_ARGB32)
+        render_size = QtCore.QSize(32, 32)
+        if hasattr(QtGui.QImage.Format, "Format_RGB888"):
+            im = QtGui.QImage(render_size, QtGui.QImage.Format.Format_RGB888)
+        else:
+            im = QtGui.QImage(render_size, QtGui.QImage.Format_RGB888)
         im.fill(QtCore.Qt.transparent)
         pt = QtGui.QPainter(im)
         pt.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine, QtCore.Qt.FlatCap))
@@ -1766,7 +1773,7 @@ class FacebinderTaskPanel:
         return True
 
     def getStandardButtons(self):
-        return int(QtGui.QDialogButtonBox.Ok)
+        return QtGui.QDialogButtonBox.Ok
 
     def update(self):
         """fills the treewidget"""
