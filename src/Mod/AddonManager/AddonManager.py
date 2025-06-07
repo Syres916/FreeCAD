@@ -360,7 +360,7 @@ class CommandAddonManager:
             cancelBtn = m.button(QtWidgets.QMessageBox.StandardButton.Cancel)
             okBtn.setText(translate("AddonsInstaller", "Restart now"))
             cancelBtn.setText(translate("AddonsInstaller", "Restart later"))
-            ret = m.exec_()
+            ret = m.exec()
             if ret == m.Ok:
                 # restart FreeCAD after a delay to give time to this dialog to close
                 QtCore.QTimer.singleShot(1000, utils.restart_freecad)
