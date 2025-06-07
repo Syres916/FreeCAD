@@ -82,7 +82,7 @@ def cmdCreateJoinFeature(name, mode):
         btnOK = mb.addButton(translate("Part_JoinFeatures","Continue",None),
                              QtGui.QMessageBox.ButtonRole.ActionRole)
         mb.setDefaultButton(btnOK)
-        mb.exec_()
+        mb.exec()
 
         if mb.clickedButton() is btnAbort:
             FreeCAD.ActiveDocument.abortTransaction()
@@ -197,7 +197,7 @@ class CommandConnect:
             mb.setText(translate("Part_JoinFeatures",
                                   "Select at least two objects, or one or more compounds", None))
             mb.setWindowTitle(translate("Part_JoinFeatures","Bad selection", None))
-            mb.exec_()
+            mb.exec()
 
     def IsActive(self):
         if FreeCAD.ActiveDocument:
@@ -293,7 +293,7 @@ class CommandEmbed:
             mb.setText(translate("Part_JoinFeatures",
                                  "Select base object, then the object to embed, and then invoke this tool.", None))
             mb.setWindowTitle(translate("Part_JoinFeatures","Bad selection", None))
-            mb.exec_()
+            mb.exec()
 
     def IsActive(self):
         if FreeCAD.ActiveDocument:
@@ -387,7 +387,7 @@ class CommandCutout:
             mb.setText(translate("Part_JoinFeatures",
                                   "Select the object to make a cutout in, then the object that should fit into the cutout, and then invoke this tool.", None))
             mb.setWindowTitle(translate("Part_JoinFeatures","Bad selection", None))
-            mb.exec_()
+            mb.exec()
 
     def IsActive(self):
         if FreeCAD.ActiveDocument:

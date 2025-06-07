@@ -160,7 +160,7 @@ def cmdCreateBooleanFragmentsFeature(name, mode):
                              QtGui.QMessageBox.ButtonRole.ActionRole)
         mb.setDefaultButton(btnOK)
 
-        mb.exec_()
+        mb.exec()
 
         if mb.clickedButton() is btnAbort:
             FreeCAD.ActiveDocument.abortTransaction()
@@ -197,7 +197,7 @@ class CommandBooleanFragments:
                                  "If only one compound is selected, the compounded shapes will be intersected between each other "
                                  "(otherwise, compounds with self-intersections are invalid).", None))
             mb.setWindowTitle(translate("Part_SplitFeatures","Bad selection", None))
-            mb.exec_()
+            mb.exec()
 
     def IsActive(self):
         if FreeCAD.ActiveDocument:
@@ -303,7 +303,7 @@ def cmdCreateSliceFeature(name, mode, transaction=True):
                              QtGui.QMessageBox.ButtonRole.ActionRole)
         mb.setDefaultButton(btnOK)
 
-        mb.exec_()
+        mb.exec()
 
         if mb.clickedButton() is btnAbort:
             if transaction: FreeCAD.ActiveDocument.abortTransaction()
@@ -352,7 +352,7 @@ class CommandSlice:
                                  "The first one is the object to be sliced; "
                                  "the rest are objects to slice with.", None))
             mb.setWindowTitle(translate("Part_SplitFeatures","Bad selection", None))
-            mb.exec_()
+            mb.exec()
 
     def IsActive(self):
         if FreeCAD.ActiveDocument:
@@ -383,7 +383,7 @@ class CommandSliceApart:
                                  "The first one is the object to be sliced; "
                                  "the rest are objects to slice with.", None))
             mb.setWindowTitle(translate("Part_SplitFeatures","Bad selection", None))
-            mb.exec_()
+            mb.exec()
 
     def IsActive(self):
         if FreeCAD.ActiveDocument:
@@ -497,7 +497,7 @@ def cmdCreateXORFeature(name):
                              QtGui.QMessageBox.ButtonRole.ActionRole)
         mb.setDefaultButton(btnOK)
 
-        mb.exec_()
+        mb.exec()
 
         if mb.clickedButton() is btnAbort:
             FreeCAD.ActiveDocument.abortTransaction()
@@ -533,7 +533,7 @@ class CommandXOR:
                                  "If only one compound is selected, the compounded shapes will be intersected between each other "
                                  "(otherwise, compounds with self-intersections are invalid).", None))
             mb.setWindowTitle(translate("Part_SplitFeatures","Bad selection", None))
-            mb.exec_()
+            mb.exec()
 
     def IsActive(self):
         if FreeCAD.ActiveDocument:
