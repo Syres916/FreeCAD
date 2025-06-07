@@ -219,7 +219,7 @@ class PropertyCreate(object):
 
         self.updateUI()
 
-        return self.form.exec_()
+        return self.form.exec()
 
 
 class TaskPanel(object):
