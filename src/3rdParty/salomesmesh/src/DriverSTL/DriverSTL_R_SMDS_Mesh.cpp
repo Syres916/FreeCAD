@@ -74,9 +74,9 @@ namespace
       } U;
 
       point.Coord( U.R[0], U.R[1], U.R[2] );
-
       return std::hash<Standard_Integer>{}(U.I[0]/23+U.I[1]/19+U.I[2]/17+U.I[3]/13+U.I[4]/11+U.I[5]/7);
     }
+ 
     //=======================================================================
     //function : IsEqual
     //purpose  :
@@ -91,7 +91,6 @@ namespace
     }
 #endif
   };
-
 
   typedef NCollection_DataMap<gp_Pnt,SMDS_MeshNode*,Hasher> TDataMapOfPntNodePtr;
 
