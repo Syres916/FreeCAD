@@ -179,6 +179,14 @@ QMenu::item:pressed {
     background-color: #557BB6;
 }
 
+QMenuBar:disabled,
+QMenuBar::item:disabled,
+Qmenu:disabled,
+QMenu::item:disabled {
+    color: #565d68; /*#588AC1;*/
+    background-color: #2a2a2a; /* main background color */
+}
+
 QMenu::right-arrow {
     width: 10px;
     height: 10px;
@@ -2504,20 +2512,17 @@ EXPERIMENTAL
 
 /* Fix for preventing elements in different rows to accidentally overlap */
 QDialog QGroupBox QFrame {
-    margin: 2px 0px;
+  margin: 2px 0px;
 }
-
-*[mandatoryField="true"] { background-color: cyan }
-
+  
+*[mandatoryField="true"] {
+  background-color: cyan
+}
+  
 /* Hack to avoid QPushButton text partially hidden under menu-indicator */
 QPushButton#NavigationIndicator::menu-indicator {
-    image: none;
-    width: 0px;
-}
-
-QToolBar QToolButton[popupMode="1"] {
-    width: 100px;
-    background: red;
+  image: none;
+  width: 0px;
 }
 
 /*==================================================================================================
@@ -2557,3 +2562,4 @@ PREFERENCES PACKS
 Gui--Dialog--DlgGeneralImp > QGroupBox > QGroupBox > QTableWidget > QWidget > QPushButton {
     margin: 0px;
 }
+

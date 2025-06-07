@@ -51,7 +51,7 @@ QToolBar * {
 }
 
 /*hacks */
-  Gui--PropertyEditor--PropertyEditor QLineEdit:read-only,
+Gui--PropertyEditor--PropertyEditor QLineEdit:read-only,
 Gui--PropertyEditor--PropertyEditor QLineEdit:disabled,
 Gui--PropertyEditor--PropertyEditor QAbstractSpinBox:read-only,
 Gui--PropertyEditor--PropertyEditor QAbstractSpinBox:disabled {
@@ -2106,6 +2106,14 @@ QTreeView::branch:open:has-children:has-siblings  {
 
 QTreeView::branch:open:has-children:!has-siblings  {
   border-image: url(qss:images_dark-light/branch_end_open_light.svg) 0;
+}
+
+QTreeView::indicator,
+QListView::indicator,
+QTableView::indicator,
+QColumnView::indicator {
+  width: 12px;
+  height: 12px;
 }
 
 QTreeView::indicator:checked,
