@@ -95,7 +95,7 @@ class _TaskPanel:
             msgBox.setWindowTitle("FreeCAD FEM Constraint Centrif - Axis selection")
             retryButton = msgBox.addButton(QtGui.QMessageBox.Retry)
             ignoreButton = msgBox.addButton(QtGui.QMessageBox.Ignore)
-            msgBox.exec_()
+            msgBox.exec()
 
             if msgBox.clickedButton() == retryButton:
                 return False
@@ -118,7 +118,7 @@ class _TaskPanel:
             msgBox.setWindowTitle("FreeCAD FEM Constraint Centrif - Body selection")
             retryButton = msgBox.addButton(QtGui.QMessageBox.Retry)
             ignoreButton = msgBox.addButton(QtGui.QMessageBox.Ignore)
-            msgBox.exec_()
+            msgBox.exec()
 
             if msgBox.clickedButton() == retryButton:
                 return False
@@ -134,7 +134,7 @@ class _TaskPanel:
             msgBox.setWindowTitle("FreeCAD FEM Constraint Centrif - Rotational speed setting")
             retryButton = msgBox.addButton(QtGui.QMessageBox.Retry)
             ignoreButton = msgBox.addButton(QtGui.QMessageBox.Ignore)
-            msgBox.exec_()
+            msgBox.exec()
 
             if msgBox.clickedButton() == retryButton:
                 return False
