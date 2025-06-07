@@ -62,4 +62,4 @@ if __name__ == '__main__':
     a = qt.QApplication([])
     w = SprocketDialog()
     w.show()
-    a.exec_()
+    a.exec()
