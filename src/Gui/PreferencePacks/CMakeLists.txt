@@ -29,3 +29,4 @@ DIRECTORY
 DESTINATION
     ${CMAKE_INSTALL_DATADIR}/Gui/PreferencePacks
 )
+
