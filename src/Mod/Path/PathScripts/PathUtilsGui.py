@@ -55,7 +55,7 @@ class PathUtilsUserInput(object):
         form = FreeCADGui.PySideUic.loadUi(":/panels/DlgTCChooser.ui")
         mylist = [i.Label for i in controllers]
         form.uiToolController.addItems(mylist)
-        r = form.exec_()
+        r = form.exec()
         if not r:
             return None
         return [
