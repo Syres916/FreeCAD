@@ -104,7 +104,7 @@ class TaskWizardShaft:
             msgBox.setWindowTitle(translate("TaskWizardShaft", "Missing module"))
             msgBox.setText(translate("TaskWizardShaft", "You may have to install the Plot add-on"))
             msgBox.setDetailedText(traceback.format_exc())
-            msgBox.exec_()
+            msgBox.exec()
     def slotAllx(self):
         self.showDiagram("Allx")
     def slotAlly(self):
@@ -155,7 +155,7 @@ class TaskWizardShaft:
             self.updateButton(row,  col,  flag)
 
     def getStandardButtons(self):
-        return int(QtGui.QDialogButtonBox.Ok)
+        return QtGui.QDialogButtonBox.Ok
 
     def accept(self):
         if self.table:
