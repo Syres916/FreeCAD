@@ -45,6 +45,7 @@
 #include <Base/Parameter.h>
 #include <App/Application.h>
 
+#include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "MainWindow.h"
 #include "Tools.h"
@@ -679,7 +680,9 @@ FileChooser::FileChooser ( QWidget * parent )
     connect(lineEdit, &QLineEdit::textChanged, this, &FileChooser::fileNameChanged);
     connect(lineEdit, &QLineEdit::editingFinished, this, &FileChooser::editingFinished);
 
-    button = new QPushButton(QLatin1String("..."), this);
+    button = new QPushButton(this);
+    button->setObjectName(QStringLiteral("fileChooserButton"));
+    button->setIcon(BitmapFactory().iconFromTheme("folder"));
 
 #if defined (Q_OS_MAC)
     button->setAttribute(Qt::WA_LayoutUsesWidgetRect); // layout size from QMacStyle was not correct
