@@ -33,7 +33,7 @@ from draftutils.messages import _wrn
 
 if FreeCAD.GuiUp:
     import FreeCADGui
-    from PySide import QtCore, QtGui, QtSvg
+    from PySide import QtCore, QtGui
     from draftutils.translate import translate
     from PySide.QtCore import QT_TRANSLATE_NOOP
     import draftguitools.gui_trackers as DraftTrackers
@@ -361,7 +361,13 @@ class _CommandWindow:
     def taskbox(self):
 
         "sets up a taskbox widget"
-
+        import PySide
+        if PySide.__version_info__[0] == 6:
+            from PySide6 import QtSvgWidgets
+        else:
+            from PySide import QtSvgWidgets
+        from PySide import QtCore, QtGui
+        from ArchWindowPresets import WindowPresets
         w = QtGui.QWidget()
         ui = FreeCADGui.UiLoader()
         w.setWindowTitle(translate("Arch","Window options"))
@@ -371,7 +377,10 @@ class _CommandWindow:
         include = QtGui.QCheckBox(translate("Arch","Auto include in host object"))
         include.setChecked(True)
         grid.addWidget(include,0,0,1,2)
-        QtCore.QObject.connect(include,QtCore.SIGNAL("stateChanged(int)"),self.setInclude)
+        if hasattr(include, 'checkStateChanged'):
+            QtCore.QObject.connect(include,QtCore.SIGNAL("checkStateChanged(int)"),self.setInclude)
+        else:
+            QtCore.QObject.connect(include,QtCore.SIGNAL("stateChanged(int)"),self.setInclude)
 
         # sill height
         labels = QtGui.QLabel(translate("Arch","Sill height"))
@@ -424,7 +433,7 @@ class _CommandWindow:
         self.pic.hide()
 
         # SVG display
-        self.im = QtSvg.QSvgWidget(":/ui/ParametersWindowFixed.svg")
+        self.im = QtSvgWidgets.QSvgWidget(":/ui/ParametersWindowFixed.svg")
         self.im.setMaximumWidth(200)
         self.im.setMinimumHeight(120)
         grid.addWidget(self.im,4,0,1,2)
