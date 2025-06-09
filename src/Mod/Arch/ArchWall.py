@@ -555,8 +555,12 @@ class _CommandWall:
         QtCore.QObject.connect(value1,QtCore.SIGNAL("valueChanged(double)"),self.setWidth)
         QtCore.QObject.connect(value2,QtCore.SIGNAL("valueChanged(double)"),self.setHeight)
         QtCore.QObject.connect(value3,QtCore.SIGNAL("currentIndexChanged(int)"),self.setAlign)
-        QtCore.QObject.connect(value4,QtCore.SIGNAL("stateChanged(int)"),self.setContinue)
-        QtCore.QObject.connect(value5,QtCore.SIGNAL("stateChanged(int)"),self.setUseSketch)
+        if hasattr(value4, "checkStateChanged"):
+            QtCore.QObject.connect(value4,QtCore.SIGNAL("checkStateChanged(int)"),self.setContinue)
+            QtCore.QObject.connect(value5,QtCore.SIGNAL("checkStateChanged(int)"),self.setUseSketch)
+        else:
+            QtCore.QObject.connect(value4,QtCore.SIGNAL("stateChanged(int)"),self.setContinue)
+            QtCore.QObject.connect(value5,QtCore.SIGNAL("stateChanged(int)"),self.setUseSketch)
         QtCore.QObject.connect(self.Length,QtCore.SIGNAL("returnPressed()"),value1.setFocus)
         QtCore.QObject.connect(self.Length,QtCore.SIGNAL("returnPressed()"),value1.selectAll)
         QtCore.QObject.connect(value1,QtCore.SIGNAL("returnPressed()"),value2.setFocus)

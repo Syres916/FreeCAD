@@ -260,7 +260,10 @@ class CommandPanel:
         QtCore.QObject.connect(self.vLength,QtCore.SIGNAL("valueChanged(double)"),self.setLength)
         QtCore.QObject.connect(self.vWidth,QtCore.SIGNAL("valueChanged(double)"),self.setWidth)
         QtCore.QObject.connect(self.vHeight,QtCore.SIGNAL("valueChanged(double)"),self.setThickness)
-        QtCore.QObject.connect(value4,QtCore.SIGNAL("stateChanged(int)"),self.setContinue)
+        if hasattr(value4, "checkStateChanged"):
+            QtCore.QObject.connect(value4,QtCore.SIGNAL("checkStateChanged(int)"),self.setContinue)
+        else:
+            QtCore.QObject.connect(value4,QtCore.SIGNAL("stateChanged(int)"),self.setContinue)
         QtCore.QObject.connect(value5,QtCore.SIGNAL("pressed()"),self.rotate)
         return w
 
