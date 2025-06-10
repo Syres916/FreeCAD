@@ -353,15 +353,15 @@ class CommandAddonManager:
                     "You must restart FreeCAD for changes to take effect.",
                 )
             )
-            m.setIcon(m.Warning)
-            m.setStandardButtons(m.Ok | m.Cancel)
-            m.setDefaultButton(m.Cancel)
+            m.setIcon(QtGui.QMessageBox.Warning)
+            m.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+            m.setDefaultButton(QtGui.QMessageBox.Cancel)
             okBtn = m.button(QtWidgets.QMessageBox.StandardButton.Ok)
             cancelBtn = m.button(QtWidgets.QMessageBox.StandardButton.Cancel)
             okBtn.setText(translate("AddonsInstaller", "Restart now"))
             cancelBtn.setText(translate("AddonsInstaller", "Restart later"))
             ret = m.exec()
-            if ret == m.Ok:
+            if ret == QtGui.QMessageBox.Ok:
                 # restart FreeCAD after a delay to give time to this dialog to close
                 QtCore.QTimer.singleShot(1000, utils.restart_freecad)
 

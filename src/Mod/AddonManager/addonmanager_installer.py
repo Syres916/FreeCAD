@@ -160,7 +160,7 @@ class AddonInstaller(QtCore.QObject):
         except utils.ProcessInterrupted:
             pass
         except Exception as e:
-            FreeCAD.Console.PrintLog(e + "\n")
+            FreeCAD.Console.PrintLog(str(e) + "\n")
             success = False
         if success:
             if (
@@ -517,7 +517,7 @@ class MacroInstaller(QtCore.QObject):
                     + "\n"
                 )
                 for e in error_list:
-                    FreeCAD.Console.PrintError(e + "\n")
+                    FreeCAD.Console.PrintError(str(e) + "\n")
                 self.failure.emit(self.addon_to_install, "\n".join(error_list))
                 self.finished.emit()
                 return False
