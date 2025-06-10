@@ -66,7 +66,7 @@ class CommandJobCreate:
         dialog = PathJobDlg.JobCreate()
         dialog.setupTemplate()
         dialog.setupModel()
-        if dialog.exec() == 1:
+        if dialog.exec_() == 1:
             models = dialog.getModels()
             if models:
                 self.Execute(models, dialog.getTemplate())
@@ -126,7 +126,7 @@ class CommandJobTemplateExport:
     def Activated(self):
         job = self.GetJob()
         dialog = PathJobDlg.JobTemplateExport(job)
-        if dialog.exec() == 1:
+        if dialog.exec_() == 1:
             self.SaveDialog(job, dialog)
 
     @classmethod
