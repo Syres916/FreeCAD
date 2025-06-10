@@ -1409,7 +1409,7 @@ class TaskPanel:
         dialog = PathJobDlg.JobCreate()
         dialog.setupTitle(translate("Path_Job", "Model Selection"))
         dialog.setupModel(self.obj)
-        if dialog.exec() == 1:
+        if dialog.exec_() == 1:
             models = dialog.getModels()
             if models:
                 obj = self.obj
