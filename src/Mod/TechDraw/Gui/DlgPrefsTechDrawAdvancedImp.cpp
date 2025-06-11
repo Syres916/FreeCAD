@@ -201,23 +201,23 @@ void DlgPrefsTechDrawAdvancedImp::makeBalloonBoxConnections()
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6,7,0)
     connect(ui->cbBalloonDefault,
-            qOverload<int>(&QCheckBox::checkStateChanged),
+            &QCheckBox::checkStateChanged,
             this,
             &DlgPrefsTechDrawAdvancedImp::slotBalloonBoxChecked);
     connect(ui->cbBalloonShift,
-            qOverload<int>(&QCheckBox::checkStateChanged),
+            &QCheckBox::checkStateChanged,
             this,
             &DlgPrefsTechDrawAdvancedImp::slotBalloonBoxChecked);
     connect(ui->cbBalloonControl,
-            qOverload<int>(&QCheckBox::checkStateChanged),
+            &QCheckBox::checkStateChanged,
             this,
             &DlgPrefsTechDrawAdvancedImp::slotBalloonBoxChecked);
     connect(ui->cbBalloonAlt,
-            qOverload<int>(&QCheckBox::checkStateChanged),
+            &QCheckBox::checkStateChanged,
             this,
             &DlgPrefsTechDrawAdvancedImp::slotBalloonBoxChecked);
     connect(ui->cbBalloonMeta,
-            qOverload<int>(&QCheckBox::checkStateChanged),
+            &QCheckBox::checkStateChanged,
             this,
             &DlgPrefsTechDrawAdvancedImp::slotBalloonBoxChecked);
 #else
