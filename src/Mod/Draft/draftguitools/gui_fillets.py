@@ -101,8 +101,8 @@ class Fillet(gui_base_original.Creator):
             self.ui.check_chamfer.show()
 
             if hasattr(self.ui.check_delete, "checkStateChanged"):
-                self.ui.check_delete.stateChanged.connect(self.set_delete)
-                self.ui.check_chamfer.stateChanged.connect(self.set_chamfer)
+                self.ui.check_delete.checkStateChanged.connect(self.set_delete)
+                self.ui.check_chamfer.checkStateChanged.connect(self.set_chamfer)
             else:
                 self.ui.check_delete.stateChanged.connect(self.set_delete)
                 self.ui.check_chamfer.stateChanged.connect(self.set_chamfer)
