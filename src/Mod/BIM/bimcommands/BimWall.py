@@ -358,7 +358,7 @@ class Arch_Wall:
         inputHeight.valueChanged.connect(self.setHeight)
         comboAlignment.currentIndexChanged.connect(self.setAlign)
         inputOffset.valueChanged.connect(self.setOffset)
-        if hasattr(self.form.onlyVisible, "checkStateChanged"):
+        if hasattr(checkboxUseSketches, "checkStateChanged"):
             checkboxUseSketches.checkStateChanged.connect(self.setUseSketch)
         else:
             checkboxUseSketches.stateChanged.connect(self.setUseSketch)
