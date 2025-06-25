@@ -60,8 +60,9 @@ PyMOD_INIT_FUNC(PathGui)
         PyMOD_Return(nullptr);
     }
     try {
-        Base::Interpreter().runString("import PartGui");
-        Base::Interpreter().runString("import Path");
+        Base::Interpreter().runString("import sys");
+        Base::Interpreter().runString("if not 'PartGui' in sys.modules.keys(): import PartGui");
+        Base::Interpreter().runString("if not 'Path' in sys.modules.keys(): import Path");
     }
     catch (const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());
