@@ -974,7 +974,9 @@ class DraftToolBar:
         val = getattr(val, "value", val)
         if val < 0:
             if hasattr(self.isRelative, "checkStateChanged"): # Qt version >= 6.7.0
-                self.isRelative.checkStateChanged.disconnect(self.setRelative)
+                QtCore.QObject.disconnect(self.isRelative,
+                                      QtCore.SIGNAL("checkStateChanged(Qt::CheckState)"),
+                                      self.setRelative)
             else: # Qt version < 6.7.0
                 QtCore.QObject.disconnect(self.isRelative,
                                       QtCore.SIGNAL("stateChanged(int)"),
@@ -987,7 +989,9 @@ class DraftToolBar:
                 self.isRelative.setChecked(val)
                 self.relativeMode = val
             if hasattr(self.isRelative, "checkStateChanged"): # Qt version >= 6.7.0
-                self.isRelative.checkStateChanged.disconnect(self.setRelative)
+                QtCore.QObject.disconnect(self.isRelative,
+                                      QtCore.SIGNAL("checkStateChanged(Qt::CheckState)"),
+                                      self.setRelative)
             else: # Qt version < 6.7.0
                 QtCore.QObject.disconnect(self.isRelative,
                                       QtCore.SIGNAL("stateChanged(int)"),
