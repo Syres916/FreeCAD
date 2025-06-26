@@ -160,7 +160,7 @@ class ShapeStringTaskPanel:
         params.set_param("ShapeStringFontFile", self.font_file)
 
     def set_global_mode(self, val):
-        self.global_mode = bool(val)
+        self.global_mode = bool(getattr(val, "value", val))
         params.set_param("GlobalMode", self.global_mode)
         self.change_coord_labels()
         self.display_point(self.point)
