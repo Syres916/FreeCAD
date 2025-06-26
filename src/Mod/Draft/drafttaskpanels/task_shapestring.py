@@ -86,7 +86,7 @@ class ShapeStringTaskPanel:
         self.form.sbX.valueChanged.connect(self.set_point_x)
         self.form.sbY.valueChanged.connect(self.set_point_y)
         self.form.sbZ.valueChanged.connect(self.set_point_z)
-        if hasattr(self.form.cbGlobalMode.checkbox_fuse, "checkStateChanged"): # Qt version >= 6.7.0
+        if hasattr(self.form.cbGlobalMode, "checkStateChanged"): # Qt version >= 6.7.0
             self.form.cbGlobalMode.checkStateChanged.connect(self.set_global_mode)
         else: # Qt version < 6.7.0
             self.form.cbGlobalMode.stateChanged.connect(self.set_global_mode)
