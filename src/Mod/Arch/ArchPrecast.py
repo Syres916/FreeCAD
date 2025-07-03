@@ -777,9 +777,9 @@ class _PrecastTaskPanel:
         import FreeCADGui
         import PySide
         if PySide.__version_info__[0] == 6:
-            from PySide6 import QtSvgWidgets
-        else:
             from PySide import QtSvgWidgets
+        else:
+            from PySide import QtSvg as QtSvgWidgets
         from PySide import QtCore, QtGui
         self.form = QtGui.QWidget()
         self.grid = QtGui.QGridLayout(self.form)
