@@ -396,6 +396,7 @@ class TaskFillTemplateFields:
                                     date.today().year,
                                 )
                             )
+                App.Console.PrintLog("\n")
                 if len(keyLst) > 1:
                     self.cbAll = QtGui.QCheckBox(
                         QtCore.QT_TRANSLATE_NOOP(
