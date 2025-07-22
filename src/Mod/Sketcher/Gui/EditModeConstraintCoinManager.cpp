@@ -2034,8 +2034,6 @@ std::set<int> EditModeConstraintCoinManager::detectPreselectionConstr(const SoPi
                         if (tail
                             != sep->getChild(
                                 static_cast<int>(ConstraintNodePosition::FirstIconIndex))) {
-                            Base::Console().Log("SecondIcon\n");
-
                             auto translation2 = static_cast<SoZoomTranslation*>(
                                 static_cast<SoSeparator*>(tailFather)
                                     ->getChild(static_cast<int>(
