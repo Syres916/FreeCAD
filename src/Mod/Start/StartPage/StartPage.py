@@ -487,7 +487,7 @@ def handle():
             if not os.path.isdir(cfolder):
                 cfolder = os.path.dirname(cfolder)
             if not os.path.exists(cfolder):
-                FreeCAD.Console.PrintWarning("Custom folder not found: %s" % cfolder)
+                FreeCAD.Console.PrintWarning("Custom folder not found: %s\n" % cfolder)
             else:
                 SECTION_CUSTOM += "<h2>"+os.path.basename(os.path.normpath(cfolder))+"</h2>"
                 SECTION_CUSTOM += "<ul>"
