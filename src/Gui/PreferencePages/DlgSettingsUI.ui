@@ -31,7 +31,7 @@
        </widget>
       </item>
       <item>
-       <layout class="QGridLayout" columnstretch="2,1">
+       <layout class="QGridLayout" name="gridLayout" columnstretch="2,1">
         <item row="0" column="0">
          <widget class="QLabel" name="label1">
           <property name="text">
@@ -206,7 +206,7 @@
      <property name="title">
       <string>Tree View</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout1" columnstretch="2,1">
+     <layout class="QGridLayout" name="gridLayout_1" columnstretch="2,1">
       <item row="5" column="0" colspan="2">
        <widget class="Gui::PrefCheckBox" name="hideInternalNamesCheckBox">
         <property name="toolTip">
@@ -501,7 +501,7 @@
      <property name="title">
       <string>Suggested Actions</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
        <widget class="Gui::PrefCheckBox" name="showTaskWatcherCheckBox">
         <property name="text">
