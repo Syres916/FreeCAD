@@ -75,8 +75,14 @@ class CommandAxoLengthDimension:
                 distanceDim.AngleOverride = True
                 distanceDim.LineAngle = lineAngle
                 distanceDim.ExtensionAngle = extAngle
+            if abs(extAngle-lineAngle)>0.1 and abs(extAngle-lineAngle)<=115.0:
                 distanceDim.X = (vertexes[0].Point.x+vertexes[1].Point.x)*view.Scale/2
                 distanceDim.Y = (vertexes[0].Point.y+vertexes[1].Point.y)*view.Scale/2
+                distanceDim.recompute()
+                view.requestPaint()
+            elif abs(extAngle-lineAngle)>115.0 and abs(extAngle-lineAngle)<125.0:
+                distanceDim.X = -(vertexes[0].Point.x+vertexes[1].Point.y)*view.Scale/12
+                distanceDim.Y = (vertexes[0].Point.x+vertexes[1].Point.y)*view.Scale/6
                 distanceDim.recompute()
                 view.requestPaint()
             Gui.Selection.clearSelection()
