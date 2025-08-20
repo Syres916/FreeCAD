@@ -131,11 +131,11 @@ class CommandAxoLengthDimension:
                 and abs(extAngle - lineAngle) > 115.0
                 and abs(extAngle - lineAngle) < 125.0
             ):
-                distanceDim.X = abs(
+                distanceDim.X = -abs(
                     float(vertexes[0].Point.x + vertexes[0].Point.x) / 3.0
                 )
-                distanceDim.Y = -abs(
-                    float(vertexes[0].Point.x + vertexes[1].Point.y) / 4.8
+                distanceDim.Y = abs(
+                    float(vertexes[0].Point.x + vertexes[1].Point.y) / 5.5
                 )
             if (
                 abs(originalLineAngle) > 149.0
@@ -143,11 +143,11 @@ class CommandAxoLengthDimension:
                 and abs(extAngle - lineAngle) > 115.0
                 and abs(extAngle - lineAngle) < 125.0
             ):
-                distanceDim.X = -abs(
+                distanceDim.X = abs(
                     float(vertexes[0].Point.x + vertexes[0].Point.x) / 3.0
                 )
-                distanceDim.Y = abs(
-                    float(vertexes[0].Point.x + vertexes[1].Point.y) / 4.8
+                distanceDim.Y = -abs(
+                    float(vertexes[0].Point.x + vertexes[1].Point.y) / 5.5
                 )
             distanceDim.recompute()
             view.requestPaint()
