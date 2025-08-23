@@ -25,8 +25,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#   include <sstream>
-#   include <boost/regex.hpp>
+#include <sstream>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/regex.hpp>
 #endif
 
 #include "Interpreter.h"
@@ -514,8 +515,35 @@ void InterpreterSingleton::addPythonPath(const char* Path)
     list.append(Py::String(Path));
 }
 
+std::string InterpreterSingleton::getPythonPath()
+{
+    PyGILStateLocker locker;
+    try {
+        const Py::List list(PySys_GetObject("path"));
+        std::vector<std::string> paths;
+        paths.reserve(list.size());
+        std::transform(list.begin(),
+                       list.end(),
+                       std::back_inserter(paths),
+                       [](const Py::Object& obj) {
+                           Py::String str(obj);
+                           return static_cast<std::string>(str);
+                       });
+#ifdef FC_OS_WIN32
+        const char* separator = ";";
+#else
+        const char* separator = ":";
+#endif
+        return boost::algorithm::join(paths, separator);
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+        return {};
+    }
+}
+
 #if PY_VERSION_HEX < 0x030b0000
-const char* InterpreterSingleton::init(int argc,char *argv[])
+std::string InterpreterSingleton::init(int argc, char* argv[])
 {
     if (!Py_IsInitialized()) {
         Py_SetProgramName(Py_DecodeLocale(argv[0],nullptr));
@@ -554,8 +582,7 @@ const char* InterpreterSingleton::init(int argc,char *argv[])
         this->_global = PyEval_SaveThread();
     }
 
-    PyGILStateLocker lock;
-    return Py_EncodeLocale(Py_GetPath(),nullptr);
+    return getPythonPath();
 }
 #else
 namespace {
@@ -593,7 +620,7 @@ void initInterpreter(int argc,char *argv[])
     }
 }
 }
-const char* InterpreterSingleton::init(int argc,char *argv[])
+std::string InterpreterSingleton::init(int argc, char* argv[])
 {
     try {
         if (!Py_IsInitialized()) {
