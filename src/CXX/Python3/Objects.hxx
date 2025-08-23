@@ -1321,19 +1321,19 @@ namespace Py
             return PySequence_Length( ptr() );
         }
 
-        explicit SeqBase<T>()
+        explicit SeqBase()
         :Object( PyTuple_New( 0 ), true )
         {
             validate();
         }
 
-        explicit SeqBase<T>( PyObject *pyob, bool owned=false )
+        explicit SeqBase( PyObject *pyob, bool owned=false )
         : Object( pyob, owned )
         {
             validate();
         }
 
-        SeqBase<T>( const Object &ob )
+        SeqBase( const Object &ob )
         : Object( ob )
         {
             validate();
@@ -1783,12 +1783,12 @@ namespace Py
     // Python strings return strings as individual elements.
     // I'll try having a class Char which is a String of length 1
     //
-#if !defined(Py_LIMITED_API)
+#if !defined(Py_LIMITED_API) && !defined(Py_UNICODE_DEPRECATED)
     typedef std::basic_string<Py_UNICODE> unicodestring;
     extern Py_UNICODE unicode_null_string[1];
 #endif
-    typedef std::basic_string<Py_UCS4> ucs4string;
-    extern Py_UCS4 ucs4_null_string[1];
+    typedef std::basic_string<char32_t> ucs4string;
+    extern char32_t ucs4_null_string[1];
 
     class PYCXX_EXPORT Byte: public Object
     {
@@ -1979,7 +1979,7 @@ namespace Py
             validate();
         }
 
-#if !defined( Py_LIMITED_API )
+#if !defined( Py_LIMITED_API ) && !defined(Py_UNICODE_DEPRECATED)
         Char( Py_UNICODE v )
         : Object( PyUnicode_FromOrdinal( v ), true )
         {
@@ -1987,7 +1987,7 @@ namespace Py
         }
 #endif
 
-#if !defined( Py_LIMITED_API )
+#if !defined( Py_LIMITED_API ) && !defined(Py_UNICODE_DEPRECATED)
         Char( const unicodestring &v )
         : Object( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, const_cast<Py_UNICODE*>( v.data() ),1 ), true )
         {
@@ -2008,7 +2008,7 @@ namespace Py
             return *this;
         }
 
-#if !defined( Py_LIMITED_API )
+#if !defined( Py_LIMITED_API ) && !defined(Py_UNICODE_DEPRECATED)
         Char &operator=( const unicodestring &v )
         {
             set( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, const_cast<Py_UNICODE*>( v.data() ), 1 ), true );
@@ -2016,7 +2016,7 @@ namespace Py
         }
 #endif
 
-#if !defined( Py_LIMITED_API )
+#if !defined( Py_LIMITED_API ) && !defined(Py_UNICODE_DEPRECATED)
         Char &operator=( int v_ )
         {
             Py_UNICODE v( v_ );
@@ -2025,7 +2025,7 @@ namespace Py
         }
 #endif
 
-#if !defined( Py_LIMITED_API )
+#if !defined( Py_LIMITED_API ) && !defined(Py_UNICODE_DEPRECATED)
         Char &operator=( Py_UNICODE v )
         {
             set( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, &v, 1 ), true );
@@ -2035,7 +2035,7 @@ namespace Py
 
         long ord()
         {
-#if !defined( Py_LIMITED_API )
+#if !defined( Py_LIMITED_API ) && !defined(Py_UNICODE_DEPRECATED)
             return static_cast<long>( PyUnicode_ReadChar( ptr(), 0 ) );
 #else
             // we know that a Char() is 1 unicode code point
@@ -2152,19 +2152,19 @@ namespace Py
         // Need these c'tors becuase Py_UNICODE is 2 bytes
         // User may use "int" or "unsigned int" as the unicode type
         String( const unsigned int *s, int length )
-        : SeqBase<Char>( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, reinterpret_cast<const Py_UCS4 *>( s ), length ), true )
+        : SeqBase<Char>( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, reinterpret_cast<const char32_t *>( s ), length ), true )
         {
             validate();
         }
 
         String( const int *s, int length )
-        : SeqBase<Char>( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, reinterpret_cast<const Py_UCS4 *>( s ), length ), true )
+        : SeqBase<Char>( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, reinterpret_cast<const char32_t *>( s ), length ), true )
         {
             validate();
         }
 #endif
 
-#if !defined( Py_LIMITED_API )
+#if !defined( Py_LIMITED_API ) && !defined(Py_UNICODE_DEPRECATED)
         String( const Py_UNICODE *s, int length )
         : SeqBase<Char>( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, s, length ), true )
         {
@@ -2185,7 +2185,7 @@ namespace Py
             return *this;
         }
 
-#if !defined( Py_LIMITED_API )
+#if !defined( Py_LIMITED_API ) && !defined(Py_UNICODE_DEPRECATED)
         String &operator=( const unicodestring &v )
         {
             set( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, const_cast<Py_UNICODE *>( v.data() ), v.length() ), true );
@@ -2196,7 +2196,7 @@ namespace Py
 #if !defined( Py_UNICODE_WIDE ) && !defined( Py_LIMITED_API )
         String &operator=( const ucs4string &v )
         {
-            set( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, reinterpret_cast<const Py_UCS4 *>( v.data() ), v.length() ), true );
+            set( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, reinterpret_cast<const char32_t *>( v.data() ), v.length() ), true );
             return *this;
         }
 #endif
@@ -2237,7 +2237,7 @@ namespace Py
             {
                 ifPyErrorThrowCxxException();
             }
-            ucs4string ucs4( buf, size() );
+            ucs4string ucs4( reinterpret_cast<char32_t *>(buf), size() );
             delete[] buf;
 
             return ucs4;
@@ -2583,20 +2583,20 @@ namespace Py
         T the_item;
 
     public:
-        mapref<T>( MapBase<T> &map, const std::string &k )
+        mapref( MapBase<T> &map, const std::string &k )
         : s( map ), the_item()
         {
             key = String( k );
             if( map.hasKey( key ) ) the_item = map.getItem( key );
         }
 
-        mapref<T>( MapBase<T> &map, const Object &k )
+        mapref( MapBase<T> &map, const Object &k )
         : s( map ), key( k ), the_item()
         {
             if( map.hasKey( key ) ) the_item = map.getItem( key );
         }
 
-        virtual ~mapref<T>()
+        virtual ~mapref()
         {}
 
         // MapBase<T> stuff
@@ -2756,7 +2756,7 @@ namespace Py
     class MapBase: public Object
     {
     protected:
-        explicit MapBase<T>()
+        explicit MapBase()
         {}
     public:
         // reference: proxy class for implementing []
@@ -2773,14 +2773,14 @@ namespace Py
         typedef std::pair< const T, mapref<T> > pointer;
 
         // Constructor
-        explicit MapBase<T>( PyObject *pyob, bool owned = false )
+        explicit MapBase( PyObject *pyob, bool owned = false )
         : Object( pyob, owned )
         {
             validate();
         }
 
         // TMM: 02Jul'01 - changed MapBase<T> to Object in next line
-        MapBase<T>( const Object &ob )
+        MapBase( const Object &ob )
         : Object( ob )
         {
             validate();
