@@ -509,7 +509,10 @@ class _Stairs(ArchComponent.Component):
             return
             # TODO No Railing etc?
         elif base:  # i.e. obj.Base has Shape e.g. it is another Stairs
-            pass
+            if FreeCAD.GuiUp:
+                base.Visibility = False
+            else:
+                pass
         else:
             #base = None
             obj.Shape = Part.Shape()
