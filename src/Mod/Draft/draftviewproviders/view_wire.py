@@ -66,7 +66,10 @@ class ViewProviderWire(ViewProviderDraft):
                              "Draft",
                              _tip,
                              locked=True)
-            vobj.ArrowSizeStart = params.get_param("arrowsizestart")
+            if params.get_param("arrowsizestart") is None:
+                vobj.ArrowSizeStart = 1.0
+            else:
+                vobj.ArrowSizeStart = params.get_param("arrowsizestart")
 
         if not hasattr(vobj, "ArrowTypeStart"):
             _tip = QT_TRANSLATE_NOOP("App::Property", "Arrow type")
@@ -85,7 +88,10 @@ class ViewProviderWire(ViewProviderDraft):
                              "Draft",
                              _tip,
                              locked=True)
-            vobj.ArrowSizeEnd = params.get_param("arrowsizeend")
+            if params.get_param("arrowsizeend") is None:
+                vobj.ArrowSizeEnd = 1.0
+            else:
+                vobj.ArrowSizeEnd = params.get_param("arrowsizeend")
 
         if not hasattr(vobj, "ArrowTypeEnd"):
             _tip = QT_TRANSLATE_NOOP("App::Property", "Arrow type")
