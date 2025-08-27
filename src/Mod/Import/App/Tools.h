@@ -23,12 +23,15 @@
 #ifndef IMPORT_TOOLS_H
 #define IMPORT_TOOLS_H
 
+#include <limits>
+
 #include <Quantity_ColorRGBA.hxx>
-#include <TDF_LabelMapHasher.hxx>
 #include <TopoDS_Shape.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <App/Color.h>
+
+#include <Standard_Version.hxx>
 
 namespace Import
 {
@@ -37,9 +40,9 @@ struct ShapeHasher
 {
     std::size_t operator()(const TopoDS_Shape &s) const {
 #if OCC_VERSION_HEX >= 0x070800
-        return std::hash<TopoDS_Shape>{}(s);
+        return std::hash<TopoDS_Shape> {}(s);
 #else
-        return s.HashCode(INT_MAX);
+        return s.HashCode(std::numeric_limits<int>::max());
 #endif
     }
 };
@@ -48,9 +51,9 @@ struct LabelHasher
 {
     std::size_t operator()(const TDF_Label &l) const {
 #if OCC_VERSION_HEX >= 0x070800
-        return std::hash<TDF_Label>{}(l);
+        return return std::hash<TDF_Label> {}(l);
 #else
-        return TDF_LabelMapHasher::HashCode(l,INT_MAX);
+        return TDF_LabelMapHasher::HashCode(l, std::numeric_limits<int>::max());
 #endif
     }
 };
