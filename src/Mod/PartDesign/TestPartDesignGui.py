@@ -235,19 +235,19 @@ class PartDesignTransformed(unittest.TestCase):
         App.closeDocument("PartDesignTransformed")
 
     def testPDCreateSketch(self):
-        App.Console.PrintMessage('Testing the creation of a sketch\n')
+        App.Console.PrintMessage("Testing the creation of a sketch\n")
         App.newDocument()
-        App.activeDocument().addObject('PartDesign::Body','Body')
-        App.ActiveDocument.getObject('Body').Label = 'Body'
-        App.ActiveDocument.getObject('Body').AllowCompound = True
-        FreeCADGui.activateView('Gui::View3DInventor', True)
-        FreeCADGui.activeView().setActiveObject('pdbody', App.activeDocument().Body)
+        App.activeDocument().addObject("PartDesign::Body", "Body")
+        App.ActiveDocument.getObject("Body").Label = "Body"
+        App.ActiveDocument.getObject("Body").AllowCompound = True
+        FreeCADGui.activateView("Gui::View3DInventor", True)
+        FreeCADGui.activeView().setActiveObject("pdbody", App.activeDocument().Body)
         FreeCADGui.Selection.clearSelection()
         FreeCADGui.Selection.addSelection(App.ActiveDocument.Body)
-        FreeCADGui.runCommand('Std_OrthographicCamera',1)
-        FreeCADGui.runCommand('PartDesign_CompSketches',0)
+        FreeCADGui.runCommand("Std_OrthographicCamera", 1)
+        FreeCADGui.runCommand("PartDesign_CompSketches", 0)
         mw = FreeCADGui.getMainWindow()
-        taskspanel = mw.findChild(QtGui.QWidget,'Tasks')
+        taskspanel = mw.findChild(QtGui.QWidget, "Tasks")
         taskspanel.hide()
         App.closeDocument(App.ActiveDocument.Name)
 
