@@ -77,6 +77,26 @@ class CallableComboBox:
             if (cbox is not None):
                 QtCore.QTimer.singleShot(0, dialog, QtCore.SLOT('accept()'))
 
+
+class CallableCheckExemptionDialog:
+    def __init__(self, test):
+        self.test = test
+    def __call__(self):
+        dialog = QApplication.activeModalWidget()
+        if (dialog is not None):
+            dialogcheck = CallableCheckExemptionDialogWasClosed(self.test)
+            QtCore.QTimer.singleShot(100, dialogcheck)
+            QtCore.QTimer.singleShot(0, dialog, QtCore.SLOT('accept()'))
+
+class CallableCheckExemptionDialogWasClosed:
+    def __init__(self, test):
+        self.test = test
+    def __call__(self):
+        dialog = QApplication.activeModalWidget()
+        self.test.assertIsNone(dialog, "Dialog box was not closed by accept()")
+
+
+
 App = FreeCAD
 Gui = FreeCADGui
 #---------------------------------------------------------------------------
@@ -245,10 +265,14 @@ class PartDesignTransformed(unittest.TestCase):
         FreeCADGui.Selection.clearSelection()
         FreeCADGui.Selection.addSelection(App.ActiveDocument.Body)
         FreeCADGui.runCommand("Std_OrthographicCamera", 1)
-        FreeCADGui.runCommand("PartDesign_CompSketches", 0)
         mw = FreeCADGui.getMainWindow()
-        taskspanel = mw.findChild(QtGui.QWidget, "Tasks")
-        taskspanel.hide()
+        workflowcheck = CallableCheckExemptionDialog(self)
+        QtCore.QTimer.singleShot(100, workflowcheck)
+        createsketch = FreeCADGui.runCommand("PartDesign_CompSketches", 0)
+        taskspanel = mw.findChild(QtGui.QWidget,"PartDesignGui__TaskFeaturePick")
+        self.assertTrue(taskspanel is not None)
+        if (taskspanel is not None):
+            QtCore.QTimer.singleShot(0, taskspanel, QtCore.SLOT("hide()"))
         App.closeDocument(App.ActiveDocument.Name)
 
     def tearDown(self):
