@@ -404,7 +404,7 @@ public:
 
             Py_INCREF (pyobj);
         }
-        else if (connections.contains(PyW_invalidator)) {
+        else if (connections[PyW_invalidator]) {
             disconnect(connections[PyW_invalidator]);
             connections.erase(PyW_invalidator);
         }
