@@ -1732,7 +1732,7 @@ QPixmap MainWindow::splashImage() const
     // include application name and version number
     std::map<std::string,std::string>::const_iterator tc = App::Application::Config().find("SplashInfoColor");
     if (tc != App::Application::Config().end()) {
-        QString title = qApp->applicationName() + QLatin1String("_dev");
+        QString title = QLatin1String("                                           _dev");
         QString major   = QString::fromLatin1(App::Application::Config()["BuildVersionMajor"].c_str());
         QString minor   = QString::fromLatin1(App::Application::Config()["BuildVersionMinor"].c_str());
         QString point   = QString::fromLatin1(App::Application::Config()["BuildVersionPoint"].c_str());
@@ -1764,13 +1764,6 @@ QPixmap MainWindow::splashImage() const
         fontExe.setPointSizeF(16.0);
         QFontMetrics metricExe(fontExe);
         int l = QtTools::horizontalAdvance(metricExe, title);
-        if (title == QLatin1String("FreeCAD")) {
-            l = 0.0; // "FreeCAD" text is already part of the splashscreen, version goes below it
-        }
-        else {
-            l = 0.0;
-        }
-
         int w = splash_image.width();
         int h = splash_image.height();
 
