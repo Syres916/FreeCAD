@@ -82,11 +82,11 @@ public:
     static void init_type();    // announce properties and methods
 
     AbstractSplitViewPy(AbstractSplitView *vi);
-    ~AbstractSplitViewPy();
+    ~AbstractSplitViewPy() override;
     AbstractSplitView* getSplitViewPtr();
 
-    Py::Object repr();
-    Py::Object getattr(const char *);
+    Py::Object repr() override;
+    Py::Object getattr(const char *) override;
     Py::Object cast_to_base(const Py::Tuple&);
 
     Py::Object fitAll(const Py::Tuple&);
@@ -98,9 +98,9 @@ public:
     Py::Object viewTop(const Py::Tuple&);
     Py::Object viewIsometric(const Py::Tuple&);
     Py::Object getViewer(const Py::Tuple&);
-    Py::Object sequence_item(Py_ssize_t);
+    Py::Object sequence_item(Py_ssize_t) override;
     Py::Object close(const Py::Tuple&);
-    int sequence_length();
+    PyCxx_ssize_t sequence_length() override;
 
 private:
     Gui::MDIViewPy base;
