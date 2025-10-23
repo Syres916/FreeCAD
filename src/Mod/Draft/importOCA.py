@@ -39,21 +39,19 @@ maintained.
 
 __title__ = "FreeCAD Draft Workbench - OCA importer/exporter"
 __author__ = "Yorik van Havre <yorik@uncreated.net>"
-__url__ = "https://www.freecadweb.org"
+__url__ = "https://www.freecad.org"
 
 import FreeCAD, os, Part, DraftVecUtils, DraftGeomUtils
 from FreeCAD import Vector
 from FreeCAD import Console as FCC
+from builtins import open as pyopen
 
 if FreeCAD.GuiUp:
-    from DraftTools import translate
+    from draftutils.translate import translate
 else:
     def translate(context, txt):
         return txt
 
-# Save the native open function to avoid collisions
-if open.__module__ in ['__builtin__', 'io']:
-    pythonopen = open
 
 params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
 
@@ -287,7 +285,7 @@ def parse(filename, doc):
     -------
     None
     """
-    filebuffer = pythonopen(filename)
+    filebuffer = pyopen(filename)
     global objects
     objects = {}
     global color
@@ -331,35 +329,6 @@ def parse(filename, doc):
             color = (float(c[1])/255,
                      float(c[2])/255,
                      float(c[3])/255)
-
-
-def decodeName(name):
-    """Decode encoded name.
-
-    Parameters
-    ----------
-    name : str
-        The string to decode.
-
-    Returns
-    -------
-    tuple
-    (string)
-        A tuple containing the decoded `name` in 'utf8', otherwise in 'latin1'.
-        If it fails it returns the original `name`.
-    """
-    try:
-        decodedName = (name.decode("utf8"))
-    except UnicodeDecodeError:
-        try:
-            decodedName = (name.decode("latin1"))
-        except UnicodeDecodeError:
-            FCC.PrintError(translate("importOCA",
-                                     "OCA error: "
-                                     "couldn't determine character encoding")
-                           + "\n")
-            decodedName = name
-    return decodedName
 
 
 def open(filename):
@@ -446,7 +415,7 @@ def export(exportList, filename):
         return
 
     # writing file
-    oca = pythonopen(filename, 'w')
+    oca = pyopen(filename, 'w')
     oca.write("#oca file generated from FreeCAD\r\n")
     oca.write("# edges\r\n")
     count = 1
