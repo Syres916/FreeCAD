@@ -20,7 +20,9 @@
 #*                                                                           *
 #*****************************************************************************
 
-import FreeCAD, Draft, ArchCommands
+import FreeCAD
+import Draft
+import ArchCommands
 if FreeCAD.GuiUp:
     import FreeCADGui
     from PySide import QtCore, QtGui
@@ -33,7 +35,7 @@ else:
 
 __title__="FreeCAD CutPlane"
 __author__ = "Jonathan Wiedemann"
-__url__ = "http://www.freecadweb.org"
+__url__ = "http://www.freecad.org"
 
 ## @package ArchCutPlane
 #  \ingroup ARCH
@@ -166,7 +168,7 @@ class _CutPlaneTaskPanel:
         return True
 
     def getStandardButtons(self):
-        return int(QtGui.QDialogButtonBox.Ok|QtGui.QDialogButtonBox.Cancel)
+        return QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel
 
     def previewCutVolume(self, i):
         cutVolume = ArchCommands.getCutVolume(self.plan,FreeCADGui.Selection.getSelectionEx()[0].Object.Shape)
