@@ -49,7 +49,7 @@ from draftutils.messages import _msg
 
 __title__ = "FreeCAD Draft Trackers"
 __author__ = "Yorik van Havre"
-__url__ = "https://www.freecadweb.org"
+__url__ = "https://www.freecad.org"
 
 
 class Tracker:
@@ -58,7 +58,8 @@ class Tracker:
     def __init__(self, dotted=False, scolor=None, swidth=None,
                  children=[], ontop=False, name=None):
         global Part, DraftGeomUtils
-        import Part, DraftGeomUtils
+        import Part
+        import DraftGeomUtils
         self.ontop = ontop
         self.color = coin.SoBaseColor()
         self.color.rgb = scolor or FreeCADGui.draftToolBar.getDefaultColor("line")
@@ -422,7 +423,7 @@ class bsplineTracker(Tracker):
             except Exception:
                 # workaround for pivy SoInput.setBuffer() bug
                 buf = buf.replace("\n", "")
-                pts = re.findall("point \[(.*?)\]", buf)[0]
+                pts = re.findall(r"point \\[(.*?)\\]", buf)[0]
                 pts = pts.split(",")
                 pc = []
                 for p in pts:
@@ -500,7 +501,7 @@ class bezcurveTracker(Tracker):
                 except Exception:
                     # workaround for pivy SoInput.setBuffer() bug
                     buf = buf.replace("\n","")
-                    pts = re.findall("point \[(.*?)\]", buf)[0]
+                    pts = re.findall(r"point \\[(.*?)\\]", buf)[0]
                     pts = pts.split(",")
                     pc = []
                     for p in pts:
@@ -635,7 +636,7 @@ class arcTracker(Tracker):
         except Exception:
             # workaround for pivy SoInput.setBuffer() bug
             buf = buf.replace("\n", "")
-            pts = re.findall("point \[(.*?)\]", buf)[0]
+            pts = re.findall(r"point \\[(.*?)\\]", buf)[0]
             pts = pts.split(",")
             pc = []
             for p in pts:
@@ -1149,21 +1150,23 @@ class gridTracker(Tracker):
     def displayHumanFigure(self):
         """ Display the human figure at the grid corner.
         The silhouette is displayed only if:
-        - BIM Workbench is available;
+        - preference BaseApp/Preferences/Mod/Draft/gridBorder is True;
         - preference BaseApp/Preferences/Mod/Draft/gridShowHuman is True;
         - the working plane normal is vertical.
+        - BIM Workbench is available;
         """
         numlines = self.numlines // self.mainlines // 2 * 2 * self.mainlines
         bound = (numlines // 2) * self.space
         pts = []
         pidx = []
         param = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
-        if param.GetBool("gridShowHuman", True) and \
-            FreeCAD.DraftWorkingPlane.axis.getAngle(FreeCAD.Vector(0,0,1)) < 0.001:
+        if param.GetBool("gridBorder", True) \
+                and param.GetBool("gridShowHuman", True) \
+                and FreeCAD.DraftWorkingPlane.axis.getAngle(FreeCAD.Vector(0,0,1)) < 0.001:
             try:
-                import BimProject
+                import BimProjectManager
                 loc = FreeCAD.Vector(-bound+self.space/2,-bound+self.space/2,0)
-                hpts = BimProject.getHuman(loc)
+                hpts = BimProjectManager.getHuman(loc)
                 pts.extend([tuple(p) for p in hpts])
                 pidx.append(len(hpts))
             except Exception:
@@ -1217,7 +1220,7 @@ class gridTracker(Tracker):
         self.numlines = Draft.getParam("gridSize", 100)
         self.update()
 
-    def set(self):
+    def set(self,tool=False):
         """Move and rotate the grid according to the current working plane."""
         self.reset()
         Q = FreeCAD.DraftWorkingPlane.getRotation().Rotation.Q
@@ -1226,7 +1229,8 @@ class gridTracker(Tracker):
         self.trans.translation.setValue([P.x, P.y, P.z])
         self.displayHumanFigure()
         self.setAxesColor()
-        self.on()
+        if tool:
+            self.on()
 
     def getClosestNode(self, point):
         """Return the closest node from the given point."""
@@ -1265,7 +1269,8 @@ class boxTracker(Tracker):
 
     def update(self, line=None, normal=None):
         """Update the tracker."""
-        import WorkingPlane, DraftGeomUtils
+        import WorkingPlane
+        import DraftGeomUtils
         if not normal:
             normal = FreeCAD.DraftWorkingPlane.axis
         if line:
