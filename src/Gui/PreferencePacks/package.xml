@@ -15,6 +15,13 @@
       <tag>built-in</tag>
       <tag>colors</tag>
     </preferencepack>
+    <preferencepack>
+      <name>Behave-dark</name>
+      <description>Behave-dark colors.</description>
+      <version>1.0.1</version>
+      <tag>built-in</tag>
+      <tag>colors</tag>
+    </preferencepack>
   </content>
 
 </package>
