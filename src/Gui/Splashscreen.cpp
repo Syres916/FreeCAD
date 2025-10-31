@@ -47,7 +47,7 @@
 #include <Base/Console.h>
 #include <CXX/WrapPython.h>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <LibraryVersions.h>
 #include <zlib.h>
 
@@ -58,7 +58,7 @@
 
 using namespace Gui;
 using namespace Gui::Dialog;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace Gui {
 
