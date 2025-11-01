@@ -22,6 +22,7 @@
 
 #include <iostream>
 #include <iterator>
+#include <cassert>
 
 #include "SubSystem.h"
 
