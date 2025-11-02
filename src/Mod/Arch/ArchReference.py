@@ -1,33 +1,34 @@
-#***************************************************************************
-#*   Copyright (c) 2018 Yorik van Havre <yorik@uncreated.net>              *
-#*                                                                         *
-#*   This program is free software; you can redistribute it and/or modify  *
-#*   it under the terms of the GNU Lesser General Public License (LGPL)    *
-#*   as published by the Free Software Foundation; either version 2 of     *
-#*   the License, or (at your option) any later version.                   *
-#*   for detail see the LICENCE text file.                                 *
-#*                                                                         *
-#*   This program is distributed in the hope that it will be useful,       *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
-#*   GNU Library General Public License for more details.                  *
-#*                                                                         *
-#*   You should have received a copy of the GNU Library General Public     *
-#*   License along with this program; if not, write to the Free Software   *
-#*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
-#*   USA                                                                   *
-#*                                                                         *
-#***************************************************************************
+# ***************************************************************************
+# *   Copyright (c) 2018 Yorik van Havre <yorik@uncreated.net>              *
+# *                                                                         *
+# *   This program is free software; you can redistribute it and/or modify  *
+# *   it under the terms of the GNU Lesser General Public License (LGPL)    *
+# *   as published by the Free Software Foundation; either version 2 of     *
+# *   the License, or (at your option) any later version.                   *
+# *   for detail see the LICENCE text file.                                 *
+# *                                                                         *
+# *   This program is distributed in the hope that it will be useful,       *
+# *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+# *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+# *   GNU Library General Public License for more details.                  *
+# *                                                                         *
+# *   You should have received a copy of the GNU Library General Public     *
+# *   License along with this program; if not, write to the Free Software   *
+# *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+# *   USA                                                                   *
+# *                                                                         *
+# ***************************************************************************
 
-__title__  = "FreeCAD Arch External Reference"
+__title__ = "FreeCAD Arch External Reference"
 __author__ = "Yorik van Havre"
-__url__    = "https://www.freecad.org"
+__url__ = "https://www.freecad.org"
 
 
 import FreeCAD
 import os
 import zipfile
 import re
+
 if FreeCAD.GuiUp:
     import FreeCADGui
     from PySide import QtCore, QtGui
@@ -35,10 +36,12 @@ if FreeCAD.GuiUp:
     from PySide.QtCore import QT_TRANSLATE_NOOP
 else:
     # \cond
-    def translate(ctxt,txt):
+    def translate(ctxt, txt):
         return txt
-    def QT_TRANSLATE_NOOP(ctxt,txt):
+
+    def QT_TRANSLATE_NOOP(ctxt, txt):
         return txt
+
     # \endcond
 
 ## @package ArchReference
@@ -49,18 +52,35 @@ else:
 #  References can take a shape from a Part-based object in
 #  another file.
 
+Reference_Intervals = [
+    "1 minute",
+    "5 minutes",
+    "15 minutes",
+    "30 minutes",
+    "60 minutes",
+    "Never (manual update only)",
+]
 
 
-def makeReference(filepath=None,partname=None,name=None):
+def migrateOldReferenceCheckInterval():
+    """migrates the old ReferenceCheckInterval"""
+
+    p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch")
+    if p.GetInt("ReferenceCheckInterval", 0) > len(Reference_Intervals):
+        FreeCAD.Console.PrintLog(
+            "ArchReference: Migrating existing ReferenceCheckInterval\n"
+        )
+        p.SetInt("ReferenceCheckInterval", 0)
 
 
+def makeReference(filepath=None, partname=None, name=None):
     "makeReference([filepath],[partname],[name]): Creates an Arch Reference object"
 
     if not FreeCAD.ActiveDocument:
         FreeCAD.Console.PrintError("No active document. Aborting\n")
         return
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","ArchReference")
-    obj.Label = name if name else translate("Arch","External Reference")
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "ArchReference")
+    obj.Label = name if name else translate("Arch", "External Reference")
     ArchReference(obj)
     if FreeCAD.GuiUp:
         ViewProviderArchReference(obj.ViewObject)
@@ -69,61 +89,107 @@ def makeReference(filepath=None,partname=None,name=None):
     if partname:
         obj.Part = partname
     import Draft
+
     Draft.select(obj)
     return obj
 
 
-
 class ArchReference:
-
-
     "The Arch Reference object"
 
-    def __init__(self,obj):
+    def __init__(self, obj):
 
         obj.Proxy = self
-        ArchReference.setProperties(self,obj)
+        ArchReference.setProperties(self, obj)
         self.Type = "Reference"
         self.reload = True
+        migrateOldReferenceCheckInterval()
 
-    def setProperties(self,obj):
+    def setProperties(self, obj):
 
         pl = obj.PropertiesList
         if not "File" in pl:
-            obj.addProperty("App::PropertyFile","File","Reference",QT_TRANSLATE_NOOP("App::Property","The base file this component is built upon"))
+            obj.addProperty(
+                "App::PropertyFile",
+                "File",
+                "Reference",
+                QT_TRANSLATE_NOOP(
+                    "App::Property", "The base file this component is built upon"
+                ),
+            )
         if not "Part" in pl:
-            obj.addProperty("App::PropertyString","Part","Reference",QT_TRANSLATE_NOOP("App::Property","The part to use from the base file"))
+            obj.addProperty(
+                "App::PropertyString",
+                "Part",
+                "Reference",
+                QT_TRANSLATE_NOOP(
+                    "App::Property", "The part to use from the base file"
+                ),
+            )
         if not "ReferenceMode" in pl:
-            obj.addProperty("App::PropertyEnumeration","ReferenceMode","Reference",QT_TRANSLATE_NOOP("App::Property","The way the referenced objects are included in the current document. 'Normal' includes the shape, 'Transient' discards the shape when the object is switched off (smaller filesize), 'Lightweight' does not import the shape but only the OpenInventor representation"))
-            obj.ReferenceMode = ["Normal","Transient","Lightweight"]
+            obj.addProperty(
+                "App::PropertyEnumeration",
+                "ReferenceMode",
+                "Reference",
+                QT_TRANSLATE_NOOP(
+                    "App::Property",
+                    "The way the referenced objects are included in the current document. 'Normal' includes the shape, 'Transient' discards the shape when the object is switched off (smaller filesize), 'Lightweight' does not import the shape but only the OpenInventor representation",
+                ),
+            )
+            obj.ReferenceMode = ["Normal", "Transient", "Lightweight"]
             if "TransientReference" in pl:
                 if obj.TransientReference:
                     obj.ReferenceMode = "Transient"
                 obj.removeProperty("TransientReference")
-                FreeCAD.Console.PrintMessage("Upgrading "+obj.Label+" TransientReference property to ReferenceMode\n")
+                FreeCAD.Console.PrintMessage(
+                    "Upgrading "
+                    + obj.Label
+                    + " TransientReference property to ReferenceMode\n"
+                )
         if not "FuseArch" in pl:
-            obj.addProperty("App::PropertyBool","FuseArch", "Reference", QT_TRANSLATE_NOOP("App::Property","Fuse objects of same material"))
+            obj.addProperty(
+                "App::PropertyBool",
+                "FuseArch",
+                "Reference",
+                QT_TRANSLATE_NOOP("App::Property", "Fuse objects of same material"),
+            )
         self.Type = "Reference"
 
-    def onDocumentRestored(self,obj):
+    def onDocumentRestored(self, obj):
 
-        ArchReference.setProperties(self,obj)
+        migrateOldReferenceCheckInterval()
+        ArchReference.setProperties(self, obj)
         self.reload = False
         if obj.ReferenceMode == "Lightweight":
             if obj.ViewObject and obj.ViewObject.Proxy:
                 obj.ViewObject.Proxy.loadInventor(obj)
+        else:
+            if obj.ViewObject and obj.ViewObject.Proxy:
+                obj.ViewObject.Proxy.unloadInventor(obj)
+                obj.ViewObject.Proxy.checkChanges()
+                # Force OnChanged by toggling FuseArch twice
+                if obj.FuseArch == True:
+                    obj.FuseArch = False
+                    obj.FuseArch = True
+                else:
+                    obj.FuseArch = True
+                    obj.FuseArch = False
+                FreeCAD.ActiveDocument.recompute()
+            if (not obj.Shape) or obj.Shape.isNull():
+                self.reload = True
+                obj.touch()
 
     def dumps(self):
 
         return None
 
-    def loads(self,state):
+    def loads(self, state):
 
         return None
 
-    def onChanged(self,obj,prop):
+    def onChanged(self, obj, prop):
 
-        if prop in ["File","Part"]:
+        if prop in ["File", "Part"]:
             self.reload = True
         elif prop == "ReferenceMode":
             if obj.ReferenceMode == "Normal":
@@ -139,17 +205,23 @@ class ArchReference:
             elif obj.ReferenceMode == "Lightweight":
                 self.reload = False
                 import Part
+
                 pl = obj.Placement
                 obj.Shape = Part.Shape()
                 obj.Placement = pl
                 if obj.ViewObject and obj.ViewObject.Proxy:
                     obj.ViewObject.Proxy.loadInventor(obj)
 
-    def execute(self,obj):
+    def execute(self, obj):
 
         pl = obj.Placement
         filename = self.getFile(obj)
-        if filename and obj.Part and self.reload and obj.ReferenceMode in ["Normal","Transient"]:
+        if (
+            filename
+            and obj.Part
+            and self.reload
+            and obj.ReferenceMode in ["Normal", "Transient"]
+        ):
             self.parts = self.getPartsList(obj)
             if self.parts:
                 zdoc = zipfile.ZipFile(filename)
@@ -160,7 +232,9 @@ class ArchReference:
                             shapedata = f.read()
                             f.close()
                             shapedata = shapedata.decode("utf8")
-                            shape = self.cleanShape(shapedata,obj,self.parts[obj.Part][2])
+                            shape = self.cleanShape(
+                                shapedata, obj, self.parts[obj.Part][2]
+                            )
                             obj.Shape = shape
                             if not pl.isIdentity():
                                 obj.Placement = pl
@@ -168,11 +242,11 @@ class ArchReference:
                             print("Part not found in file")
             self.reload = False
 
-    def cleanShape(self,shapedata,obj,materials):
-
+    def cleanShape(self, shapedata, obj, materials):
         "cleans the imported shape"
 
         import Part
+
         shape = Part.Shape()
         shape.importBrepFromString(shapedata)
         if obj.FuseArch and materials:
@@ -191,8 +265,8 @@ class ArchReference:
                     break
             else:
                 shapes.append(edge)
-            print("solids:",len(shape.Solids),"mattable:",materials)
-            for key,solindexes in materials.items():
+            print("solids:", len(shape.Solids), "mattable:", materials)
+            for key, solindexes in materials.items():
                 if key == "Undefined":
                     # do not join objects with no defined material
                     for solindex in [int(i) for i in solindexes.split(",")]:
@@ -210,11 +284,10 @@ class ArchReference:
             try:
                 shape = shape.removeSplitter()
             except Exception:
-                print(obj.Label,": error removing splitter")
+                print(obj.Label, ": error removing splitter")
         return shape
 
-    def getFile(self,obj,filename=None):
-
+    def getFile(self, obj, filename=None):
         "gets a valid file, if possible"
 
         if not filename:
@@ -227,7 +300,7 @@ class ArchReference:
             # search for the file in the current directory if not found
             basename = os.path.basename(filename)
             currentdir = os.path.dirname(obj.Document.FileName)
-            altfile = os.path.join(currentdir,basename)
+            altfile = os.path.join(currentdir, basename)
             if altfile == obj.Document.FileName:
                 return None
             elif os.path.exists(altfile):
@@ -237,20 +310,19 @@ class ArchReference:
                 altfile = None
                 subdirs = self.splitall(os.path.dirname(filename))
                 for i in range(len(subdirs)):
-                    subpath = [currentdir]+subdirs[-i:]+[basename]
+                    subpath = [currentdir] + subdirs[-i:] + [basename]
                     altfile = os.path.join(*subpath)
                     if os.path.exists(altfile):
                         return altfile
                 return None
         return filename
 
-    def getPartsList(self,obj,filename=None):
-
+    def getPartsList(self, obj, filename=None):
         "returns a list of Part-based objects in a FCStd file"
 
         parts = {}
         materials = {}
-        filename = self.getFile(obj,filename)
+        filename = self.getFile(obj, filename)
         if not filename:
             return parts
         zdoc = zipfile.ZipFile(filename)
@@ -263,35 +335,35 @@ class ArchReference:
             for line in docf:
                 line = line.decode("utf8")
                 if "<Object name=" in line:
-                    n = re.findall(r'name=\"(.*?)\"',line)
+                    n = re.findall(r"name=\"(.*?)\"", line)
                     if n:
                         name = n[0]
-                elif "<Property name=\"Label\"" in line:
+                elif '<Property name="Label"' in line:
                     writemode = True
                 elif writemode and "<String value=" in line:
-                    n = re.findall(r'value=\"(.*?)\"',line)
+                    n = re.findall(r"value=\"(.*?)\"", line)
                     if n:
                         label = n[0]
                         writemode = False
-                elif "<Property name=\"Shape\" type=\"Part::PropertyPartShape\"" in line:
+                elif '<Property name="Shape" type="Part::PropertyPartShape"' in line:
                     writemode = True
                 elif writemode and "<Part file=" in line:
-                    n = re.findall(r'file=\"(.*?)\"',line)
+                    n = re.findall(r"file=\"(.*?)\"", line)
                     if n:
                         part = n[0]
                         writemode = False
-                elif "<Property name=\"MaterialsTable\" type=\"App::PropertyMap\"" in line:
+                elif '<Property name="MaterialsTable" type="App::PropertyMap"' in line:
                     writemode = True
                 elif writemode and "<Item key=" in line:
-                    n = re.findall(r'key=\"(.*?)\"',line)
-                    v = re.findall(r'value=\"(.*?)\"',line)
+                    n = re.findall(r"key=\"(.*?)\"", line)
+                    v = re.findall(r"value=\"(.*?)\"", line)
                     if n and v:
                         materials[n[0]] = v[0]
                 elif writemode and "</Map>" in line:
                     writemode = False
                 elif "</Object>" in line:
                     if name and label and part:
-                        parts[name] = [label,part,materials]
+                        parts[name] = [label, part, materials]
                     name = None
                     label = None
                     part = None
@@ -299,8 +371,7 @@ class ArchReference:
                     writemode = False
         return parts
 
-    def getColors(self,obj):
-
+    def getColors(self, obj):
         "returns the DiffuseColor of the referenced object"
 
         filename = self.getFile(obj)
@@ -320,11 +391,11 @@ class ArchReference:
                 line = line.decode("utf8")
                 if ("<ViewProvider name=" in line) and (part in line):
                     writemode1 = True
-                elif writemode1 and ("<Property name=\"DiffuseColor\"" in line):
+                elif writemode1 and ('<Property name="DiffuseColor"' in line):
                     writemode1 = False
                     writemode2 = True
                 elif writemode2 and ("<ColorList file=" in line):
-                    n = re.findall(r'file=\"(.*?)\"',line)
+                    n = re.findall(r"file=\"(.*?)\"", line)
                     if n:
                         colorfile = n[0]
                         break
@@ -336,14 +407,20 @@ class ArchReference:
         cf = zdoc.open(colorfile)
         buf = cf.read()
         cf.close()
-        for i in range(1,int(len(buf)/4)):
-            colors.append((buf[i*4+3]/255.0,buf[i*4+2]/255.0,buf[i*4+1]/255.0,buf[i*4]/255.0))
+        for i in range(1, int(len(buf) / 4)):
+            colors.append(
+                (
+                    buf[i * 4 + 3] / 255.0,
+                    buf[i * 4 + 2] / 255.0,
+                    buf[i * 4 + 1] / 255.0,
+                    buf[i * 4] / 255.0,
+                )
+            )
         if colors:
             return colors
         return None
 
-    def splitall(self,path):
-
+    def splitall(self, path):
         "splits a path between its components"
 
         allparts = []
@@ -352,7 +429,7 @@ class ArchReference:
             if parts[0] == path:  # sentinel for absolute paths
                 allparts.insert(0, parts[0])
                 break
-            elif parts[1] == path: # sentinel for relative paths
+            elif parts[1] == path:  # sentinel for relative paths
                 allparts.insert(0, parts[1])
                 break
             else:
@@ -362,90 +439,119 @@ class ArchReference:
 
 
 class ViewProviderArchReference:
-
-
     "A View Provider for the Arch Reference object"
 
-    def __init__(self,vobj):
+    def __init__(self, vobj):
 
         vobj.Proxy = self
         self.setProperties(vobj)
+        migrateOldReferenceCheckInterval()
 
-    def setProperties(self,vobj):
+    def setProperties(self, vobj):
 
         pl = vobj.PropertiesList
         if not "TimeStamp" in pl:
-            vobj.addProperty("App::PropertyFloat","TimeStamp","Reference",QT_TRANSLATE_NOOP("App::Property","The latest time stamp of the linked file"))
-            vobj.setEditorMode("TimeStamp",2)
+            vobj.addProperty(
+                "App::PropertyFloat",
+                "TimeStamp",
+                "Reference",
+                QT_TRANSLATE_NOOP(
+                    "App::Property", "The latest time stamp of the linked file"
+                ),
+            )
+            vobj.setEditorMode("TimeStamp", 2)
         if not "UpdateColors" in pl:
-            vobj.addProperty("App::PropertyBool","UpdateColors","Reference",QT_TRANSLATE_NOOP("App::Property","If true, the colors from the linked file will be kept updated"))
+            vobj.addProperty(
+                "App::PropertyBool",
+                "UpdateColors",
+                "Reference",
+                QT_TRANSLATE_NOOP(
+                    "App::Property",
+                    "If true, the colors from the linked file will be kept updated",
+                ),
+            )
             vobj.UpdateColors = True
 
     def getIcon(self):
 
         import Arch_rc
+
         return ":/icons/Arch_Reference.svg"
 
-    def attach(self,vobj):
+    def attach(self, vobj):
 
-        self.Object = vobj.Object
-        # Check for file change every minute
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.checkChanges)
-        s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetInt("ReferenceCheckInterval",60)
-        self.timer.start(1000*s)
+        Reference_Interval = Reference_Intervals[
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetInt(
+                "ReferenceCheckInterval", 0
+            )
+        ]
+        if Reference_Interval == "1 minute":
+            s = 60
+        elif Reference_Interval == "5 minutes":
+            s = 300
+        elif Reference_Interval == "15 minutes":
+            s = 900
+        elif Reference_Interval == "30 minutes":
+            s = 1800
+        elif Reference_Interval == "60 minutes":
+            s = 3600
+        else:
+            s = 0
+        if s != 0:
+            self.Object = vobj.Object
+            # Check for file change (default is every minute)
+            self.timer = QtCore.QTimer()
+            self.timer.timeout.connect(self.checkChanges)
+            self.timer.start(1000 * s)
 
     def dumps(self):
 
         return None
 
-    def loads(self,state):
+    def loads(self, state):
 
+        migrateOldReferenceCheckInterval()
         return None
 
-    def updateData(self,obj,prop):
+    def updateData(self, obj, prop):
 
-        if (prop == "Shape") and hasattr(obj.ViewObject,"UpdateColors") and obj.ViewObject.UpdateColors:
+        if (
+            (prop == "Shape")
+            and hasattr(obj.ViewObject, "UpdateColors")
+            and obj.ViewObject.UpdateColors
+        ):
             if obj.Shape and not obj.Shape.isNull():
                 colors = obj.Proxy.getColors(obj)
                 if colors:
                     obj.ViewObject.DiffuseColor = colors
-                from DraftGui import todo
-                todo.delay(self.recolorize,obj.ViewObject)
-
-    def recolorize(self,vobj):
-
-        if hasattr(vobj,"DiffuseColor") and hasattr(vobj,"UpdateColors") and vobj.UpdateColors:
-            vobj.DiffuseColor = vobj.DiffuseColor
 
     def checkChanges(self):
-
         "checks if the linked file has changed"
 
-        if hasattr(self,"Object") and self.Object:
+        if hasattr(self, "Object") and self.Object:
             try:
                 f = self.Object.File
             except ReferenceError:
                 f = None
-                if hasattr(self,"timer"):
+                if hasattr(self, "timer"):
                     self.timer.stop()
                     del self.timer
             if f:
                 filename = self.Object.Proxy.getFile(self.Object)
                 if filename:
                     st_mtime = os.stat(filename).st_mtime
-                    if hasattr(self.Object.ViewObject,"TimeStamp"):
+                    if hasattr(self.Object.ViewObject, "TimeStamp"):
                         if self.Object.ViewObject.TimeStamp:
                             if self.Object.ViewObject.TimeStamp != st_mtime:
                                 self.Object.Proxy.reload = True
                                 self.Object.touch()
                         self.Object.ViewObject.TimeStamp = st_mtime
 
-    def onChanged(self,vobj,prop):
+    def onChanged(self, vobj, prop):
 
         if prop == "ShapeColor":
             # prevent ShapeColor to override DiffuseColor
-            if hasattr(vobj,"DiffuseColor") and hasattr(vobj,"UpdateColors"):
+            if hasattr(vobj, "DiffuseColor") and hasattr(vobj, "UpdateColors"):
                 if vobj.DiffuseColor and vobj.UpdateColors:
                     vobj.DiffuseColor = vobj.DiffuseColor
         elif prop == "Visibility":
@@ -454,16 +560,20 @@ class ViewProviderArchReference:
                     vobj.Object.Proxy.reload = True
                     vobj.Object.Proxy.execute(vobj.Object)
             else:
-                if hasattr(vobj.Object,"ReferenceMode") and vobj.Object.ReferenceMode == "Transient":
+                if (
+                    hasattr(vobj.Object, "ReferenceMode")
+                    and vobj.Object.ReferenceMode == "Transient"
+                ):
                     vobj.Object.Proxy.reload = False
                     import Part
+
                     pl = vobj.Object.Placement
                     vobj.Object.Shape = Part.Shape()
                     vobj.Object.Placement = pl
 
-    def onDelete(self,obj,doc):
+    def onDelete(self, obj, doc):
 
-        if hasattr(self,"timer"):
+        if hasattr(self, "timer"):
             self.timer.stop()
             del self.timer
             return True
@@ -481,73 +591,76 @@ class ViewProviderArchReference:
             return None
 
         FreeCADGui.Control.closeDialog()
-        from DraftGui import todo
-        todo.delay(vobj.Proxy.recolorize,vobj)
         return True
 
     def setupContextMenu(self, vobj, menu):
 
-        actionEdit = QtGui.QAction(translate("Arch", "Edit"),
-                                   menu)
-        QtCore.QObject.connect(actionEdit,
-                               QtCore.SIGNAL("triggered()"),
-                               self.edit)
+        actionEdit = QtGui.QAction(translate("Arch", "Edit"), menu)
+        QtCore.QObject.connect(actionEdit, QtCore.SIGNAL("triggered()"), self.edit)
         menu.addAction(actionEdit)
 
-        actionOnReload = QtGui.QAction(QtGui.QIcon(":/icons/view-refresh.svg"),
-                                       translate("Arch", "Reload reference"),
-                                       menu)
-        QtCore.QObject.connect(actionOnReload,
-                               QtCore.SIGNAL("triggered()"),
-                               self.onReload)
+        actionOnReload = QtGui.QAction(
+            QtGui.QIcon(":/icons/view-refresh.svg"),
+            translate("Arch", "Reload reference"),
+            menu,
+        )
+        QtCore.QObject.connect(
+            actionOnReload, QtCore.SIGNAL("triggered()"), self.onReload
+        )
         menu.addAction(actionOnReload)
 
-        actionOnOpen = QtGui.QAction(QtGui.QIcon(":/icons/document-open.svg"),
-                                     translate("Arch", "Open reference"),
-                                     menu)
-        QtCore.QObject.connect(actionOnOpen,
-                               QtCore.SIGNAL("triggered()"),
-                               self.onOpen)
+        actionOnOpen = QtGui.QAction(
+            QtGui.QIcon(":/icons/document-open.svg"),
+            translate("Arch", "Open reference"),
+            menu,
+        )
+        QtCore.QObject.connect(actionOnOpen, QtCore.SIGNAL("triggered()"), self.onOpen)
         menu.addAction(actionOnOpen)
 
     def edit(self):
         FreeCADGui.ActiveDocument.setEdit(self.Object, 0)
 
     def onReload(self):
-
         "reloads the reference object"
 
-        if hasattr(self,"Object") and self.Object:
+        if hasattr(self, "Object") and self.Object:
             self.Object.Proxy.reload = True
             self.Object.touch()
             FreeCAD.ActiveDocument.recompute()
 
     def onOpen(self):
-
         "opens the reference file"
 
-        if hasattr(self,"Object") and self.Object:
+        if hasattr(self, "Object") and self.Object:
             if self.Object.File:
                 FreeCAD.openDocument(self.Object.File)
 
-    def loadInventor(self,obj):
-
+    def loadInventor(self, obj):
         "loads an openinventor file and replace the root node of this object"
 
         # check inventor contents
         ivstring = self.getInventorString(obj)
         if not ivstring:
-            FreeCAD.Console.PrintWarning("Unable to get lightWeight node for object referenced in "+obj.Label+"\n")
+            FreeCAD.Console.PrintWarning(
+                "Unable to get lightWeight node for object referenced in "
+                + obj.Label
+                + "\n"
+            )
             return
         from pivy import coin
+
         inputnode = coin.SoInput()
         inputnode.setBuffer(ivstring)
         lwnode = coin.SoDB.readAll(inputnode)
-        if not isinstance(lwnode,coin.SoSeparator):
-            FreeCAD.Console.PrintError("Invalid lightWeight node for object referenced in "+obj.Label+"\n")
+        if not isinstance(lwnode, coin.SoSeparator):
+            FreeCAD.Console.PrintError(
+                "Invalid lightWeight node for object referenced in " + obj.Label + "\n"
+            )
             return
         if lwnode.getNumChildren() < 2:
-            FreeCAD.Console.PrintError("Invalid lightWeight node for object referenced in "+obj.Label+"\n")
+            FreeCAD.Console.PrintError(
+                "Invalid lightWeight node for object referenced in " + obj.Label + "\n"
+            )
             return
         flatlines = lwnode
         shaded = lwnode.getChild(0)
@@ -556,11 +669,11 @@ class ViewProviderArchReference:
         # check node contents
         rootnode = obj.ViewObject.RootNode
         if rootnode.getNumChildren() < 3:
-            FreeCAD.Console.PrintError("Invalid root node in "+obj.Label+"\n")
+            FreeCAD.Console.PrintError("Invalid root node in " + obj.Label + "\n")
             return
         switch = rootnode.getChild(2)
         if switch.getNumChildren() != 4:
-            FreeCAD.Console.PrintError("Invalid root node in "+obj.Label+"\n")
+            FreeCAD.Console.PrintError("Invalid root node in " + obj.Label + "\n")
             return
 
         # keep a copy of the original nodes
@@ -569,43 +682,41 @@ class ViewProviderArchReference:
         self.orig_wireframe = switch.getChild(2).copy()
 
         # replace root node of object
-        switch.replaceChild(0,flatlines)
-        switch.replaceChild(1,shaded)
-        switch.replaceChild(2,wireframe)
+        switch.replaceChild(0, flatlines)
+        switch.replaceChild(1, shaded)
+        switch.replaceChild(2, wireframe)
 
-    def unloadInventor(self,obj):
-
+    def unloadInventor(self, obj):
         "restore original nodes"
 
-        if (not hasattr(self,"orig_flatlines")) or (not self.orig_flatlines):
+        if (not hasattr(self, "orig_flatlines")) or (not self.orig_flatlines):
             return
-        if (not hasattr(self,"orig_shaded")) or (not self.orig_shaded):
+        if (not hasattr(self, "orig_shaded")) or (not self.orig_shaded):
             return
-        if (not hasattr(self,"orig_wireframe")) or (not self.orig_wireframe):
+        if (not hasattr(self, "orig_wireframe")) or (not self.orig_wireframe):
             return
 
         # check node contents
         rootnode = obj.ViewObject.RootNode
         if rootnode.getNumChildren() < 3:
-            FreeCAD.Console.PrintError("Invalid root node in "+obj.Label+"\n")
+            FreeCAD.Console.PrintError("Invalid root node in " + obj.Label + "\n")
             return
         switch = rootnode.getChild(2)
         if switch.getNumChildren() != 4:
-            FreeCAD.Console.PrintError("Invalid root node in "+obj.Label+"\n")
+            FreeCAD.Console.PrintError("Invalid root node in " + obj.Label + "\n")
             return
 
         # replace root node of object
-        switch.replaceChild(0,self.orig_flatlines)
-        switch.replaceChild(1,self.orig_shaded)
-        switch.replaceChild(2,self.orig_wireframe)
+        switch.replaceChild(0, self.orig_flatlines)
+        switch.replaceChild(1, self.orig_shaded)
+        switch.replaceChild(2, self.orig_wireframe)
 
         # discard old content
         self.orig_flatlines = None
         self.orig_shaded = None
         self.orig_wireframe = None
 
-    def getInventorString(self,obj):
-
+    def getInventorString(self, obj):
         "locates and loads an iv file saved together with an object, if existing"
 
         filename = obj.Proxy.getFile(obj)
@@ -625,11 +736,11 @@ class ViewProviderArchReference:
                 line = line.decode("utf8")
                 if ("<Object name=" in line) and (part in line):
                     writemode1 = True
-                elif writemode1 and ("<Property name=\"SavedInventor\"" in line):
+                elif writemode1 and ('<Property name="SavedInventor"' in line):
                     writemode1 = False
                     writemode2 = True
                 elif writemode2 and ("<FileIncluded file=" in line):
-                    n = re.findall(r'file=\"(.*?)\"',line)
+                    n = re.findall(r"file=\"(.*?)\"", line)
                     if n:
                         ivfile = n[0]
                         break
@@ -641,16 +752,16 @@ class ViewProviderArchReference:
         buf = f.read()
         buf = buf.decode("utf8")
         f.close()
-        buf = buf.replace("lineWidth 2","lineWidth "+str(int(obj.ViewObject.LineWidth)))
+        buf = buf.replace(
+            "lineWidth 2", "lineWidth " + str(int(obj.ViewObject.LineWidth))
+        )
         return buf
 
 
 class ArchReferenceTaskPanel:
+    """The editmode TaskPanel for Reference objects"""
 
-
-    '''The editmode TaskPanel for Reference objects'''
-
-    def __init__(self,obj):
+    def __init__(self, obj):
 
         self.obj = obj
         self.filename = None
@@ -661,34 +772,47 @@ class ArchReferenceTaskPanel:
         layout.addWidget(label1)
         self.fileButton = QtGui.QPushButton(self.form)
         self.openButton = QtGui.QPushButton(self.form)
-        self.openButton.setText("Open")
+        self.openButton.setText(translate("Arch", "Open"))
         if not self.obj.File:
             self.openButton.setEnabled(False)
         l2 = QtGui.QHBoxLayout()
         layout.addLayout(l2)
         l2.addWidget(self.fileButton)
         l2.addWidget(self.openButton)
-        label2 = QtGui.QLabel("Part to use:")
+        label2 = QtGui.QLabel(translate("Arch", "Part to use:"))
         layout.addWidget(label2)
         if self.obj.File:
             self.fileButton.setText(os.path.basename(self.obj.File))
         else:
-            self.fileButton.setText("Choose file...")
+            self.fileButton.setText(translate("Arch", "Choose File"))
         self.partCombo = QtGui.QComboBox(self.form)
+        self.partCombo.setEnabled(False)
         layout.addWidget(self.partCombo)
-        if hasattr(self.obj.Proxy,"parts"):
+        if hasattr(self.obj.Proxy, "parts"):
             parts = self.obj.Proxy.parts
         else:
             parts = self.obj.Proxy.getPartsList(self.obj)
-        for k in sorted(parts.keys()):
-            self.partCombo.addItem(parts[k][0],k)
-        if self.obj.Part:
-            if self.obj.Part in parts.keys():
-                self.partCombo.setCurrentIndex(sorted(parts.keys()).index(self.obj.Part))
-        QtCore.QObject.connect(self.fileButton, QtCore.SIGNAL("clicked()"), self.chooseFile)
-        QtCore.QObject.connect(self.openButton, QtCore.SIGNAL("clicked()"), self.openFile)
+        if parts:
+            self.partCombo.setEnabled(True)
+            sortedkeys = sorted(parts)
+            self.partCombo.addItem(translate("Arch", "None (Use whole object)"), "")
+            for k in sortedkeys:
+                self.partCombo.addItem(parts[k][0], k)
+            if self.obj.Part:
+                if self.obj.Part in sortedkeys:
+                    self.partCombo.setCurrentIndex(sortedkeys.index(self.obj.Part) + 1)
+        else:
+            self.partCombo.setEnabled(False)
+        QtCore.QObject.connect(
+            self.fileButton, QtCore.SIGNAL("clicked()"), self.chooseFile
+        )
+        QtCore.QObject.connect(
+            self.openButton, QtCore.SIGNAL("clicked()"), self.openFile
+        )
 
     def accept(self):
+
+        from PySide import QtCore
 
         if self.filename:
             if self.filename != self.obj.File:
@@ -696,16 +820,20 @@ class ArchReferenceTaskPanel:
                 FreeCAD.ActiveDocument.recompute()
         if self.partCombo.currentText():
             i = self.partCombo.currentIndex()
-            if self.partCombo.itemData(i) != self.obj.Part:
-                self.obj.Part = self.partCombo.itemData(i)
-                if self.obj.Label == "External Reference":
-                    self.obj.Label = self.partCombo.itemText(i)
-                FreeCAD.ActiveDocument.recompute()
+            if i >= 1:
+                if self.partCombo.itemData(i) != self.obj.Part:
+                    self.obj.Part = self.partCombo.itemData(i)
+            else:
+                self.obj.Part = ""
+            QtCore.QTimer.singleShot(0, FreeCAD.ActiveDocument.recompute)
+        if self.filename and self.obj.Label == "External Reference":
+            self.obj.Label = os.path.basename(self.filename)
         FreeCADGui.ActiveDocument.resetEdit()
         return True
 
     def reject(self):
 
+        FreeCAD.activeDocument().removeObject(self.obj.Name)
         FreeCAD.ActiveDocument.recompute()
         FreeCADGui.ActiveDocument.resetEdit()
         return True
@@ -715,38 +843,56 @@ class ArchReferenceTaskPanel:
         loc = QtCore.QDir.homePath()
         if self.obj.File:
             loc = os.path.dirname(self.obj.File)
-        f = QtGui.QFileDialog.getOpenFileName(self.form,'Choose reference file',loc,"FreeCAD standard files (*.FCStd)")
+        filters = "*.FCStd *.dxf"
+        filters = translate("Arch", "Reference files") + " (" + filters + ")"
+        f = QtGui.QFileDialog.getOpenFileName(
+            self.form, "Choose reference file", loc, filters
+        )
         if f:
             self.filename = f[0]
             self.fileButton.setText(os.path.basename(self.filename))
-            parts = self.obj.Proxy.getPartsList(self.obj,self.filename)
+            parts = self.obj.Proxy.getPartsList(self.obj, self.filename)
+            self.partCombo.clear()
             if parts:
-                self.partCombo.clear()
-                for k in sorted(parts.keys()):
-                    self.partCombo.addItem(parts[k][0],k)
+                self.partCombo.setEnabled(True)
+                sortedkeys = sorted(parts)
+                self.partCombo.addItem(translate("Arch", "None (Use whole object)"), "")
+                for k in sortedkeys:
+                    self.partCombo.addItem(parts[k][0], k)
                 if self.obj.Part:
-                    if self.obj.Part in parts.keys():
-                        self.partCombo.setCurrentIndex(sorted(parts.keys()).index(self.obj.Part))
+                    if self.obj.Part in sortedkeys:
+                        self.partCombo.setCurrentIndex(
+                            sortedkeys.index(self.obj.Part) + 1
+                        )
+            else:
+                self.partCombo.setEnabled(False)
 
     def openFile(self):
 
         if self.obj.File:
-            FreeCAD.openDocument(self.obj.File)
+            if self.obj.File.lower().endswith(".fcstd"):
+                FreeCAD.openDocument(self.obj.File)
+            else:
+                FreeCAD.loadFile(self.obj.File)
             FreeCADGui.Control.closeDialog()
             FreeCADGui.ActiveDocument.resetEdit()
 
 
 class ArchReferenceCommand:
-
-
     "the Arch Reference command definition"
 
     def GetResources(self):
 
-        return {'Pixmap'  : 'Arch_Reference',
-                'MenuText': QtCore.QT_TRANSLATE_NOOP("Arch_Reference","External reference"),
-                'Accel': "E, X",
-                'ToolTip': QtCore.QT_TRANSLATE_NOOP("Arch_Reference","Creates an external reference object")}
+        return {
+            "Pixmap": "Arch_Reference",
+            "MenuText": QtCore.QT_TRANSLATE_NOOP(
+                "Arch_Reference", "External reference"
+            ),
+            "Accel": "E, X",
+            "ToolTip": QtCore.QT_TRANSLATE_NOOP(
+                "Arch_Reference", "Creates an external reference object"
+            ),
+        }
 
     def IsActive(self):
 
@@ -755,7 +901,9 @@ class ArchReferenceCommand:
     def Activated(self):
 
         FreeCADGui.Control.closeDialog()
-        FreeCAD.ActiveDocument.openTransaction(translate("Arch","Create external reference"))
+        FreeCAD.ActiveDocument.openTransaction(
+            translate("Arch", "Create external reference")
+        )
         FreeCADGui.addModule("Arch")
         FreeCADGui.addModule("Draft")
         FreeCADGui.doCommand("obj = Arch.makeReference()")
@@ -764,6 +912,5 @@ class ArchReferenceCommand:
         FreeCADGui.doCommand("obj.ViewObject.Document.setEdit(obj.ViewObject, 0)")
 
 
-
 if FreeCAD.GuiUp:
-    FreeCADGui.addCommand('Arch_Reference', ArchReferenceCommand())
+    FreeCADGui.addCommand("Arch_Reference", ArchReferenceCommand())
