@@ -159,7 +159,10 @@
          </widget>
         </item>
         <item>
-         <widget class="Gui::PrefSpinBox" name="spinBox_2">
+         <widget class="Gui::PrefComboBox" name="comboBox_ReferenceCheckInterval">
+          <property name="toolTip">
+           <string>The interval between polling for changes of external references, note FreeCAD must be restarted for this to take effect.</string>
+          </property>
           <property name="suffix">
            <string> seconds</string>
           </property>
@@ -178,6 +181,36 @@
           <property name="prefPath" stdset="0">
            <cstring>Mod/Arch</cstring>
           </property>
+          <item>
+           <property name="text">
+            <string>1 minute</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>5 minutes</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>15 minutes</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>30 minutes</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>60 minutes</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Never (manual update only)</string>
+           </property>
+          </item>
          </widget>
         </item>
        </layout>
