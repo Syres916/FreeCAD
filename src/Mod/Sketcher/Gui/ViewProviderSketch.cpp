@@ -3589,7 +3589,8 @@ void ViewProviderSketch::setEditViewer(Gui::View3DInventorViewer* viewer, int Mo
                     "  ActiveSketch.ViewObject.TempoVis.saveCamera()\n"
                     "  if ActiveSketch.ViewObject.ForceOrtho:\n"
                     "    "
-                    "ActiveSketch.ViewObject.Document.ActiveView.setCameraType('Orthographic')\n")
+                    "ActiveSketch.ViewObject.Document.ActiveView.setCameraType('Orthographic')\n"
+                    "Gui.SendMsgToActiveView('ViewFit')\n")
                     .arg(QString::fromLatin1(getDocument()->getDocument()->getName()),
                          QString::fromLatin1(getSketchObject()->getNameInDocument()));
             QByteArray cmdstr_bytearray = cmdstr.toLatin1();
