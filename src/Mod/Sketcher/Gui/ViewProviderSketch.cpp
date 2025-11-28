@@ -3663,9 +3663,11 @@ void ViewProviderSketch::setEditViewer(Gui::View3DInventorViewer* viewer, int Mo
     cameraSensor.setData(new VPRender {this, viewer->getSoRenderManager()});
     cameraSensor.attach(viewer->getSoRenderManager()->getSceneGraph());
 
-    QString cmdstr = QString::fromLatin1("Gui.SendMsgToActiveView('ViewFit')\n");
-    QByteArray cmdstr_bytearray = cmdstr.toLatin1();
-    Gui::Command::runCommand(Gui::Command::Gui, cmdstr_bytearray);
+    if (dist != 100.000000) {
+        QString cmdstr = QString::fromLatin1("Gui.SendMsgToActiveView('ViewFit')\n");
+        QByteArray cmdstr_bytearray = cmdstr.toLatin1();
+        Gui::Command::runCommand(Gui::Command::Gui, cmdstr_bytearray);
+    }
 }
 
 void ViewProviderSketch::unsetEditViewer(Gui::View3DInventorViewer* viewer)
