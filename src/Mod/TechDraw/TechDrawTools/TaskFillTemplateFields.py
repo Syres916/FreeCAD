@@ -567,4 +567,3 @@ class TaskFillTemplateFields:
         self.dialog.hide()
         keyLst.clear()
         return True
-
