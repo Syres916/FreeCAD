@@ -94,7 +94,10 @@ class TaskFillTemplateFields:
         objs = App.ActiveDocument.findObjects(Type="TechDraw::DrawPage")
 
         for obj in objs:
-            if os.path.exists(file_path) and listofkeys == reader.fieldnames:
+            if (
+                os.path.exists(file_path)
+                and listofkeys == reader.fieldnames
+            ):
                 self.page = obj
                 if obj.Views == []:
                     msgBox = QtGui.QMessageBox()
@@ -452,7 +455,7 @@ class TaskFillTemplateFields:
                     self.dialog.show()
                     self.dialog.exec_()
 
-                #                    App.setActiveTransaction("Fill template fields")
+                # App.setActiveTransaction("Fill template fields")
                 else:
                     msgBox = QtGui.QMessageBox()
                     msgTitle = QtCore.QT_TRANSLATE_NOOP(
