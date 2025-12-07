@@ -3799,6 +3799,11 @@ void ViewProviderSketch::setEditViewer(Gui::View3DInventorViewer* viewer, int Mo
             }
         });
     }
+    if (dist != 100.000000) {
+        QString cmdstr = QString::fromLatin1("Gui.SendMsgToActiveView('ViewFit')\n");
+        QByteArray cmdstr_bytearray = cmdstr.toLatin1();
+        Gui::Command::runCommand(Gui::Command::Gui, cmdstr_bytearray);
+    }
 }
 
 void ViewProviderSketch::unsetEditViewer(Gui::View3DInventorViewer* viewer)
@@ -3862,7 +3867,7 @@ void ViewProviderSketch::onCameraChanged(SoCamera* cam)
     // Is camera in the same hemisphere as positive sketch normal ?
     auto orientation = (rotCam.invert() * rotSk).multVec(Base::Vector3d(0, 0, 1));
     auto tmpFactor = orientation.z < 0 ? -1 : 1;
-
+    bool redrawSwitch = false;
     if (tmpFactor != viewOrientationFactor) {// redraw only if viewing side changed
         Base::Console().log("Switching side, now %s, redrawing\n",
                             tmpFactor < 0 ? "back" : "front");
@@ -3873,6 +3878,43 @@ void ViewProviderSketch::onCameraChanged(SoCamera* cam)
                                         "ActiveSketch, ActiveSketch.ViewObject.SectionView, %1)\n")
                              .arg(tmpFactor < 0 ? QLatin1String("True") : QLatin1String("False"));
         Base::Interpreter().runStringObject(cmdStr.toLatin1());
+        Base::Placement plm = getEditingPlacement();
+        Base::Rotation tmp(plm.getRotation());
+    
+        SbRotation rot((float)tmp[0], (float)tmp[1], (float)tmp[2], (float)tmp[3]);
+        // Will the sketch be visible from the new position (#0000957)?
+        //
+        Gui::MDIView* mdi =
+            Gui::Application::Instance->editViewOfNode(editCoinManager->getRootEditNode());
+        if (mdi) {
+            Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
+
+            SbVec3f curdir;  // current view direction
+            cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), curdir);
+            SbVec3f focal = cam->position.getValue() + cam->focalDistance.getValue() * curdir;
+
+            SbVec3f newdir;  // future view direction
+            rot.multVec(SbVec3f(0, 0, -1), newdir);
+            SbVec3f newpos = focal - cam->focalDistance.getValue() * newdir;
+
+            SbVec3f plnpos = Base::convertTo<SbVec3f>(plm.getPosition());
+            double dist = (plnpos - newpos).dot(newdir);
+            if (dist < 0) {
+                float focalLength = cam->focalDistance.getValue() - dist + 5;
+                cam->position = focal - focalLength * curdir;
+                cam->focalDistance.setValue(focalLength);
+            }
+            viewer->setCameraOrientation(rot);
+
+            viewer->setEditing(true);
+            viewer->setSelectionEnabled(false);
+
+            viewer->addGraphicsItem(rubberband.get());
+            rubberband->setViewer(viewer);
+            if (dist != 100.000000) {
+                redrawSwitch = true;
+            }
+        }
     }
 
     // Stretch the axes to cover the whole viewport.
@@ -3885,6 +3927,12 @@ void ViewProviderSketch::onCameraChanged(SoCamera* cam)
     }
 
     drawGrid(true);
+
+    if (redrawSwitch) {
+        QString cmdstr = QString::fromLatin1("Gui.SendMsgToActiveView('ViewFit')\n");
+        QByteArray cmdstr_bytearray = cmdstr.toLatin1();
+        Gui::Command::runCommand(Gui::Command::Gui, cmdstr_bytearray);
+    }
 }
 
 int ViewProviderSketch::getPreselectPoint() const
