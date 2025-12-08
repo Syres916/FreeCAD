@@ -660,7 +660,7 @@ protected:
     void unsetEdit(int ModNum) override;
     void setEditViewer(Gui::View3DInventorViewer*, int ModNum) override;
     void unsetEditViewer(Gui::View3DInventorViewer*) override;
-    void setRubberBand(Gui::View3DInventorViewer* viewer, SoCamera* cam);
+    double setRubberBand(Gui::View3DInventorViewer* viewer, SoCamera* cam, Base::Placement plm, SbRotation rot);
     static void camSensCB(void* data, SoSensor*);// camera sensor callback
     void onCameraChanged(SoCamera* cam);
     //@}
