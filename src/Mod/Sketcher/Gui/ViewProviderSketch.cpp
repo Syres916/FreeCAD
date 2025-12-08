@@ -3635,7 +3635,8 @@ void ViewProviderSketch::setEditViewer(Gui::View3DInventorViewer* viewer, int Mo
     //
     SoCamera* camera = viewer->getSoRenderManager()->getCamera();
 
-    setRubberBand(viewer, camera);
+    double dist;
+    dist = setRubberBand(viewer, camera, plm, rot);
 
     viewer->setupEditingRoot();
 
@@ -3709,14 +3710,14 @@ void ViewProviderSketch::onCameraChanged(SoCamera* cam)
             Gui::Application::Instance->editViewOfNode(editCoinManager->getRootEditNode());
         if (mdi) {
             Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
-            setRubberBand(viewer, cam);
+            setRubberBand(viewer, cam, plm, rot);
         }
     }
 
     drawGrid(true);
 }
 
-void ViewProviderSketch::setRubberBand(Gui::View3DInventorViewer* viewer, SoCamera* cam)
+double ViewProviderSketch::setRubberBand(Gui::View3DInventorViewer* viewer, SoCamera* cam, Base::Placement plm, SbRotation rot)
 {
     SbVec3f curdir;  // current view direction
     cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), curdir);
@@ -3740,6 +3741,7 @@ void ViewProviderSketch::setRubberBand(Gui::View3DInventorViewer* viewer, SoCame
 
     viewer->addGraphicsItem(rubberband.get());
     rubberband->setViewer(viewer);
+    return dist;
 }
 
 int ViewProviderSketch::getPreselectPoint() const
