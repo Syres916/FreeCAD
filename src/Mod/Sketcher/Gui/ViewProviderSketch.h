@@ -54,6 +54,7 @@ class TopoDS_Shape;
 class TopoDS_Face;
 class SoSeparator;
 class SbLine;
+class SbRotation;
 class SbVec2f;
 class SbVec3f;
 class SoCoordinate3;
@@ -690,11 +691,6 @@ public:
 
     void deleteSelected();
 
-    bool isSelected(const std::string& ss) const;
-    void rmvSelection(const std::string& subNameSuffix);
-    bool addSelection(const std::string& subNameSuffix, float x = 0, float y = 0, float z = 0);
-    bool addSelection2(const std::string& subNameSuffix, float x = 0, float y = 0, float z = 0);
-
     /// Control the overlays appearing on the Tree and reflecting different sketcher states
     QIcon mergeColorfulOverlayIcons(const QIcon& orig) const override;
 
@@ -732,6 +728,10 @@ protected:
     void unsetEdit(int ModNum) override;
     void setEditViewer(Gui::View3DInventorViewer*, int ModNum) override;
     void unsetEditViewer(Gui::View3DInventorViewer*) override;
+    double setRubberBand(Gui::View3DInventorViewer* viewer,
+                         SoCamera* cam,
+                         Base::Placement plm,
+                         SbRotation rot);
     static void camSensCB(void* data, SoSensor*);        // camera sensor callback
     static void camSensDeleteCB(void* data, SoSensor*);  // camera sensor callback
     void onCameraChanged(SoCamera* cam);
@@ -834,6 +834,10 @@ private:
     void removeSelectPoint(int SelectPoint);
     void clearSelectPoints();
 
+    bool isSelected(const std::string& ss) const;
+    void rmvSelection(const std::string& subNameSuffix);
+    bool addSelection(const std::string& subNameSuffix, float x = 0, float y = 0, float z = 0);
+    bool addSelection2(const std::string& subNameSuffix, float x = 0, float y = 0, float z = 0);
     void preselectToSelection(
         const std::stringstream& ss,
         boost::scoped_ptr<SoPickedPoint>& pp,

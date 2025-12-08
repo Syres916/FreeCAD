@@ -3888,29 +3888,7 @@ void ViewProviderSketch::onCameraChanged(SoCamera* cam)
             Gui::Application::Instance->editViewOfNode(editCoinManager->getRootEditNode());
         if (mdi) {
             Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
-
-            SbVec3f curdir;  // current view direction
-            cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), curdir);
-            SbVec3f focal = cam->position.getValue() + cam->focalDistance.getValue() * curdir;
-
-            SbVec3f newdir;  // future view direction
-            rot.multVec(SbVec3f(0, 0, -1), newdir);
-            SbVec3f newpos = focal - cam->focalDistance.getValue() * newdir;
-
-            SbVec3f plnpos = Base::convertTo<SbVec3f>(plm.getPosition());
-            double dist = (plnpos - newpos).dot(newdir);
-            if (dist < 0) {
-                float focalLength = cam->focalDistance.getValue() - dist + 5;
-                cam->position = focal - focalLength * curdir;
-                cam->focalDistance.setValue(focalLength);
-            }
-            viewer->setCameraOrientation(rot);
-
-            viewer->setEditing(true);
-            viewer->setSelectionEnabled(false);
-
-            viewer->addGraphicsItem(rubberband.get());
-            rubberband->setViewer(viewer);
+            double dist = setRubberBand(viewer, cam, plm, rot);
             if (dist != 100.000000) {
                 redrawSwitch = true;
             }
@@ -3933,6 +3911,33 @@ void ViewProviderSketch::onCameraChanged(SoCamera* cam)
         QByteArray cmdstr_bytearray = cmdstr.toLatin1();
         Gui::Command::runCommand(Gui::Command::Gui, cmdstr_bytearray);
     }
+}
+
+double ViewProviderSketch::setRubberBand(Gui::View3DInventorViewer* viewer, SoCamera* cam, Base::Placement plm, SbRotation rot)
+{
+    SbVec3f curdir;  // current view direction
+    cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), curdir);
+    SbVec3f focal = cam->position.getValue() + cam->focalDistance.getValue() * curdir;
+
+    SbVec3f newdir;  // future view direction
+    rot.multVec(SbVec3f(0, 0, -1), newdir);
+    SbVec3f newpos = focal - cam->focalDistance.getValue() * newdir;
+
+    SbVec3f plnpos = Base::convertTo<SbVec3f>(plm.getPosition());
+    double dist = (plnpos - newpos).dot(newdir);
+    if (dist < 0) {
+        float focalLength = cam->focalDistance.getValue() - dist + 5;
+        cam->position = focal - focalLength * curdir;
+        cam->focalDistance.setValue(focalLength);
+    }
+    viewer->setCameraOrientation(rot);
+
+    viewer->setEditing(true);
+    viewer->setSelectionEnabled(false);
+
+    viewer->addGraphicsItem(rubberband.get());
+    rubberband->setViewer(viewer);
+    return dist;
 }
 
 int ViewProviderSketch::getPreselectPoint() const
