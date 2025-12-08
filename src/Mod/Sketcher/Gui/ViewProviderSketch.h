@@ -50,6 +50,7 @@ class SoSeparator;
 class SbLine;
 class SbVec2f;
 class SbVec3f;
+class SbRotation;
 class SoCoordinate3;
 class SoInfo;
 class SoPointSet;

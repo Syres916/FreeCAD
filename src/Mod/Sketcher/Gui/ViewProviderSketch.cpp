@@ -3635,8 +3635,7 @@ void ViewProviderSketch::setEditViewer(Gui::View3DInventorViewer* viewer, int Mo
     //
     SoCamera* camera = viewer->getSoRenderManager()->getCamera();
 
-    double dist;
-    dist = setRubberBand(viewer, camera, plm, rot);
+    double dist = setRubberBand(viewer, camera, plm, rot);
 
     viewer->setupEditingRoot();
 
@@ -3699,7 +3698,6 @@ void ViewProviderSketch::onCameraChanged(SoCamera* cam)
                                         "ActiveSketch, ActiveSketch.ViewObject.SectionView, %1)\n")
                              .arg(tmpFactor < 0 ? QLatin1String("True") : QLatin1String("False"));
         Base::Interpreter().runStringObject(cmdStr.toLatin1());
-        // redrawSwitch = true;
         Base::Placement plm = getEditingPlacement();
         Base::Rotation tmp(plm.getRotation());
     
@@ -3710,11 +3708,20 @@ void ViewProviderSketch::onCameraChanged(SoCamera* cam)
             Gui::Application::Instance->editViewOfNode(editCoinManager->getRootEditNode());
         if (mdi) {
             Gui::View3DInventorViewer* viewer = static_cast<Gui::View3DInventor*>(mdi)->getViewer();
-            setRubberBand(viewer, cam, plm, rot);
+            double dist = setRubberBand(viewer, cam, plm, rot);
+            if (dist != 100.000000) {
+                redrawSwitch = true;
+            }
         }
     }
 
     drawGrid(true);
+
+    if (redrawSwitch) {
+        QString cmdstr = QString::fromLatin1("Gui.SendMsgToActiveView('ViewFit')\n");
+        QByteArray cmdstr_bytearray = cmdstr.toLatin1();
+        Gui::Command::runCommand(Gui::Command::Gui, cmdstr_bytearray);
+    }
 }
 
 double ViewProviderSketch::setRubberBand(Gui::View3DInventorViewer* viewer, SoCamera* cam, Base::Placement plm, SbRotation rot)
