@@ -122,6 +122,25 @@
         </property>
        </widget>
       </item>
+  <item row="11" column="0">
+       <widget class="Gui::PrefCheckBox" name="checkBoxHideExpressionNotation">
+        <property name="toolTip">
+         <string>Hides Expression Notation (ƒ𝑥)</string>
+        </property>
+        <property name="text">
+         <string>Hides Expression Notation (ƒ𝑥)</string>
+        </property>
+        <property name="prefEntry" stdset="0">
+         <cstring>HideExpressionNotation</cstring>
+        </property>
+        <property name="prefPath" stdset="0">
+         <cstring>Mod/Sketcher</cstring>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
   <item row="10" column="0">
        <widget class="Gui::PrefCheckBox" name="checkBoxShowDimensionalName">
         <property name="toolTip">

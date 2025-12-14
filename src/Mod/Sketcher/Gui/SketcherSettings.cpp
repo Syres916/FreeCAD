@@ -446,6 +446,7 @@ void SketcherSettingsDisplay::saveSettings()
     ui->checkBoxShowCursorCoords->onSave();
     ui->checkBoxUseSystemDecimals->onSave();
     ui->checkBoxShowDimensionalName->onSave();
+    ui->checkBoxHideExpressionNotation->onSave();
     ui->prefDimensionalStringFormat->onSave();
     ui->checkBoxTVHideDependent->onSave();
     ui->checkBoxTVShowLinks->onSave();
@@ -468,6 +469,7 @@ void SketcherSettingsDisplay::loadSettings()
     ui->checkBoxShowCursorCoords->onRestore();
     ui->checkBoxUseSystemDecimals->onRestore();
     ui->checkBoxShowDimensionalName->onRestore();
+    ui->checkBoxHideExpressionNotation->onRestore();
     ui->prefDimensionalStringFormat->onRestore();
     ui->checkBoxTVHideDependent->onRestore();
     ui->checkBoxTVShowLinks->onRestore();

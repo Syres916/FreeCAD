@@ -2203,7 +2203,7 @@ QString EditModeConstraintCoinManager::getPresentationString(
     auto it = std::find(constrlist.begin(), constrlist.end(), constraint);
     if (it != constrlist.end()) {
         constraintIndex = std::distance(constrlist.begin(), it);
-        if (ViewProviderSketchCoinAttorney::constraintHasExpression(viewProvider, constraintIndex)) {
+        if (!constraintParameters.bHideExpressionNotation && ViewProviderSketchCoinAttorney::constraintHasExpression(viewProvider, constraintIndex)) {
             fixedValueStr += QStringLiteral(" (ƒ𝑥)");
         }
     }

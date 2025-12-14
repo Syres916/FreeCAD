@@ -388,6 +388,7 @@ struct OverlayParameters
 struct ConstraintParameters
 {
     bool bHideUnits;            // whether units should be hidden or not
+    bool bHideExpressionNotation = false; // whether the ƒ𝑥 is displayed
     bool bShowDimensionalName;  // whether the name of dimensional constraints should be shown or not
     QString sDimensionalStringFormat;  // how to code strings of dimensional constraints
 };

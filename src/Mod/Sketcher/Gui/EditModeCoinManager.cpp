@@ -117,6 +117,8 @@ void EditModeCoinManager::ParameterObserver::initParameters()
          [this](const std::string& param) { updateLineRenderingOrderParameters(param); }},
         {"HideUnits",
          [this](const std::string& param) { updateConstraintPresentationParameters(param); }},
+        {"HideExpressionNotation",
+         [this](const std::string& param) { updateConstraintPresentationParameters(param); }},
         {"ShowDimensionalName",
          [this](const std::string& param) { updateConstraintPresentationParameters(param); }},
         {"DimensionalStringFormat",
@@ -298,6 +300,7 @@ void EditModeCoinManager::ParameterObserver::updateConstraintPresentationParamet
     );
 
     Client.constraintParameters.bHideUnits = hGrpskg->GetBool("HideUnits", false);
+    Client.constraintParameters.bHideExpressionNotation = hGrpskg->GetBool("HideExpressionNotation", false);
     Client.constraintParameters.bShowDimensionalName = hGrpskg->GetBool("ShowDimensionalName", true);
     Client.constraintParameters.sDimensionalStringFormat = QString::fromStdString(
         hGrpskg->GetASCII("DimensionalStringFormat", "%N = %V")
@@ -1108,15 +1111,6 @@ void EditModeCoinManager::updateElementSizeParameters()
     auto const it = std::lower_bound(supportedsizes.begin(), supportedsizes.end(), scaledMarkerSize);
     if (it != supportedsizes.end()) {
         scaledMarkerSize = *it;
-    }
-    else {
-        // This is a quick and dirty fix for https://github.com/FreeCAD/FreeCAD/issues/22010
-        //
-        // Basically if we want to use a bigger marker size than available, we use the biggest one
-        // available. This is not a good way to fix the issue - we should ensure that the marker
-        // size that the user requests is actually available - this, however, requires more
-        // significant changes to the code.
-        scaledMarkerSize = *supportedsizes.rbegin();
     }
     drawingParameters.markerSize = scaledMarkerSize;
 
