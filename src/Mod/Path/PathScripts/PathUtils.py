@@ -19,11 +19,16 @@
 # *   USA                                                                   *
 # *                                                                         *
 # ***************************************************************************
-"""PathUtils -common functions used in PathScripts for filtering, sorting, and generating gcode toolpath data """
+"""PathUtils -common functions used in PathScripts for filtering, sorting, and generating gcode toolpath data"""
 
 import FreeCAD
 from FreeCAD import Vector
-from PySide import QtCore
+from PySide.QtCore import QT_TRANSLATE_NOOP
+
+if FreeCAD.GuiUp:
+    import FreeCADGui
+    from PySide import QtCore
+    from PySide import QtGui
 import Path
 import Path.Main.Job as PathJob
 import math
@@ -132,13 +137,14 @@ def horizontalEdgeLoop(obj, edge):
 
 def horizontalFaceLoop(obj, face, faceList=None):
     """horizontalFaceLoop(obj, face, faceList=None) ... returns a list of face names which form the walls of a vertical hole face is a part of.
-    All face names listed in faceList must be part of the hole for the solution to be returned."""
-
+    All face names listed in faceList must be part of the hole for the solution to be returned.
+    """
     wires = [horizontalEdgeLoop(obj, e) for e in face.Edges]
+
     # Not sure if sorting by Area is a premature optimization - but it seems
     # the loop we're looking for is typically the biggest of the them all.
     wires = sorted([w for w in wires if w], key=lambda w: Part.Face(w).Area)
-
+    suspectHoriFace = False
     for wire in wires:
         hashes = [e.hashCode() for e in wire.Edges]
 
@@ -148,8 +154,8 @@ def horizontalFaceLoop(obj, face, faceList=None):
             for i, f in enumerate(obj.Shape.Faces)
             if any(e.hashCode() in hashes for e in f.Edges) and Path.Geom.isVertical(f)
         ]
-
         if faceList and not all(f in faces for f in faceList):
+            suspectHoriFace = True
             continue
 
         # verify they form a valid hole by getting the outline and comparing
@@ -178,6 +184,14 @@ def horizontalFaceLoop(obj, face, faceList=None):
             and Path.Geom.isRoughly(bb1.YMax, bb2.YMax)
         ):
             return faces
+    QtGui.QMessageBox.warning(
+        None,
+        QT_TRANSLATE_NOOP("Path_SelectLoop", "Face Loop"),
+        QT_TRANSLATE_NOOP(
+            "Path_SelectLoop",
+            "Have you selected a vertical face, it appears to be a horizontal one?",
+        ),
+    )
     return None
 
 
@@ -839,6 +853,7 @@ def RtoIJ(startpoint, command):
 
     return newcommand
 
+
 def getPathWithPlacement(pathobj):
     """
     Applies the rotation, and then position of the obj's Placement
@@ -849,6 +864,7 @@ def getPathWithPlacement(pathobj):
         return pathobj.Path
 
     return applyPlacementToPath(pathobj.Placement, pathobj.Path)
+
 
 def applyPlacementToPath(placement, path):
     """
@@ -878,7 +894,7 @@ def applyPlacementToPath(placement, path):
             currY = y = params.get("Y", currY)
             currZ = z = params.get("Z", currZ)
 
-            x, y, z = placement.Rotation.multVec(FreeCAD.Vector(x, y ,z))
+            x, y, z = placement.Rotation.multVec(FreeCAD.Vector(x, y, z))
 
             if x != currX:
                 params.update({"X": x})
