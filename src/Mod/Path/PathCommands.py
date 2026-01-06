@@ -98,6 +98,9 @@ class _CommandSelectLoop:
             if loop:
                 FreeCADGui.Selection.clearSelection()
                 FreeCADGui.Selection.addSelection(sel.Object, loop)
+                FreeCAD.Console.PrintLog(
+                    "Path - SelectLoop: " + str(len(loop)) + " Faces found in loop\n"
+                )
             loopwire = []
         elif len(sel.SubObjects) == 1:
             loopwire = horizontalEdgeLoop(obj, edge1)
@@ -105,16 +108,22 @@ class _CommandSelectLoop:
             edge2 = sel.SubObjects[1]
             loopwire = loopdetect(obj, edge1, edge2)
 
-        if loopwire:
+        if loopwire and "Edge" in sel.SubElementNames[0]:
+            selectionEdgeList = []
             FreeCADGui.Selection.clearSelection()
             elist = obj.Shape.Edges
             for i in loopwire.Edges:
                 for e in elist:
                     if e.hashCode() == i.hashCode():
-                        FreeCADGui.Selection.addSelection(
-                            obj, "Edge" + str(elist.index(e) + 1)
-                        )
-        elif FreeCAD.GuiUp:
+                        selectionEdgeList.append("Edge" + str(elist.index(e) + 1))
+                        break
+            FreeCADGui.Selection.addSelection(obj, selectionEdgeList)
+            FreeCAD.Console.PrintLog(
+                "Path - SelectLoop: "
+                + str(len(selectionEdgeList))
+                + " Edges found in loop\n"
+            )
+        elif not loopwire and "Edge" in sel.SubElementNames[0] and FreeCAD.GuiUp:
             QtGui.QMessageBox.information(
                 None,
                 QT_TRANSLATE_NOOP("Path_SelectLoop", "Feature Completion"),
