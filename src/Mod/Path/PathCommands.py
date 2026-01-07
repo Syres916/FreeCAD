@@ -118,11 +118,18 @@ class _CommandSelectLoop:
                         selectionEdgeList.append("Edge" + str(elist.index(e) + 1))
                         break
             FreeCADGui.Selection.addSelection(obj, selectionEdgeList)
-            FreeCAD.Console.PrintLog(
-                "Path - SelectLoop: "
-                + str(len(selectionEdgeList))
-                + " Edges found in loop\n"
-            )
+            if len(selectionEdgeList) > 200:
+                FreeCAD.Console.PrintWarning(
+                    "Please wait while the highlight rendering of the "
+                    + str(len(selectionEdgeList))
+                    + " Edges is completed\n"
+                )
+            else:
+                FreeCAD.Console.PrintLog(
+                    "Path - SelectLoop: "
+                    + str(len(selectionEdgeList))
+                    + " Edges found in loop\n"
+                )
         elif not loopwire and "Edge" in sel.SubElementNames[0] and FreeCAD.GuiUp:
             QtGui.QMessageBox.information(
                 None,
