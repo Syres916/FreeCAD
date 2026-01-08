@@ -1043,7 +1043,7 @@ class DraftToolBar:
                     self.form = [extra]
                 self.callback = callback
             def getStandardButtons(self):
-                return Qtgui.QDialogButtonBox.Close
+                return QtGui.QDialogButtonBox.Close
             def reject(self):
                 if self.callback:
                     self.callback()
