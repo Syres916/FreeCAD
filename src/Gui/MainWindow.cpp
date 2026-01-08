@@ -1739,7 +1739,7 @@ QPixmap MainWindow::splashImage() const
     // include application name and version number
     std::map<std::string,std::string>::const_iterator tc = App::Application::Config().find("SplashInfoColor");
     if (tc != App::Application::Config().end()) {
-        QString title = qApp->applicationName() + QLatin1String("_dev");
+        QString title = QLatin1String("                                           _dev");
         QString major   = QString::fromLatin1(App::Application::Config()["BuildVersionMajor"].c_str());
         QString minor   = QString::fromLatin1(App::Application::Config()["BuildVersionMinor"].c_str());
         QString point   = QString::fromLatin1(App::Application::Config()["BuildVersionPoint"].c_str());
