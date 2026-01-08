@@ -397,6 +397,7 @@ def upgrade(objects, delete=False, force=None):
                 if len(w.Edges) > 1:
                     for e in w.Edges:
                         wirededges.append(e.hashCode())
+                        break
                 if not w.isClosed():
                     openwires.append(w)
             for e in ob.Shape.Edges:
