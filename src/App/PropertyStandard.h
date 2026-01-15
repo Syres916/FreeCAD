@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 #include <boost/dynamic_bitset.hpp>
-#include <boost/filesystem/path.hpp>
+// #include <boost/filesystem/path.hpp>
 #include <Base/Uuid.h>
 
 #include "Property.h"
@@ -104,7 +104,7 @@ public:
 
     /** Sets the property
      */
-    void setValue(const boost::filesystem::path &);
+    void setValue(const std::filesystem::path &);
 
     /** Sets the property
      */
@@ -112,7 +112,7 @@ public:
 
     /** This method returns a string representation of the property
      */
-    const boost::filesystem::path &getValue() const;
+    const std::filesystem::path &getValue() const;
 
     const char* getEditorName() const override { return "Gui::PropertyEditor::PropertyPathItem"; }
 
@@ -135,7 +135,7 @@ public:
     }
 
 protected:
-    boost::filesystem::path _cValue;
+    std::filesystem::path _cValue;
 };
 
 /// Property wrapper around an Enumeration object.

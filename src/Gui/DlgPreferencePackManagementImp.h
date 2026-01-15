@@ -26,7 +26,7 @@
 
 #include <memory>
 #include <QDialog>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 
 class QTreeWidgetItem;
@@ -75,7 +75,7 @@ private:
 
     std::unique_ptr<Ui_DlgPreferencePackManagement> ui;
 
-    std::vector<std::string> getPacksFromDirectory(const boost::filesystem::path& path) const;
+    std::vector<std::string> getPacksFromDirectory(const std::filesystem::path& path) const;
     void addTreeNode(const std::string& name, const std::vector<std::string>& contents, TreeWidgetType twt);
 
 };

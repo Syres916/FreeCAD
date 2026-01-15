@@ -32,7 +32,7 @@
 # include <QLocale>
 # include <QMessageBox>
 # include <algorithm>
-# include <boost/filesystem.hpp>
+// # include <boost/filesystem.hpp>
 #endif
 
 #include <Base/Parameter.h>
@@ -51,7 +51,7 @@
 #include "Language/Translator.h"
 
 using namespace Gui::Dialog;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 using namespace Base;
 
 /* TRANSLATOR Gui::Dialog::DlgGeneralImp */

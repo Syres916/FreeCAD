@@ -145,8 +145,6 @@ class DocumentBasicCases(unittest.TestCase):
     self.failUnless(L1.Float-47.11<0.001)
     self.failUnless(L1.Bool    == True)
     self.failUnless(L1.String  == "4711")
-    #temporarily not checked because of strange behavior of boost::filesystem JR
-    #self.failUnless(L1.Path  == "c:/temp")
     self.failUnless(float(L1.Angle)-3.0<0.001)
     self.failUnless(float(L1.Distance)-47.11<0.001)
 

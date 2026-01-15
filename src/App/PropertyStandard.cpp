@@ -172,7 +172,7 @@ PropertyPath::~PropertyPath() = default;
 //**************************************************************************
 // Setter/getter for the property
 
-void PropertyPath::setValue(const boost::filesystem::path &Path)
+void PropertyPath::setValue(const std::filesystem::path &Path)
 {
     aboutToSetValue();
     _cValue = Path;
@@ -183,16 +183,16 @@ void PropertyPath::setValue(const char * Path)
 {
     aboutToSetValue();
 #if (BOOST_FILESYSTEM_VERSION == 2)
-    _cValue = boost::filesystem::path(Path,boost::filesystem::no_check );
-    //_cValue = boost::filesystem::path(Path,boost::filesystem::native );
-    //_cValue = boost::filesystem::path(Path,boost::filesystem::windows_name );
+    _cValue = std::filesystem::path(Path,std::filesystem::no_check );
+    //_cValue = std::filesystem::path(Path,std::filesystem::native );
+    //_cValue = std::filesystem::path(Path,std::filesystem::windows_name );
 #else
-    _cValue = boost::filesystem::path(Path);
+    _cValue = std::filesystem::path(Path);
 #endif
     hasSetValue();
 }
 
-const boost::filesystem::path &PropertyPath::getValue() const
+const std::filesystem::path &PropertyPath::getValue() const
 {
     return _cValue;
 }
