@@ -482,11 +482,15 @@ ViewProviderSketch::ViewProviderSketch()
 
     VisualLayerList.setValues(std::move(layers));
 
+#if defined(FC_OS_MACOSX) && defined(_M_ARM64)
+    PointSize.setValue(4);
+#else
     ParameterGrp::handle hGrp =
         App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
-    int psize = hGrp->GetInt("DefaultShapePointSize", 4);
-
+    const int defaultSketchVertexSize = 4;
+    auto psize = hGrp->GetInt("DefaultShapePointSize", defaultSketchVertexSize);
     PointSize.setValue(psize);
+#endif
 
     // visibility automation and other parameters: update parameter and property defaults to follow
     // preferences
