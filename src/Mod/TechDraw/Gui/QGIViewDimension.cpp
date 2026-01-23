@@ -2329,6 +2329,12 @@ void QGIViewDimension::drawAngle(TechDraw::DrawViewDimension* dimension,
     Base::Vector2d startPoint = fromQtApp(anglePoints.first());
     Base::Vector2d endPoint = fromQtApp(anglePoints.second());
 
+    bool supplementary = dimension->ShowSupplementary.getValue();
+    if (supplementary) {
+        // flip the first point wrt. vertex to opposite side
+        startPoint = angleVertex - (startPoint - angleVertex);
+    }
+
     double endAngle = (endPoint - angleVertex).Angle();
     double startAngle = (startPoint - angleVertex).Angle();
     double arcRadius;
@@ -2492,7 +2498,7 @@ void QGIViewDimension::drawAngle(TechDraw::DrawViewDimension* dimension,
 
         if (arrowCount > 1) {
             extensionTarget = computeExtensionLinePoints(
-                startPoint, angleVertex + Base::Vector2d::FromPolar(arcRadius, startAngle),
+                supplementary ? angleVertex : startPoint, angleVertex + Base::Vector2d::FromPolar(arcRadius, startAngle),
                 startAngle, getDefaultExtensionLineOverhang(), gapSize, extensionOrigin);
             anglePath.moveTo(toQtGui(extensionOrigin));
             anglePath.lineTo(toQtGui(extensionTarget));
