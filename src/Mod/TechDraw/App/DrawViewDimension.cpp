@@ -94,54 +94,99 @@ static const App::PropertyQuantityConstraint::Constraints PositiveConstraint = {
 
 DrawViewDimension::DrawViewDimension()
 {
-    //create the formatter since it will be needed to set default property values
+    // create the formatter since it will be needed to set default property values
     m_formatter = new DimensionFormatter(this);
 
-    ADD_PROPERTY_TYPE(References2D, (nullptr, nullptr), "", (App::Prop_None),
+    ADD_PROPERTY_TYPE(References2D,
+                      (nullptr, nullptr),
+                      "",
+                      (App::Prop_None),
                       "Projected Geometry References");
     References2D.setScope(App::LinkScope::Global);
-    ADD_PROPERTY_TYPE(References3D, (nullptr, nullptr), "", (App::Prop_None),
+    ADD_PROPERTY_TYPE(References3D,
+                      (nullptr, nullptr),
+                      "",
+                      (App::Prop_None),
                       "3D Geometry References");
     References3D.setScope(App::LinkScope::Global);
 
-    ADD_PROPERTY_TYPE(FormatSpec, (getDefaultFormatSpec()), "Format", App::Prop_Output,
+    ADD_PROPERTY_TYPE(FormatSpec,
+                      (getDefaultFormatSpec()),
+                      "Format",
+                      App::Prop_Output,
                       "Dimension format");
-    ADD_PROPERTY_TYPE(FormatSpecOverTolerance, (getDefaultFormatSpec(true)), "Format",
-                      App::Prop_Output, "Dimension overtolerance format");
-    ADD_PROPERTY_TYPE(FormatSpecUnderTolerance, (getDefaultFormatSpec(true)), "Format",
-                      App::Prop_Output, "Dimension undertolerance format");
+    ADD_PROPERTY_TYPE(FormatSpecOverTolerance,
+                      (getDefaultFormatSpec(true)),
+                      "Format",
+                      App::Prop_Output,
+                      "Dimension overtolerance format");
+    ADD_PROPERTY_TYPE(FormatSpecUnderTolerance,
+                      (getDefaultFormatSpec(true)),
+                      "Format",
+                      App::Prop_Output,
+                      "Dimension undertolerance format");
     ADD_PROPERTY_TYPE(Arbitrary, (false), "Format", App::Prop_Output, "Value overridden by user");
-    ADD_PROPERTY_TYPE(ArbitraryTolerances, (false), "Format", App::Prop_Output,
+    ADD_PROPERTY_TYPE(ArbitraryTolerances,
+                      (false),
+                      "Format",
+                      App::Prop_Output,
                       "Tolerance values overridden by user");
 
-    Type.setEnums(TypeEnums);//dimension type: length, radius etc
+    Type.setEnums(TypeEnums);  // dimension type: length, radius etc
     ADD_PROPERTY(Type, ((long)0));
     MeasureType.setEnums(MeasureTypeEnums);
-    ADD_PROPERTY(MeasureType, ((long)1));//Projected (or True) measurement
-    ADD_PROPERTY_TYPE(TheoreticalExact, (false), "", App::Prop_Output,
+    ADD_PROPERTY(MeasureType, ((long)1));  // Projected (or True) measurement
+    ADD_PROPERTY_TYPE(TheoreticalExact,
+                      (false),
+                      "",
+                      App::Prop_Output,
                       "If theoretical exact (basic) dimension");
-    ADD_PROPERTY_TYPE(EqualTolerance, (true), "", App::Prop_Output,
+    ADD_PROPERTY_TYPE(EqualTolerance,
+                      (true),
+                      "",
+                      App::Prop_Output,
                       "If over- and undertolerance are equal");
 
-    ADD_PROPERTY_TYPE(OverTolerance, (0.0), "", App::Prop_Output,
+    ADD_PROPERTY_TYPE(OverTolerance,
+                      (0.0),
+                      "",
+                      App::Prop_Output,
                       "Overtolerance value\nIf 'Equal Tolerance' is true this is also\nthe negated "
                       "value for 'Under Tolerance'");
     OverTolerance.setUnit(Base::Unit::Length);
     OverTolerance.setConstraints(&ToleranceConstraint);
-    ADD_PROPERTY_TYPE(UnderTolerance, (0.0), "", App::Prop_Output,
+    ADD_PROPERTY_TYPE(UnderTolerance,
+                      (0.0),
+                      "",
+                      App::Prop_Output,
                       "Undertolerance value\nIf 'Equal Tolerance' is true it will be replaced\nby "
                       "negative value of 'Over Tolerance'");
     UnderTolerance.setUnit(Base::Unit::Length);
     UnderTolerance.setConstraints(&ToleranceConstraint);
-    ADD_PROPERTY_TYPE(Inverted, (false), "", App::Prop_Output,
+    ADD_PROPERTY_TYPE(Inverted,
+                      (false),
+                      "",
+                      App::Prop_Output,
                       "The dimensional value is displayed inverted");
-
-    ADD_PROPERTY_TYPE(AngleOverride, (false), "Override", App::Prop_Output,
+    ADD_PROPERTY_TYPE(
+        ShowSupplementary,
+        (false),
+        "",
+        App::Prop_Output,
+        "Toggle supplementary angle\nAngle displayed is dependent on selection order");
+    ADD_PROPERTY_TYPE(AngleOverride,
+                      (false),
+                      "Override",
+                      App::Prop_Output,
                       "User specified angles");
     ADD_PROPERTY_TYPE(LineAngle, (0.0), "Override", App::Prop_Output, "Dimension line angle");
     ADD_PROPERTY_TYPE(ExtensionAngle, (0.0), "Override", App::Prop_Output, "Extension line angle");
 
-    ADD_PROPERTY_TYPE(SavedGeometry, ()  ,"References",(App::PropertyType)(App::Prop_None),"Reference Geometry");
+    ADD_PROPERTY_TYPE(SavedGeometry,
+                      (),
+                      "References",
+                      (App::PropertyType)(App::Prop_None),
+                      "Reference Geometry");
     SavedGeometry.setOrderRelevant(true);
 
     // hide the DrawView properties that don't apply to Dimensions
@@ -159,10 +204,11 @@ DrawViewDimension::DrawViewDimension()
     FormatSpecUnderTolerance.setStatus(App::Property::ReadOnly, true);
 
     measurement = new Measure::Measurement();
-    //TODO: should have better initial datumLabel position than (0, 0) in the DVP?? something closer to the object being measured?
+    // TODO: should have better initial datumLabel position than (0, 0) in the DVP?? something
+    // closer to the object being measured?
 
-    //initialize the descriptive geometry.
-    //TODO: should this be more like DVP with a "geometry object"?
+    // initialize the descriptive geometry.
+    // TODO: should this be more like DVP with a "geometry object"?
     resetLinear();
     resetAngular();
     resetArc();
@@ -520,20 +566,21 @@ QStringList DrawViewDimension::getPrefixSuffixSpec(QString fSpec)
     return m_formatter->getPrefixSuffixSpec(fSpec);
 }
 
-//!NOTE: this returns the Dimension value in internal units (ie mm)!!!!
+//! NOTE: this returns the Dimension value in internal units (ie mm)!!!!
 double DrawViewDimension::getDimValue()
 {
     //    Base::Console().Message("DVD::getDimValue()\n");
+    constexpr double CircleDegrees {360.0};
     double result = 0.0;
     if (!has2DReferences() && !has3DReferences()) {
-        //nothing to measure
+        // nothing to measure
         return result;
     }
     if (!getViewPart()) {
         return result;
     }
 
-    if (!getViewPart()->hasGeometry()) { //happens when loading saved document
+    if (!getViewPart()->hasGeometry()) {  // happens when loading saved document
         return result;
     }
 
@@ -556,7 +603,7 @@ double DrawViewDimension::getDimValue()
         else if (Type.isValue("Angle") || Type.isValue("Angle3Pt")) {
             result = measurement->angle();
         }
-        else {//tarfu
+        else {  // tarfu
             throw Base::ValueError("getDimValue() - Unknown Dimension Type (3)");
         }
     }
@@ -583,14 +630,14 @@ double DrawViewDimension::getDimValue()
         else if (Type.isValue("Radius")) {
             arcPoints pts = m_arcPoints;
             result =
-                pts.radius / getViewPart()->getScale();//Projected BaseGeom is scaled for drawing
+                pts.radius / getViewPart()->getScale();  // Projected BaseGeom is scaled for drawing
         }
         else if (Type.isValue("Diameter")) {
             arcPoints pts = m_arcPoints;
             result = (pts.radius * 2.0)
-                / getViewPart()->getScale();//Projected BaseGeom is scaled for drawing
+                / getViewPart()->getScale();  // Projected BaseGeom is scaled for drawing
         }
-        else if (Type.isValue("Angle") || Type.isValue("Angle3Pt")) {//same as case "Angle"?
+        else if (Type.isValue("Angle") || Type.isValue("Angle3Pt")) {  // same as case "Angle"?
             anglePoints pts = m_anglePoints;
             Base::Vector3d vertex = pts.vertex();
             Base::Vector3d leg0 = pts.first() - vertex;
@@ -601,9 +648,14 @@ double DrawViewDimension::getDimValue()
     }
 
     result = fabs(result);
+
+    if (ShowSupplementary.getValue() && (Type.isValue("Angle") || Type.isValue("Angle3Pt"))) {
+        result = CircleDegrees / 2.0 - result;
+    }
+
     if (Inverted.getValue()) {
         if (Type.isValue("Angle") || Type.isValue("Angle3Pt")) {
-            result = 360 - result;
+            result = CircleDegrees - result;
         }
         else {
             result = -result;
