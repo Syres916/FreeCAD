@@ -242,12 +242,12 @@ QMenu QToolButton:selected {
 
 QMenu QRadioButton:disabled,
 QMenu QCheckBox:disabled {
-    color: #588AC2;
+    color: #436d9b;
 }
 
 QMenu QRadioButton::indicator:disabled,
 QMenu QCheckBox::indicator:disabled {
-    color: #588AC2;
+    color: #436d9b;
     background-color: transparent;
     border: 1px solid #588AC2;
 }
@@ -1765,12 +1765,15 @@ QRadioButton::indicator:checked {
     image:url(qss:images_dark-light/radiobutton_light.svg);
 }
 
-QRadioButton,
-QRadioButton:disabled {
+QRadioButton {
     color: #65A2E5;
     padding: 3px;
     outline: none;
     background-color: transparent;
+}
+
+QRadioButton:disabled {
+    color: #436d9b;
 }
 
 QRadioButton::indicator {
@@ -1784,9 +1787,9 @@ QRadioButton::indicator:pressed {
 }
 
 QRadioButton::indicator:disabled {
-    color: #65A2E5;
+    color: #436d9b;
     background-color: transparent;
-    border: 1px solid #65A2E5;
+    border: 1px solid #436d9b;
 }
 
 QRadioButton:focus {
@@ -1835,15 +1838,17 @@ QGroupBox::indicator:checked {
 
 QCheckBox:disabled {
     /* color: rgba(255,255,255,40); */
-    color: #c70b0b;
-    border: 1px solid #c70b0b;
+    color: #436d9b;
+    border: 1px solid #436d9b;
     background-color: #2e0e0e; /* QRadioButton has the same color transparent */
 }
 
 QCheckBox::indicator:disabled,
 QGroupBox::indicator:disabled {
-    background-color: rgba(255,255,255,20);
+    /*background-color: rgba(255,255,255,20);*/
+    background-color: rgba(255,0,0,20);
     border: 1px solid rgba(255,255,255,20);
+    image:url(qss:images_dark-light/checkbox_checked_disabled_light.svg);
 }
 
 QCheckBox::indicator:indeterminate,
