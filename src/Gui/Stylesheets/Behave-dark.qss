@@ -2547,3 +2547,8 @@ QMenu, QMenu::item, QMenu::item:hover {
     font-family: Ubuntu;
     font-size: 10pt;
 }
+
+QTreeView:disabled,
+QTreeView::indicator:disabled {
+    color: #436d9b;
+}
