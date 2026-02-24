@@ -1279,7 +1279,7 @@ QToolButton:disabled {
 }
 
 QToolButton:checked {
-  background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 @ButtonBottomBackgroundColor, stop:0.7 @ButtonTopBackgroundColor, stop:1 @ButtonTopBackgroundColor);
+  background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 @CheckedButtonBottomBackgroundColor, stop:0.7 @CheckedButtonTopBackgroundColor, stop:1 @CheckedButtonTopBackgroundColor);
   border-radius: @InputFieldBorderRadius;
   border: 1px solid @AccentColor;
 }
