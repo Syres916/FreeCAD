@@ -907,7 +907,11 @@ std::string Document::getTransientDirectoryName(const std::string& uuid, const s
     // Create a directory name of the form: {ExeName}_Doc_{UUID}_{HASH}_{PID}
     std::stringstream s;
     QCryptographicHash hash(QCryptographicHash::Sha1);
+#if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
     hash.addData(filename.c_str(), filename.size());
+#else
+    hash.addData(QByteArrayView(filename.c_str(), filename.size()));
+#endif
     s << App::Application::getUserCachePath() << App::Application::getExecutableName()
       << "_Doc_" << uuid
       << "_" << hash.result().toHex().left(6).constData()
@@ -2445,7 +2449,8 @@ std::vector<App::DocumentObject*> Document::getDependencyList(
             FC_ERR(ss.str());
             FC_THROWM(Base::RuntimeError, e.what());
         }
-        FC_ERR(e.what());
+        FC_ERR(objectArray.front()->getFullName()
+               << " (" << objectArray.front()->Label.getValue() << ") : " << e.what());
         ret = DocumentP::partialTopologicalSort(objectArray);
         std::reverse(ret.begin(),ret.end());
         return ret;
@@ -3366,6 +3371,14 @@ void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
 
     d->activeObject = pcObject;
     signalActivatedObject(*pcObject);
+}
+
+/// Remove an object out of the document
+void Document::removeObject(const DocumentObject* object)
+{
+    if (object->getDocument() == this) {
+        removeObject(object->getNameInDocument());
+    }
 }
 
 /// Remove an object out of the document
