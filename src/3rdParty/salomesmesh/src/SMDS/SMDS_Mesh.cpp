@@ -53,6 +53,7 @@
 #include <vtkCell.h>
 #include <vtkCellLinks.h>
 #include <vtkIdList.h>
+#include <vtkVersion.h>
 
 #include <algorithm>
 #include <map>
@@ -283,7 +284,11 @@ SMDS_BallElement* SMDS_Mesh::AddBallWithID(const SMDS_MeshNode * n, double diame
   ball->init(n->getVtkId(), diameter, this);
   if (!this->registerElement(ID,ball))
   {
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(ball->getVtkId(), VTK_EMPTY_CELL);
+#else
     this->myGrid->GetCellTypesArray()->SetValue(ball->getVtkId(), VTK_EMPTY_CELL);
+#endif
     myBallPool->destroy(ball);
     return 0;
   }
@@ -343,7 +348,11 @@ SMDS_MeshEdge* SMDS_Mesh::AddEdgeWithID(const SMDS_MeshNode * n1,
   edgevtk->init(nodeIds, this);
   if (!this->registerElement(ID,edgevtk))
     {
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+      this->myGrid->GetCellTypes()->SetTuple1(edgevtk->getVtkId(), VTK_EMPTY_CELL);
+#else
       this->myGrid->GetCellTypesArray()->SetValue(edgevtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myEdgePool->destroy(edgevtk);
       return 0;
     }
@@ -627,7 +636,11 @@ SMDS_MeshVolume* SMDS_Mesh::AddVolumeWithID(const SMDS_MeshNode * n1,
     volvtk->init(myNodeIds, this);
     if (!this->registerElement(ID,volvtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myVolumePool->destroy(volvtk);
       return 0;
     }
@@ -734,7 +747,11 @@ SMDS_MeshVolume* SMDS_Mesh::AddVolumeWithID(const SMDS_MeshNode * n1,
     volvtk->init(myNodeIds, this);
     if (!this->registerElement(ID,volvtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myVolumePool->destroy(volvtk);
       return 0;
     }
@@ -847,7 +864,11 @@ SMDS_MeshVolume* SMDS_Mesh::AddVolumeWithID(const SMDS_MeshNode * n1,
     volvtk->init(myNodeIds, this);
     if (!this->registerElement(ID,volvtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myVolumePool->destroy(volvtk);
       return 0;
     }
@@ -982,7 +1003,11 @@ SMDS_MeshVolume* SMDS_Mesh::AddVolumeWithID(const SMDS_MeshNode * n1,
     volvtk->init(myNodeIds, this);
     if (!this->registerElement(ID,volvtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myVolumePool->destroy(volvtk);
       return 0;
     }
@@ -1104,7 +1129,11 @@ SMDS_MeshVolume* SMDS_Mesh::AddVolumeWithID(const SMDS_MeshNode * n1,
     volvtk->init(myNodeIds, this);
     if (!this->registerElement(ID,volvtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myVolumePool->destroy(volvtk);
       return 0;
     }
@@ -1307,7 +1336,11 @@ SMDS_Mesh::AddPolygonalFaceWithID (const vector<const SMDS_MeshNode*> & nodes,
     facevtk->initPoly(myNodeIds, this);
     if (!this->registerElement(ID,facevtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myFacePool->destroy(facevtk);
       return 0;
     }
@@ -1372,7 +1405,11 @@ SMDS_Mesh::AddQuadPolygonalFaceWithID (const vector<const SMDS_MeshNode*> & node
     facevtk->initQuadPoly(myNodeIds, this);
     if (!this->registerElement(ID,facevtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myFacePool->destroy(facevtk);
       return 0;
     }
@@ -1452,7 +1489,11 @@ SMDS_Mesh::AddPolyhedralVolumeWithID (const vector<const SMDS_MeshNode*>& nodes,
     volvtk->initPoly(myNodeIds, quantities, this);
     if (!this->registerElement(ID, volvtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myVolumePool->destroy(volvtk);
       return 0;
     }
@@ -1508,7 +1549,11 @@ SMDS_MeshVolume* SMDS_Mesh::AddVolumeFromVtkIdsWithID(const std::vector<vtkIdTyp
   volvtk->init(vtkNodeIds, this);
   if (!this->registerElement(ID,volvtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(volvtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myVolumePool->destroy(volvtk);
       return 0;
     }
@@ -1567,7 +1612,11 @@ SMDS_MeshFace* SMDS_Mesh::AddFaceFromVtkIdsWithID(const std::vector<vtkIdType>& 
   facevtk->init(vtkNodeIds, this);
   if (!this->registerElement(ID,facevtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myFacePool->destroy(facevtk);
       return 0;
     }
@@ -1715,7 +1764,11 @@ SMDS_MeshFace * SMDS_Mesh::createTriangle(const SMDS_MeshNode * node1,
     facevtk->init(myNodeIds, this); // put in vtkUnstructuredGrid
     if (!this->registerElement(ID,facevtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myFacePool->destroy(facevtk);
       return 0;
     }
@@ -1769,7 +1822,11 @@ SMDS_MeshFace * SMDS_Mesh::createQuadrangle(const SMDS_MeshNode * node1,
     facevtk->init(myNodeIds, this);
     if (!this->registerElement(ID,facevtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(facevtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myFacePool->destroy(facevtk);
       return 0;
     }
@@ -2100,7 +2157,11 @@ SMDS_MeshEdge* SMDS_Mesh::FindEdgeOrCreate(const SMDS_MeshNode * node1,
     edgevtk->init(myNodeIds, this);
     if (!this->registerElement(ID,edgevtk))
     {
-      this->myGrid->GetCellTypesArray()->SetValue(edgevtk->getVtkId(), VTK_EMPTY_CELL);
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20251004)
+    this->myGrid->GetCellTypes()->SetTuple1(edgevtk->getVtkId(), VTK_EMPTY_CELL);
+#else
+    this->myGrid->GetCellTypesArray()->SetValue(edgevtk->getVtkId(), VTK_EMPTY_CELL);
+#endif
       myEdgePool->destroy(edgevtk);
       return 0;
     }
