@@ -62,7 +62,7 @@ namespace bp = boost::placeholders;
 
 // Translation block for context menu: do not remove
 #if 0
-QT_TRANSLATE_NOOP("SketcherGui::ConstraintView", "Select Elements");
+  QT_TRANSLATE_NOOP("SketcherGui::ConstraintView", "Select Elements");
 #endif
 
 /// Inserts a QAction into an existing menu
@@ -73,13 +73,9 @@ QT_TRANSLATE_NOOP("SketcherGui::ConstraintView", "Select Elements");
 /// ACTSONSELECTION is a true/false value to activate the command only if a selection is made
 #define CONTEXT_ITEM(ICONSTR, NAMESTR, CMDSTR, FUNC, ACTSONSELECTION)                              \
     QIcon icon_##FUNC(Gui::BitmapFactory().pixmap(ICONSTR));                                       \
-    QAction* constr_##FUNC = menu.addAction(                                                       \
-        icon_##FUNC,                                                                               \
-        tr(NAMESTR),                                                                               \
-        this,                                                                                      \
-        SLOT(FUNC()),                                                                              \
-        QKeySequence(QString::fromUtf8(                                                            \
-            Gui::Application::Instance->commandManager().getCommandByName(CMDSTR)->getAccel())));  \
+    QAction* constr_##FUNC = menu.addAction(icon_##FUNC, tr(NAMESTR), this, SLOT(FUNC()));         \
+    constr_##FUNC->setShortcut(QKeySequence(QString::fromUtf8(                                     \
+        Gui::Application::Instance->commandManager().getCommandByName(CMDSTR)->getAccel())));      \
     if (ACTSONSELECTION)                                                                           \
         constr_##FUNC->setEnabled(!items.isEmpty());                                               \
     else                                                                                           \
@@ -586,24 +582,18 @@ void ConstraintView::contextMenuEvent(QContextMenuEvent* event)
                  doSelectConstraints,
                  true)
 
-    QAction* rename = menu.addAction(tr("Rename"),
-                                     this,
-                                     &ConstraintView::renameCurrentItem
+    QAction* rename = menu.addAction(tr("Rename"), this, &ConstraintView::renameCurrentItem);
 #ifndef Q_OS_MAC// on Mac F2 doesn't seem to trigger an edit signal
-                                     ,
-                                     QKeySequence(Qt::Key_F2)
+    rename->setShortcut(QKeySequence(Qt::Key_F2));
 #endif
-    );
     rename->setEnabled(item != nullptr);
 
     QAction* center =
         menu.addAction(tr("Center sketch"), this, &ConstraintView::centerSelectedItems);
     center->setEnabled(item != nullptr);
 
-    QAction* remove = menu.addAction(tr("Delete"),
-                                     this,
-                                     &ConstraintView::deleteSelectedItems,
-                                     QKeySequence(QKeySequence::Delete));
+    QAction* remove = menu.addAction(tr("Delete"), this, &ConstraintView::deleteSelectedItems);
+    remove->setShortcut(QKeySequence(QKeySequence::Delete));
     remove->setEnabled(!items.isEmpty());
 
     QAction* swap = menu.addAction(
@@ -1437,7 +1427,9 @@ void TaskSketcherConstraints::OnChange(Base::Subject<const char*>& rCaller, cons
     }
     if (actNum >= 0) {
         assert(actNum < static_cast<int>(ui->settingsButton->actions().size()));
-        qAsConst(ui->settingsButton)->actions()[actNum]->setChecked(hGrp->GetBool(rcReason, false));
+        std::as_const(ui->settingsButton)
+            ->actions()[actNum]
+            ->setChecked(hGrp->GetBool(rcReason, false));
     }
 }
 
