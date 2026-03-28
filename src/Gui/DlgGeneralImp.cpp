@@ -360,7 +360,7 @@ void DlgGeneralImp::loadSettings()
     for (const auto & qssPath : qssPaths) {
         dir.setPath(qssPath);
         QFileInfoList fileNames = dir.entryInfoList(filter, QDir::Files, QDir::Name);
-        for (const auto & fileName : qAsConst(fileNames)) {
+        for (const auto & fileName : std::as_const(fileNames)) {
             if (cssFiles.find(fileName.baseName()) == cssFiles.end()) {
                 cssFiles[fileName.baseName()] = fileName.fileName();
             }
