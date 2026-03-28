@@ -98,7 +98,7 @@ CmdDrawingNewPage::CmdDrawingNewPage()
 void CmdDrawingNewPage::activated(int iMsg)
 {
     Gui::ActionGroup* pcAction = qobject_cast<Gui::ActionGroup*>(_pcAction);
-    QAction* a = qAsConst(pcAction)->actions()[iMsg];
+    QAction* a = std::as_const(pcAction)->actions()[iMsg];
 
     std::string FeatName = getUniqueObjectName("Page");
 
@@ -194,7 +194,7 @@ Gui::Action * CmdDrawingNewPage::createAction(void)
         pcAction->setProperty("defaultAction", QVariant(defaultId));
     }
     else if (!pcAction->actions().isEmpty()) {
-        pcAction->setIcon(qAsConst(pcAction)->actions()[0]->icon());
+        pcAction->setIcon(std::as_const(pcAction)->actions()[0]->icon());
         pcAction->setProperty("defaultAction", QVariant(0));
     }
 
