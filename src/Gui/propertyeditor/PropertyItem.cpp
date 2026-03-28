@@ -124,7 +124,7 @@ void PropertyItem::reset()
 void PropertyItem::onChange()
 {
     if(hasExpression()) {
-        for(auto child : qAsConst(childItems)) {
+        for(auto child : std::as_const(childItems)) {
             if(child && child->hasExpression())
                 child->setExpression(std::shared_ptr<App::Expression>());
         }
