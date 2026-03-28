@@ -25,36 +25,16 @@
 
 // Std. configurations
 
-// (re-)defined in pyconfig.h
-#if defined (_POSIX_C_SOURCE)
-#   undef    _POSIX_C_SOURCE
-#endif
-#if defined (_XOPEN_SOURCE)
-#   undef    _XOPEN_SOURCE
-#endif
-
-// needed header
-#undef slots
-#include <Python.h>
-#ifdef FC_OS_MACOSX
-#undef toupper
-#undef tolower
-#undef isupper
-#undef islower
-#undef isspace
-#undef isalpha
-#undef isalnum
-#endif
-#define slots
 #include <bitset>
 #include <cstring>
 
-#include "Exception.h"
 #ifndef PYCXX_PYTHON_2TO3
 #define PYCXX_PYTHON_2TO3
 #endif
+
 #include <CXX/Objects.hxx>
 
+#include "Exception.h"
 
 /** Python static class macro for definition
  * sets up a static function entry in a class inheriting

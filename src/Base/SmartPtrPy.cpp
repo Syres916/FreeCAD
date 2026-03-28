@@ -26,6 +26,7 @@
 #endif
 
 #include "SmartPtrPy.h"
+#include "Interpreter.h"
 #include <CXX/Objects.hxx>
 
 
@@ -42,6 +43,7 @@ namespace Py {
 
     void SmartPtr::release()
     {
+        Base::PyGILStateLocker lock;
         Py::_XDECREF( p );
         p = nullptr;
     }

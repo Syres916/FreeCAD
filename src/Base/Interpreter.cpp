@@ -39,12 +39,13 @@
 #include "Stream.h"
 
 
-char format2[1024];  //Warning! Can't go over 512 characters!!!
+char format2[1024];  // Warning! Can't go over 512 characters!!!
 unsigned int format2_len = 1024;
 
 using namespace Base;
 
-PyException::PyException(const Py::Object &obj) {
+PyException::PyException(const Py::Object& obj)
+{
     _sErrMsg = obj.as_string();
     // WARNING: we are assuming that python type object will never be
     // destroyed, so we don't keep reference here to save book-keeping in
@@ -55,13 +56,13 @@ PyException::PyException(const Py::Object &obj) {
 
 PyException::PyException()
 {
-    PP_Fetch_Error_Text();    /* fetch (and clear) exception */
+    PP_Fetch_Error_Text(); /* fetch (and clear) exception */
 
     setPyObject(PP_PyDict_Object);
 
     std::string prefix = PP_last_error_type; /* exception name text */
-//  prefix += ": ";
-    std::string error = PP_last_error_info;            /* exception data text */
+                                             //  prefix += ": ";
+    std::string error = PP_last_error_info;  /* exception data text */
 #if 0
     // The Python exceptions might be thrown from nested functions, so take
     // into account not to add the same prefix several times
@@ -82,16 +83,15 @@ PyException::PyException()
         // our copy constructor and destructor
         Py_DECREF(PP_last_exception_type);
         PP_last_exception_type = nullptr;
-
     }
 
-    _stackTrace = PP_last_error_trace;     /* exception traceback text */
+    _stackTrace = PP_last_error_trace; /* exception traceback text */
 
     // This should be done in the constructor because when doing
     // in the destructor it's not always clear when it is called
     // and thus may clear a Python exception when it should not.
     PyGILStateLocker locker;
-    PyErr_Clear(); // must be called to keep Python interpreter in a valid state (Werner)
+    PyErr_Clear();  // must be called to keep Python interpreter in a valid state (Werner)
 }
 
 PyException::~PyException() throw() = default;
@@ -103,7 +103,8 @@ void PyException::ThrowException()
     myexcp.raiseException();
 }
 
-void PyException::raiseException() {
+void PyException::raiseException()
+{
     PyGILStateLocker locker;
     if (PP_PyDict_Object) {
         // delete the Python dict upon destruction of edict
@@ -111,11 +112,12 @@ void PyException::raiseException() {
         PP_PyDict_Object = nullptr;
 
         std::string exceptionname;
-        if (_exceptionType == Base::PyExc_FC_FreeCADAbort)
-            edict.setItem("sclassname",
-                    Py::String(typeid(Base::AbortException).name()));
-        if (_isReported)
+        if (_exceptionType == Base::PyExc_FC_FreeCADAbort) {
+            edict.setItem("sclassname", Py::String(typeid(Base::AbortException).name()));
+        }
+        if (_isReported) {
             edict.setItem("breported", Py::True());
+        }
         Base::ExceptionFactory::Instance().raiseException(edict.ptr());
     }
 
@@ -128,21 +130,22 @@ void PyException::raiseException() {
     throw *this;
 }
 
-void PyException::ReportException () const
+void PyException::ReportException() const
 {
     if (!_isReported) {
         _isReported = true;
-        Base::Console().DeveloperError("pyException","%s%s: %s\n",
-            _stackTrace.c_str(), _errorType.c_str(), what());
+        Base::Console().DeveloperError("pyException",
+                                       "%s%s: %s\n",
+                                       _stackTrace.c_str(),
+                                       _errorType.c_str(),
+                                       what());
     }
 }
 
 void PyException::setPyException() const
 {
     std::stringstream str;
-    str << getStackTrace()
-        << getErrorType()
-        << ": " << what();
+    str << getStackTrace() << getErrorType() << ": " << what();
     PyErr_SetString(getPyExceptionType(), str.str().c_str());
 }
 
@@ -160,8 +163,8 @@ SystemExitException::SystemExitException()
     // sys.exit()       |   1         |   "System Exit"
 
     long int errCode = 1;
-    std::string errMsg  = "System exit";
-    PyObject  *type, *value, *traceback, *code;
+    std::string errMsg = "System exit";
+    PyObject *type, *value, *traceback, *code;
 
     PyGILStateLocker locker;
     PyErr_Fetch(&type, &value, &traceback);
@@ -170,36 +173,37 @@ SystemExitException::SystemExitException()
     if (value) {
         code = PyObject_GetAttrString(value, "code");
         if (code && value != Py_None) {
-           Py_DECREF(value);
-           value = code;
+            Py_DECREF(value);
+            value = code;
         }
 
         if (PyLong_Check(value)) {
             errCode = PyLong_AsLong(value);
         }
         else {
-            const char *str = PyUnicode_AsUTF8(value);
-            if (str)
+            const char* str = PyUnicode_AsUTF8(value);
+            if (str) {
                 errMsg = errMsg + ": " + str;
+            }
         }
     }
 
-    _sErrMsg  = errMsg;
+    _sErrMsg = errMsg;
     _exitCode = errCode;
 }
 
 // ---------------------------------------------------------
 
 // Fixes #0000831: python print causes File descriptor error on windows
-class PythonStdOutput : public Py::PythonExtension<PythonStdOutput>
+class PythonStdOutput: public Py::PythonExtension<PythonStdOutput>
 {
 public:
     static void init_type()
     {
         behaviors().name("PythonStdOutput");
         behaviors().doc("Python standard output");
-        add_varargs_method("write",&PythonStdOutput::write,"write()");
-        add_varargs_method("flush",&PythonStdOutput::flush,"flush()");
+        add_varargs_method("write", &PythonStdOutput::write, "write()");
+        add_varargs_method("flush", &PythonStdOutput::flush, "flush()");
     }
 
     PythonStdOutput() = default;
@@ -225,27 +229,30 @@ InterpreterSingleton::InterpreterSingleton()
 InterpreterSingleton::~InterpreterSingleton() = default;
 
 
-std::string InterpreterSingleton::runString(const char *sCmd)
+std::string InterpreterSingleton::runString(const char* sCmd)
 {
-    PyObject *module, *dict, *presult;          /* "exec code in d, d" */
+    PyObject *module, *dict, *presult; /* "exec code in d, d" */
 
     PyGILStateLocker locker;
-    module = PP_Load_Module("__main__");         /* get module, init python */
-    if (!module)
-        throw PyException();                         /* not incref'd */
-    dict = PyModule_GetDict(module);            /* get dict namespace */
-    if (!dict)
-        throw PyException();                           /* not incref'd */
+    module = PP_Load_Module("__main__"); /* get module, init python */
+    if (!module) {
+        throw PyException(); /* not incref'd */
+    }
+    dict = PyModule_GetDict(module); /* get dict namespace */
+    if (!dict) {
+        throw PyException(); /* not incref'd */
+    }
 
 
     presult = PyRun_String(sCmd, Py_file_input, dict, dict); /* eval direct */
     if (!presult) {
-        if (PyErr_ExceptionMatches(PyExc_SystemExit))
+        if (PyErr_ExceptionMatches(PyExc_SystemExit)) {
             throw SystemExitException();
+        }
         else {
             PyException::ThrowException();
-            return std::string(); // just to quieten code analyzers
-            //throw PyException();
+            return std::string();  // just to quieten code analyzers
+            // throw PyException();
         }
     }
 
@@ -272,7 +279,9 @@ std::string InterpreterSingleton::runString(const char *sCmd)
  * if the error occurs after changing it inside the script.
  */
 
-std::string InterpreterSingleton::runStringWithKey(const char *psCmd, const char *key, const char *key_initial_value)
+std::string InterpreterSingleton::runStringWithKey(const char* psCmd,
+                                                   const char* key,
+                                                   const char* key_initial_value)
 {
     PyGILStateLocker locker;
     Py::Module module("__main__");
@@ -281,46 +290,52 @@ std::string InterpreterSingleton::runStringWithKey(const char *psCmd, const char
     Py::String initial_value(key_initial_value);
     localDictionary.setItem(key, initial_value);
 
-    PyObject* presult = PyRun_String(psCmd, Py_file_input, globalDictionary.ptr(), localDictionary.ptr());
+    PyObject* presult =
+        PyRun_String(psCmd, Py_file_input, globalDictionary.ptr(), localDictionary.ptr());
     if (!presult) {
         if (PyErr_ExceptionMatches(PyExc_SystemExit)) {
             throw SystemExitException();
         }
         else {
             PyException::ThrowException();
-            return std::string(); // just to quieten code analyzers
+            return std::string();  // just to quieten code analyzers
         }
     }
     Py_DECREF(presult);
 
     Py::Object key_return_value = localDictionary.getItem(key);
-    if (!key_return_value.isString())
+    if (!key_return_value.isString()) {
         key_return_value = key_return_value.str();
+    }
 
     Py::Bytes str = Py::String(key_return_value).encode("utf-8", "~E~");
     std::string result = static_cast<std::string>(str);
     return result;
 }
 
-Py::Object InterpreterSingleton::runStringObject(const char *sCmd)
+Py::Object InterpreterSingleton::runStringObject(const char* sCmd)
 {
-    PyObject *module, *dict, *presult;          /* "exec code in d, d" */
+    PyObject *module, *dict, *presult; /* "exec code in d, d" */
 
     PyGILStateLocker locker;
-    module = PP_Load_Module("__main__");         /* get module, init python */
-    if (!module)
-        throw PyException();                         /* not incref'd */
-    dict = PyModule_GetDict(module);            /* get dict namespace */
-    if (!dict)
-        throw PyException();                           /* not incref'd */
+    module = PP_Load_Module("__main__"); /* get module, init python */
+    if (!module) {
+        throw PyException(); /* not incref'd */
+    }
+    dict = PyModule_GetDict(module); /* get dict namespace */
+    if (!dict) {
+        throw PyException(); /* not incref'd */
+    }
 
 
     presult = PyRun_String(sCmd, Py_eval_input, dict, dict); /* eval direct */
     if (!presult) {
-        if (PyErr_ExceptionMatches(PyExc_SystemExit))
+        if (PyErr_ExceptionMatches(PyExc_SystemExit)) {
             throw SystemExitException();
-        else
+        }
+        else {
             throw PyException();
+        }
     }
 
     return Py::asObject(presult);
@@ -334,16 +349,18 @@ void InterpreterSingleton::systemExit()
 
     PyErr_Fetch(&exception, &value, &tb);
     fflush(stdout);
-    if (!value || value == Py_None)
+    if (!value || value == Py_None) {
         goto done;
+    }
     if (PyExceptionInstance_Check(value)) {
         /* The error code should be in the `code' attribute. */
-        PyObject *code = PyObject_GetAttrString(value, "code");
+        PyObject* code = PyObject_GetAttrString(value, "code");
         if (code) {
             Py_DECREF(value);
             value = code;
-            if (value == Py_None)
+            if (value == Py_None) {
                 goto done;
+            }
         }
         /* If we failed to dig out the 'code' attribute,
            just let the else clause below print the error. */
@@ -368,17 +385,19 @@ done:
     /* NOTREACHED */
 }
 
-void InterpreterSingleton::runInteractiveString(const char *sCmd)
+void InterpreterSingleton::runInteractiveString(const char* sCmd)
 {
-    PyObject *module, *dict, *presult;          /* "exec code in d, d" */
+    PyObject *module, *dict, *presult; /* "exec code in d, d" */
 
     PyGILStateLocker locker;
-    module = PP_Load_Module("__main__");         /* get module, init python */
-    if (!module)
-        throw PyException();                         /* not incref'd */
-    dict = PyModule_GetDict(module);            /* get dict namespace */
-    if (!dict)
-        throw PyException();                           /* not incref'd */
+    module = PP_Load_Module("__main__"); /* get module, init python */
+    if (!module) {
+        throw PyException(); /* not incref'd */
+    }
+    dict = PyModule_GetDict(module); /* get dict namespace */
+    if (!dict) {
+        throw PyException(); /* not incref'd */
+    }
 
     presult = PyRun_String(sCmd, Py_single_input, dict, dict); /* eval direct */
     if (!presult) {
@@ -390,33 +409,36 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
         PyObject *errobj, *errdata, *errtraceback;
         PyErr_Fetch(&errobj, &errdata, &errtraceback);
 
-        RuntimeError exc(""); // do not use PyException since this clears the error indicator
+        RuntimeError exc("");  // do not use PyException since this clears the error indicator
         if (errdata) {
-            if (PyUnicode_Check(errdata))
+            if (PyUnicode_Check(errdata)) {
                 exc.setMessage(PyUnicode_AsUTF8(errdata));
+            }
         }
         PyErr_Restore(errobj, errdata, errtraceback);
-        if (PyErr_Occurred())
+        if (PyErr_Occurred()) {
             PyErr_Print();
+        }
         throw exc;
     }
-    else
+    else {
         Py_DECREF(presult);
+    }
 }
 
-void InterpreterSingleton::runFile(const char*pxFileName, bool local)
+void InterpreterSingleton::runFile(const char* pxFileName, bool local)
 {
 #ifdef FC_OS_WIN32
     FileInfo fi(pxFileName);
-    FILE *fp = _wfopen(fi.toStdWString().c_str(),L"r");
+    FILE* fp = _wfopen(fi.toStdWString().c_str(), L"r");
 #else
-    FILE *fp = fopen(pxFileName,"r");
+    FILE* fp = fopen(pxFileName, "r");
 #endif
     if (fp) {
         PyGILStateLocker locker;
-        //std::string encoding = PyUnicode_GetDefaultEncoding();
-        //PyUnicode_SetDefaultEncoding("utf-8");
-        //PyUnicode_SetDefaultEncoding(encoding.c_str());
+        // std::string encoding = PyUnicode_GetDefaultEncoding();
+        // PyUnicode_SetDefaultEncoding("utf-8");
+        // PyUnicode_SetDefaultEncoding(encoding.c_str());
         PyObject *module, *dict;
         module = PyImport_AddModule("__main__");
         dict = PyModule_GetDict(module);
@@ -424,11 +446,11 @@ void InterpreterSingleton::runFile(const char*pxFileName, bool local)
             dict = PyDict_Copy(dict);
         }
         else {
-            Py_INCREF(dict); // avoid to further distinguish between local and global dict
+            Py_INCREF(dict);  // avoid to further distinguish between local and global dict
         }
 
         if (!PyDict_GetItemString(dict, "__file__")) {
-            PyObject *pyObj = PyUnicode_FromString(pxFileName);
+            PyObject* pyObj = PyUnicode_FromString(pxFileName);
             if (!pyObj) {
                 fclose(fp);
                 Py_DECREF(dict);
@@ -443,15 +465,17 @@ void InterpreterSingleton::runFile(const char*pxFileName, bool local)
             Py_DECREF(pyObj);
         }
 
-        PyObject *result = PyRun_File(fp, pxFileName, Py_file_input, dict, dict);
+        PyObject* result = PyRun_File(fp, pxFileName, Py_file_input, dict, dict);
         fclose(fp);
         Py_DECREF(dict);
 
         if (!result) {
-            if (PyErr_ExceptionMatches(PyExc_SystemExit))
+            if (PyErr_ExceptionMatches(PyExc_SystemExit)) {
                 throw SystemExitException();
-            else
+            }
+            else {
                 throw PyException();
+            }
         }
         Py_DECREF(result);
     }
@@ -463,17 +487,19 @@ void InterpreterSingleton::runFile(const char*pxFileName, bool local)
 bool InterpreterSingleton::loadModule(const char* psModName)
 {
     // buffer acrobatics
-    //PyBuf ModName(psModName);
-    PyObject *module;
+    // PyBuf ModName(psModName);
+    PyObject* module;
 
     PyGILStateLocker locker;
     module = PP_Load_Module(psModName);
 
     if (!module) {
-        if (PyErr_ExceptionMatches(PyExc_SystemExit))
+        if (PyErr_ExceptionMatches(PyExc_SystemExit)) {
             throw SystemExitException();
-        else
+        }
+        else {
             throw PyException();
+        }
     }
 
     return true;
@@ -489,22 +515,23 @@ void InterpreterSingleton::cleanupModules()
 {
     // This is only needed to make the address sanitizer happy
 #if defined(__has_feature)
-#  if __has_feature(address_sanitizer)
+#if __has_feature(address_sanitizer)
     for (auto it : _modules) {
         delete it;
     }
     _modules.clear();
-#  endif
+#endif
 #endif
 }
 
-void InterpreterSingleton::addType(PyTypeObject* Type,PyObject* Module, const char * Name)
+void InterpreterSingleton::addType(PyTypeObject* Type, PyObject* Module, const char* Name)
 {
     // NOTE: To finish the initialization of our own type objects we must
     // call PyType_Ready, otherwise we run into a segmentation fault, later on.
     // This function is responsible for adding inherited slots from a type's base class.
-    if (PyType_Ready(Type) < 0)
+    if (PyType_Ready(Type) < 0) {
         return;
+    }
     PyModule_AddObject(Module, Name, Base::getTypeAsObject(Type));
 }
 
@@ -546,11 +573,11 @@ std::string InterpreterSingleton::getPythonPath()
 std::string InterpreterSingleton::init(int argc, char* argv[])
 {
     if (!Py_IsInitialized()) {
-        Py_SetProgramName(Py_DecodeLocale(argv[0],nullptr));
-        // There is a serious bug in VS from 2010 until 2013 where the file descriptor for stdin, stdout or stderr
-        // returns a valid value for GUI applications (i.e. subsystem = Windows) where it shouldn't.
-        // This causes Python to fail during initialization.
-        // A workaround is to use freopen on stdin, stdout and stderr. See the class Redirection inside main()
+        Py_SetProgramName(Py_DecodeLocale(argv[0], nullptr));
+        // There is a serious bug in VS from 2010 until 2013 where the file descriptor for stdin,
+        // stdout or stderr returns a valid value for GUI applications (i.e. subsystem = Windows)
+        // where it shouldn't. This causes Python to fail during initialization. A workaround is to
+        // use freopen on stdin, stdout and stderr. See the class Redirection inside main()
         // https://bugs.python.org/issue17797#msg197474
         //
         Py_Initialize();
@@ -558,39 +585,40 @@ std::string InterpreterSingleton::init(int argc, char* argv[])
         if (virtualenv) {
             PyRun_SimpleString(
                 "# Check for virtualenv, and activate if present.\n"
-                "# See https://virtualenv.pypa.io/en/latest/userguide/#using-virtualenv-without-bin-python\n"
+                "# See "
+                "https://virtualenv.pypa.io/en/latest/"
+                "#using-virtualenv-without-bin-python\n"
                 "import os\n"
                 "import sys\n"
                 "base_path = os.getenv(\"VIRTUAL_ENV\")\n"
                 "if not base_path is None:\n"
                 "    activate_this = os.path.join(base_path, \"bin\", \"activate_this.py\")\n"
-                "    exec(open(activate_this).read(), {'__file__':activate_this})\n"
-            );
+                "    exec(open(activate_this).read(), {'__file__':activate_this})\n");
         }
 
-#if PY_VERSION_HEX < 0x03090000
-        PyEval_InitThreads();
-#endif
-
         size_t size = argc;
-        static std::vector<wchar_t *> _argv(size);
+        static std::vector<wchar_t*> _argv(size);
         for (int i = 0; i < argc; i++) {
-            _argv[i] = Py_DecodeLocale(argv[i],nullptr);
+            _argv[i] = Py_DecodeLocale(argv[i], nullptr);
         }
         PySys_SetArgv(argc, _argv.data());
         PythonStdOutput::init_type();
         this->_global = PyEval_SaveThread();
     }
 
-    return getPythonPath();
+    PyGILStateLocker lock;
+    return Py_EncodeLocale(Py_GetPath(), nullptr);
 }
 #else
-namespace {
-void initInterpreter(int argc,char *argv[])
+namespace
+{
+void initInterpreter(int argc, char* argv[])
 {
     PyStatus status;
     PyConfig config;
     PyConfig_InitIsolatedConfig(&config);
+    config.isolated = 0;
+    config.user_site_directory = 1;
 
     status = PyConfig_SetBytesArgv(&config, argc, argv);
     if (PyStatus_Exception(status)) {
@@ -602,24 +630,24 @@ void initInterpreter(int argc,char *argv[])
         throw Base::RuntimeError("Failed to init from config");
     }
 
+    // If FreeCAD was run from within a Python virtual environment, ensure that the site-packages
+    // directory from that environment is used.
+    const char* virtualenv = getenv("VIRTUAL_ENV");
+    if (virtualenv) {
+        std::wstringstream ss;
+        PyConfig_Read(&config);
+        ss << virtualenv << L"/lib/python" << PY_MAJOR_VERSION << "." << PY_MINOR_VERSION
+           << "/site-packages";
+        PyObject* venvLocation = PyUnicode_FromWideChar(ss.str().c_str(), ss.str().size());
+        PyObject* path = PySys_GetObject("path");
+        PyList_Append(path, venvLocation);
+    }
+
     PyConfig_Clear(&config);
 
     Py_Initialize();
-    const char* virtualenv = getenv("VIRTUAL_ENV");
-    if (virtualenv) {
-        PyRun_SimpleString(
-            "# Check for virtualenv, and activate if present.\n"
-            "# See https://virtualenv.pypa.io/en/latest/userguide/#using-virtualenv-without-bin-python\n"
-            "import os\n"
-            "import sys\n"
-            "base_path = os.getenv(\"VIRTUAL_ENV\")\n"
-            "if not base_path is None:\n"
-            "    activate_this = os.path.join(base_path, \"bin\", \"activate_this.py\")\n"
-            "    exec(open(activate_this).read(), {'__file__':activate_this})\n"
-        );
-    }
 }
-}
+}  // namespace
 std::string InterpreterSingleton::init(int argc, char* argv[])
 {
     try {
@@ -629,11 +657,9 @@ std::string InterpreterSingleton::init(int argc, char* argv[])
             PythonStdOutput::init_type();
             this->_global = PyEval_SaveThread();
         }
-
-        PyGILStateLocker lock;
-        return Py_EncodeLocale(Py_GetPath(),nullptr);
+        return getPythonPath();
     }
-    catch (const Base::Exception& e) {
+    catch (const Exception& e) {
         e.ReportException();
         throw;
     }
@@ -650,7 +676,7 @@ void InterpreterSingleton::replaceStdOutput()
 
 int InterpreterSingleton::cleanup(void (*func)())
 {
-    return Py_AtExit( func );
+    return Py_AtExit(func);
 }
 
 void InterpreterSingleton::finalize()
@@ -664,14 +690,14 @@ void InterpreterSingleton::finalize()
     }
 }
 
-void InterpreterSingleton::runStringArg(const char * psCom,...)
+void InterpreterSingleton::runStringArg(const char* psCom, ...)
 {
     // va stuff
     va_list namelessVars;
     va_start(namelessVars, psCom);  // Get the "..." vars
     int len = vsnprintf(format2, format2_len, psCom, namelessVars);
     va_end(namelessVars);
-    if ( len == -1 ) {
+    if (len == -1) {
         // argument too long
         assert(false);
     }
@@ -682,13 +708,14 @@ void InterpreterSingleton::runStringArg(const char * psCom,...)
 
 // Singleton:
 
-InterpreterSingleton * InterpreterSingleton::_pcSingleton = nullptr;
+InterpreterSingleton* InterpreterSingleton::_pcSingleton = nullptr;
 
-InterpreterSingleton & InterpreterSingleton::Instance()
+InterpreterSingleton& InterpreterSingleton::Instance()
 {
     // not initialized!
-    if (!_pcSingleton)
+    if (!_pcSingleton) {
         _pcSingleton = new InterpreterSingleton();
+    }
     return *_pcSingleton;
 }
 
@@ -700,7 +727,7 @@ void InterpreterSingleton::Destruct()
     _pcSingleton = nullptr;
 }
 
-int InterpreterSingleton::runCommandLine(const char *prompt)
+int InterpreterSingleton::runCommandLine(const char* prompt)
 {
     PyGILStateLocker locker;
     return PP_Run_Command_Line(prompt);
@@ -710,51 +737,57 @@ int InterpreterSingleton::runCommandLine(const char *prompt)
  *  Runs a member method of an object with no parameter and no return value
  *  void (void). There are other methods to run with returns
  */
-void InterpreterSingleton::runMethodVoid(PyObject *pobject, const char *method)
+void InterpreterSingleton::runMethodVoid(PyObject* pobject, const char* method)
 {
     PyGILStateLocker locker;
-    if (PP_Run_Method(pobject ,     // object
-                      method,       // run method
-                      nullptr,      // no return type
-                      nullptr,      // so no return object
-                      "()")         // no arguments
-            != 0)
+    if (PP_Run_Method(pobject,  // object
+                      method,   // run method
+                      nullptr,  // no return type
+                      nullptr,  // so no return object
+                      "()")     // no arguments
+        != 0) {
         throw PyException(/*"Error running InterpreterSingleton::RunMethodVoid()"*/);
-
+    }
 }
 
-PyObject* InterpreterSingleton::runMethodObject(PyObject *pobject, const char *method)
+PyObject* InterpreterSingleton::runMethodObject(PyObject* pobject, const char* method)
 {
-    PyObject *pcO;
+    PyObject* pcO;
 
     PyGILStateLocker locker;
-    if (PP_Run_Method(pobject ,     // object
-                      method,       // run method
-                      "O",          // return type
-                      &pcO,         // return object
-                      "()")         // no arguments
-            != 0)
+    if (PP_Run_Method(pobject,  // object
+                      method,   // run method
+                      "O",      // return type
+                      &pcO,     // return object
+                      "()")     // no arguments
+        != 0) {
         throw PyException();
+    }
 
     return pcO;
 }
 
-void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
-                                     const char *resfmt,   void *cresult,        /* convert to c/c++ */
-                                     const char *argfmt,   ...  )                /* convert to python */
+void InterpreterSingleton::runMethod(PyObject* pobject,
+                                     const char* method,
+                                     const char* resfmt,
+                                     void* cresult, /* convert to c/c++ */
+                                     const char* argfmt,
+                                     ...) /* convert to python */
 {
     PyObject *pmeth, *pargs, *presult;
-    va_list argslist;                              /* "pobject.method(args)" */
+    va_list argslist; /* "pobject.method(args)" */
     va_start(argslist, argfmt);
 
     PyGILStateLocker locker;
     pmeth = PyObject_GetAttrString(pobject, method);
-    if (!pmeth) {                            /* get callable object */
+    if (!pmeth) { /* get callable object */
         va_end(argslist);
-        throw AttributeError("Error running InterpreterSingleton::RunMethod() method not defined");                                 /* bound method? has self */
+        throw AttributeError(
+            "Error running InterpreterSingleton::RunMethod() method not defined"); /* bound method?
+                                                                                      has self */
     }
 
-    pargs = Py_VaBuildValue(argfmt, argslist);     /* args: c->python */
+    pargs = Py_VaBuildValue(argfmt, argslist); /* args: c->python */
     va_end(argslist);
 
     if (!pargs) {
@@ -763,31 +796,35 @@ void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
     }
 
 #if PY_VERSION_HEX < 0x03090000
-    presult = PyEval_CallObject(pmeth, pargs);   /* run interpreter */
+    presult = PyEval_CallObject(pmeth, pargs); /* run interpreter */
 #else
-    presult = PyObject_CallObject(pmeth, pargs);   /* run interpreter */
+    presult = PyObject_CallObject(pmeth, pargs); /* run interpreter */
 #endif
 
     Py_DECREF(pmeth);
     Py_DECREF(pargs);
-    if (PP_Convert_Result(presult, resfmt, cresult)!= 0) {
-        if ( PyErr_Occurred() )
+    if (PP_Convert_Result(presult, resfmt, cresult) != 0) {
+        if (PyErr_Occurred()) {
             PyErr_Print();
-        throw RuntimeError("Error running InterpreterSingleton::RunMethod() exception in called method");
+        }
+        throw RuntimeError(
+            "Error running InterpreterSingleton::RunMethod() exception in called method");
     }
 }
 
-PyObject * InterpreterSingleton::getValue(const char * key, const char * result_var)
+PyObject* InterpreterSingleton::getValue(const char* key, const char* result_var)
 {
-    PyObject *module, *dict, *presult;          /* "exec code in d, d" */
+    PyObject *module, *dict, *presult; /* "exec code in d, d" */
 
     PyGILStateLocker locker;
-    module = PP_Load_Module("__main__");         /* get module, init python */
-    if (!module)
-        throw PyException();                         /* not incref'd */
-    dict = PyModule_GetDict(module);            /* get dict namespace */
-    if (!dict)
-        throw PyException();                           /* not incref'd */
+    module = PP_Load_Module("__main__"); /* get module, init python */
+    if (!module) {
+        throw PyException(); /* not incref'd */
+    }
+    dict = PyModule_GetDict(module); /* get dict namespace */
+    if (!dict) {
+        throw PyException(); /* not incref'd */
+    }
 
 
     presult = PyRun_String(key, Py_file_input, dict, dict); /* eval direct */
@@ -801,45 +838,41 @@ PyObject * InterpreterSingleton::getValue(const char * key, const char * result_
 
 void InterpreterSingleton::dbgObserveFile(const char* sFileName)
 {
-    if (sFileName)
+    if (sFileName) {
         _cDebugFileName = sFileName;
-    else
+    }
+    else {
         _cDebugFileName = "";
+    }
 }
 
 void InterpreterSingleton::dbgSetBreakPoint(unsigned int /*uiLineNumber*/)
-{
-
-}
+{}
 
 void InterpreterSingleton::dbgUnsetBreakPoint(unsigned int /*uiLineNumber*/)
-{
-
-}
+{}
 
 void InterpreterSingleton::dbgStep()
-{
-
-}
+{}
 
 const std::string InterpreterSingleton::strToPython(const char* Str)
 {
     std::string result;
-    const char *It=Str;
+    const char* It = Str;
 
     while (*It != '\0') {
         switch (*It) {
-        case '\\':
-            result += "\\\\";
-            break;
-        case '\"':
-            result += "\\\"";
-            break;
-        case '\'':
-            result += "\\\'";
-            break;
-        default:
-            result += *It;
+            case '\\':
+                result += "\\\\";
+                break;
+            case '\"':
+                result += "\\\"";
+                break;
+            case '\'':
+                result += "\\\'";
+                break;
+            default:
+                result += *It;
         }
         It++;
     }
@@ -860,8 +893,9 @@ int getSWIGVersionFromModule(const std::string& module)
         try {
             // Get the module and check its __file__ attribute
             Py::Dict dict(PyImport_GetModuleDict());
-            if (!dict.hasKey(module))
+            if (!dict.hasKey(module)) {
                 return 0;
+            }
             Py::Module mod(module);
             Py::String file(mod.getAttr("__file__"));
             std::string filename = (std::string)file;
@@ -880,7 +914,7 @@ int getSWIGVersionFromModule(const std::string& module)
                     int major = std::atoi(what[1].first);
                     int minor = std::atoi(what[2].first);
                     int micro = std::atoi(what[3].first);
-                    int version = (major<<16)+(minor<<8)+micro;
+                    int version = (major << 16) + (minor << 8) + micro;
                     moduleMap[module] = version;
                     return version;
                 }
@@ -898,18 +932,22 @@ int getSWIGVersionFromModule(const std::string& module)
 }
 
 #if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
-namespace Swig_python {
+namespace Swig_python
+{
 extern int createSWIGPointerObj_T(const char* TypeName, void* obj, PyObject** ptr, int own);
 extern int convertSWIGPointerObj_T(const char* TypeName, PyObject* obj, void** ptr, int flags);
 extern void cleanupSWIG_T(const char* TypeName);
 extern int getSWIGPointerTypeObj_T(const char* TypeName, PyTypeObject** ptr);
-}
+}  // namespace Swig_python
 #endif
 
-PyObject* InterpreterSingleton::createSWIGPointerObj(const char* Module, const char* TypeName, void* Pointer, int own)
+PyObject* InterpreterSingleton::createSWIGPointerObj(const char* Module,
+                                                     const char* TypeName,
+                                                     void* Pointer,
+                                                     int own)
 {
     int result = 0;
-    PyObject* proxy=nullptr;
+    PyObject* proxy = nullptr;
     PyGILStateLocker locker;
     (void)Module;
 #if (defined(HAVE_SWIG) && (HAVE_SWIG == 1))
@@ -918,17 +956,22 @@ PyObject* InterpreterSingleton::createSWIGPointerObj(const char* Module, const c
     (void)TypeName;
     (void)Pointer;
     (void)own;
-    result = -1; // indicates error
+    result = -1;  // indicates error
 #endif
 
-    if (result == 0)
+    if (result == 0) {
         return proxy;
+    }
 
     // none of the SWIG's succeeded
     throw Base::RuntimeError("No SWIG wrapped library loaded");
 }
 
-bool InterpreterSingleton::convertSWIGPointerObj(const char* Module, const char* TypeName, PyObject* obj, void** ptr, int flags)
+bool InterpreterSingleton::convertSWIGPointerObj(const char* Module,
+                                                 const char* TypeName,
+                                                 PyObject* obj,
+                                                 void** ptr,
+                                                 int flags)
 {
     int result = 0;
     PyGILStateLocker locker;
@@ -940,11 +983,12 @@ bool InterpreterSingleton::convertSWIGPointerObj(const char* Module, const char*
     (void)obj;
     (void)ptr;
     (void)flags;
-    result = -1; // indicates error
+    result = -1;  // indicates error
 #endif
 
-    if (result == 0)
+    if (result == 0) {
         return true;
+    }
 
     // none of the SWIG's succeeded
     throw Base::RuntimeError("No SWIG wrapped library loaded");
@@ -970,11 +1014,12 @@ PyTypeObject* InterpreterSingleton::getSWIGPointerTypeObj(const char* Module, co
     result = Swig_python::getSWIGPointerTypeObj_T(TypeName, &proxy);
 #else
     (void)TypeName;
-    result = -1; // indicates error
+    result = -1;  // indicates error
 #endif
 
-    if (result == 0)
+    if (result == 0) {
         return proxy;
+    }
 
     // none of the SWIG's succeeded
     throw Base::RuntimeError("No SWIG wrapped library loaded");
