@@ -52,10 +52,13 @@ protected:
 private:
     void onMaxDeviationValueChanged(double);
     void onMaxAngularDeflectionValueChanged(double);
+    void notifyUpdateModels();
+    void updateOpenModels();
 
 private:
     std::unique_ptr<Ui_DlgSettings3DViewPart> ui;
     bool checkValue;
+    bool eitherValueChanged;
 };
 
 }  // namespace PartGui
