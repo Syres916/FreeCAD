@@ -28,6 +28,7 @@
 #include <App/Application.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
+#include <Gui/DlgCheckableMessageBox.h>
 #include <Gui/Document.h>
 
 #include "DlgSettings3DViewPartImp.h"
@@ -90,6 +91,7 @@ void DlgSettings3DViewPart::onMaxDeviationValueChanged(double vMaxDev)
                " and thus freezes or slows down the GUI.")
         );
     }
+    eitherValueChanged = true;
 }
 
 void DlgSettings3DViewPart::onMaxAngularDeflectionValueChanged(double vMaxAngle)
@@ -112,6 +114,7 @@ void DlgSettings3DViewPart::onMaxAngularDeflectionValueChanged(double vMaxAngle)
                " and thus freezes or slows down the GUI.")
         );
     }
+    eitherValueChanged = true;
 }
 
 void DlgSettings3DViewPart::saveSettings()
@@ -119,16 +122,35 @@ void DlgSettings3DViewPart::saveSettings()
     ui->maxDeviation->onSave();
     ui->maxAngularDeflection->onSave();
 
-    // search for Part view providers and apply the new settings
-    std::vector<App::Document*> docs = App::GetApplication().getDocuments();
-    for (auto it : docs) {
-        Gui::Document* doc = Gui::Application::Instance->getDocument(it);
-        std::vector<Gui::ViewProvider*> views = doc->getViewProvidersOfType(
-            ViewProviderPart::getClassTypeId()
-        );
-        for (auto view : views) {
-            static_cast<ViewProviderPart*>(view)->reload();
+    ParameterGrp::handle hPart = App::GetApplication().GetParameterGroupByPath(
+        "User parameter:BaseApp/Preferences/Mod/Part");
+    const bool deviationOrDeflectionPrompt = hPart->GetBool("DeviationOrDeflectionPrompt", true);
+    const bool autoChangeDevDefl = hPart->GetBool("AutoChangeDevDefl", true);
+    if (eitherValueChanged && deviationOrDeflectionPrompt) {
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowTitle(tr("Update models"));
+        msgBox.setText(tr("Are you sure you want to apply shape settings to models in currently "
+                          "open documents?"));
+        msgBox.setInformativeText(tr(
+            "If the existing models on screen are currently high detail "
+            "this maybe impacted adversely. Your choice will be recorded in the config settings."));
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::No);
+        int ret = msgBox.exec();
+        if (ret == QMessageBox::Yes) {
+            updateOpenModels();
+            notifyUpdateModels();
+            hPart->SetBool("AutoChangeDevDefl", autoChangeDevDefl);
         }
+        else {
+            Base::Console().Warning("User clicked No to updating the open models\n");
+            notifyUpdateModels();
+            hPart->SetBool("AutoChangeDevDefl", autoChangeDevDefl);
+        }
+    }
+    else if (eitherValueChanged && !deviationOrDeflectionPrompt && autoChangeDevDefl) {
+        updateOpenModels();
     }
 }
 void DlgSettings3DViewPart::loadSettings()
@@ -147,6 +169,33 @@ void DlgSettings3DViewPart::changeEvent(QEvent* e)
     }
     else {
         QWidget::changeEvent(e);
+    }
+}
+
+void DlgSettings3DViewPart::notifyUpdateModels()
+{
+    Gui::Dialog::DlgCheckableMessageBox::showMessage(
+        QObject::tr("Update models reminder"),
+        QObject::tr("Do you want to be promted for this again in the future"),
+        QLatin1String("User parameter:BaseApp/Preferences/Mod/Part"),
+        QLatin1String("DeviationOrDeflectionPrompt"),
+        true,  // Default ParamEntry
+        true,  // checkbox state
+        QObject::tr("Keep notifying me of model shape setting changes"));
+}
+
+void DlgSettings3DViewPart::updateOpenModels()
+{
+    // search for Part view providers and apply the new settings
+    std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+    for (std::vector<App::Document*>::iterator it = docs.begin(); it != docs.end(); ++it) {
+        Gui::Document* doc = Gui::Application::Instance->getDocument(*it);
+        std::vector<Gui::ViewProvider*> views =
+            doc->getViewProvidersOfType(ViewProviderPart::getClassTypeId());
+        for (std::vector<Gui::ViewProvider*>::iterator jt = views.begin(); jt != views.end();
+             ++jt) {
+            static_cast<ViewProviderPart*>(*jt)->reload();
+        }
     }
 }
 
