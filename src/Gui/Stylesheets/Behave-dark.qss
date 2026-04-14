@@ -133,13 +133,6 @@ QMdiArea {
 }
 
 /*==================================================================================================
- Style Links
- ==================================================================================================*/
-QLabel[haslink="true"] {
-    color: #8bd1ff;
-}
-
-/*==================================================================================================
 Sub windows
 ==================================================================================================*/
 QMdiSubWindow {
@@ -185,11 +178,13 @@ QMenu::item:disabled {
 QMenu::right-arrow {
     width: 10px;
     height: 10px;
-    image:url(qss:images_dark-light/right_arrow_dark.svg);
+    image:url(qss:images_dark-light/right_arrow_light.svg);
     margin-right: 2px;
 }
 
-QMenu::right-arrow:selected {
+QMenu::right-arrow:selected,
+QMenu::right-arrow:pressed,
+QMenu::right-arrow:hover {
     image:url(qss:images_dark-light/right_arrow_lighter.svg);
 }
 
@@ -303,7 +298,7 @@ QToolBar {
 QToolBar::handle:top,
 QToolBar::handle:bottom,
 QToolBar::handle:horizontal {
-    background-image: url(qss:images_dark-light/Hmovetoolbar_dark.svg);
+    background-image: url(qss:images_dark-light/Hmovetoolbar_light.svg);
     width: 10px;
     margin: 4px 2px;
     background-position: top right;
@@ -313,7 +308,7 @@ QToolBar::handle:horizontal {
 QToolBar::handle:left,
 QToolBar::handle:right,
 QToolBar::handle:vertical {
-    background-image: url(qss:images_dark-light/Vmovetoolbar_dark.svg);
+    background-image: url(qss:images_dark-light/Vmovetoolbar_light.svg);
     height: 10px;
     margin: 2px 4px;
     background-position: left bottom;
@@ -773,55 +768,55 @@ QTabBar QToolButton:hover {
 }
 
 QTabBar QToolButton::right-arrow:enabled {
-     image: url(qss:images_dark-light/right_arrow_dark.svg);
+     image: url(qss:images_dark-light/right_arrow_light.svg);
 }
 
 QTabBar QToolButton::right-arrow:disabled,
 QTabBar QToolButton::right-arrow:off {
-     image: url(qss:images_dark-light/right_arrow_disabled_dark.svg);
+     image: url(qss:images_dark-light/right_arrow_disabled_light.svg);
 }
 
 QTabBar QToolButton::right-arrow:hover {
-     image: url(qss:images_dark-light/right_arrow_darker.svg);
+     image: url(qss:images_dark-light/right_arrow_lighter.svg);
 }
 
  QTabBar QToolButton::left-arrow:enabled {
-     image: url(qss:images_dark-light/left_arrow_dark.svg);
+     image: url(qss:images_dark-light/left_arrow_light.svg);
 }
 
  QTabBar QToolButton::left-arrow:disabled,
  QTabBar QToolButton::left-arrow:off {
-     image: url(qss:images_dark-light/left_arrow_disabled_dark.svg);
+     image: url(qss:images_dark-light/left_arrow_disabled_light.svg);
 }
 
  QTabBar QToolButton::left-arrow:hover {
-     image: url(qss:images_dark-light/left_arrow_darker.svg);
+     image: url(qss:images_dark-light/left_arrow_lighter.svg);
 }
 
  QTabBar QToolButton::up-arrow:enabled {
-     image: url(qss:images_dark-light/up_arrow_dark.svg);
+     image: url(qss:images_dark-light/up_arrow_light.svg);
 }
 
  QTabBar QToolButton::up-arrow:disabled,
  QTabBar QToolButton::up-arrow:off {
-     image: url(qss:images_dark-light/up_arrow_disabled_dark.svg);
+     image: url(qss:images_dark-light/up_arrow_disabled_light.svg);
 }
 
  QTabBar QToolButton::up-arrow:hover {
-     image: url(qss:images_dark-light/up_arrow_darker.svg);
+     image: url(qss:images_dark-light/up_arrow_lighter.svg);
 }
 
  QTabBar QToolButton::down-arrow:enabled {
-     image: url(qss:images_dark-light/down_arrow_dark.svg);
+     image: url(qss:images_dark-light/down_arrow_light.svg);
 }
 
  QTabBar QToolButton::down-arrow:disabled,
  QTabBar QToolButton::down-arrow:off {
-     image: url(qss:images_dark-light/down_arrow_disabled_dark.svg);
+     image: url(qss:images_dark-light/down_arrow_disabled_light.svg);
 }
 
  QTabBar QToolButton::down-arrow:hover {
-     image: url(qss:images_dark-light/down_arrow_darker.svg);
+     image: url(qss:images_dark-light/down_arrow_lighter.svg);
 }
 
 QTabBar::tear {
@@ -1468,7 +1463,7 @@ QDoubleSpinBox::down-arrow:off,
 QTimeEdit::down-arrow:off,
 QDateEdit::down-arrow:off,
 QDateTimeEdit::down-arrow:off {
-    image: url(qss:images_dark-light/down_arrow_disabled_dark.svg);
+    image: url(qss:images_dark-light/down_arrow_disabled_light.svg);
 }
 
 QAbstractSpinBox::down-arrow:disabled,
@@ -1477,7 +1472,7 @@ QDoubleSpinBox::down-arrow:disabled,
 QTimeEdit::down-arrow:disabled,
 QDateEdit::down-arrow:disabled,
 QDateTimeEdit::down-arrow:disabled {
-    image: url(qss:images_dark-light/down_arrow_disabled_dark.svg);
+    image: url(qss:images_dark-light/down_arrow_disabled_light.svg);
 }
 
 /* ComboBox */
@@ -1507,7 +1502,7 @@ QComboBox::down-arrow:focus {
 
 QComboBox::down-arrow:off,
 QComboBox::down-arrow:disabled {
-    image: url(qss:images_dark-light/down_arrow_disabled_dark.svg);
+    image: url(qss:images_dark-light/down_arrow_disabled_light.svg);
 }
 
 /* ComboBox menu */
@@ -1543,11 +1538,17 @@ QPushButton {
     border-radius: 4px;
 }
 
-QPushButton:hover,
-QPushButton:focus {
+QPushButton:hover {
     color: white;
     border-color: #65A2E5;
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #65A2E5, stop:1 #65A2E5);
+}
+
+QPushButton:checked,
+QPushButton:focus {
+    color: white;
+    border-color: #65A2E5;
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #4E76A0, stop:1 #434D5B);
 }
 
 QPushButton:disabled,
@@ -1559,11 +1560,6 @@ QPushButton:disabled:checked {
 
 QPushButton:pressed {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #65A2E5, stop:1 #65A2E5);
-}
-
-QPushButton:checked {
-    background-color: #65A2E5;
-    border-color: #65A2E5;
 }
 
 /* Color Buttons */
@@ -1800,8 +1796,7 @@ QRadioButton:focus {
 /*==================================================================================================
 Checkbox
 ==================================================================================================*/
-QCheckBox,
-QCheckBox:disabled {
+QCheckBox {
     color: #65A2E5;
     padding: 3px;
     outline: none;
@@ -1914,8 +1909,9 @@ QTreeView::indicator:checked {
 
 QListWidget::indicator:disabled,
 QTreeView::indicator:disabled {
-    background-color: rgba(255,255,255,20);
+    background-color: transparent;
     border: 1px solid rgba(255,255,255,20);
+    image:url(qss:images_dark-light/checkbox_indeterminate_light.svg);
 }
 
 QListWidget::indicator:indeterminate,
@@ -2113,7 +2109,7 @@ QToolBar > QToolButton#qt_toolbutton_menubutton::menu-button:open {
 }
 
 QToolBar > QToolButton::menu-arrow {
-    background-image: url(qss:images_dark-light/down_arrow_dark.svg);
+    background-image: url(qss:images_dark-light/down_arrow_light.svg);
     background-position: center center;
     background-repeat: none;
     subcontrol-origin: padding;
@@ -2127,6 +2123,11 @@ QToolBar > QToolButton::menu-arrow:hover {
 
 QToolBar > QToolButton::menu-arrow:open {
     background-image: url(qss:images_dark-light/down_arrow_lighter.svg);
+}
+
+QToolBar > QToolButton::menu-arrow:off,
+QToolBar > QToolButton::menu-arrow:disabled {
+    background-image: url(qss:images_dark-light/down_arrow_disabled_light.svg);
 }
 
 /* when QToolButton is checked: */
@@ -2437,10 +2438,7 @@ Gui--StatefulLabel[state="fully_constrained"] {
     color : rgba(0,255,0,255); /* Green */
     font-weight: bold;
 }
-Gui--UrlLabel {
-    color : rgba(100, 149, 237, 255); /* Cornflower blue */
-    text-decoration : underline;
-}
+
 
 /*==================================================================================================
  S *ettings menu #groupsTreeView:
@@ -2556,4 +2554,38 @@ QMenu, QMenu::item, QMenu::item:hover {
 QTreeView:disabled,
 QTreeView::indicator:disabled {
     color: #436d9b;
+}
+
+QWidget[objectName="Model"] QTreeView::item:!selected:hover,
+QTabWidget[objectName="combiTab"] QTreeView::item:!selected:hover,
+QWidget[objectName="Tree view"] QTreeView::item:!selected:hover {
+    background-color: #101a2b;
+}
+
+QTabWidget[objectName="propertyTab"] QTreeView::item:!selected:hover {
+    background-color: transparent;
+}
+
+QWidget[objectName="Model"] QTreeView:disabled,
+QWidget[objectName="Model"] QTreeView::indicator:disabled,
+QTabWidget[objectName="combiTab"] QTreeView:disabled,
+QTabWidget[objectName="combiTab"] QTreeView::indicator:disabled,
+QWidget[objectName="Tree view"] QTreeView:disabled,
+QWidget[objectName="Tree view"] QTreeView::indicator:disabled {
+    color: #5d6e80;
+}
+
+QTabWidget[objectName="propertyTab"] QTreeView:disabled,
+QTabWidget[objectName="propertyTab"] QTreeView::indicator:disabled {
+    color: #436d9b;
+}
+
+
+/*==================================================================================================
+Style Links
+==================================================================================================*/
+QLabel[haslink="true"],
+Gui--UrlLabel {
+    color: #8bd1ff;
+    text-decoration : underline;
 }
