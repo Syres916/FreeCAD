@@ -31,6 +31,7 @@
 #include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/MDIView.h>
+#include <Gui/View3DInventor.h>
 
 
 //===========================================================================
@@ -88,7 +89,11 @@ void CmdPartCylinder::activated(int iMsg)
     runCommand(Doc, getAutoGroupCommandStr().toUtf8());
     commitCommand();
     updateActive();
-    runCommand(Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+    std::list<Gui::MDIView*> views =
+        getActiveGuiDocument()->getMDIViewsOfType(Gui::View3DInventor::getClassTypeId());
+    for (const auto& view : views) {
+        view->viewAll();
+    }
 }
 
 bool CmdPartCylinder::isActive()
@@ -132,7 +137,11 @@ void CmdPartBox::activated(int iMsg)
     runCommand(Doc, getAutoGroupCommandStr().toUtf8());
     commitCommand();
     updateActive();
-    runCommand(Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+    std::list<Gui::MDIView*> views =
+        getActiveGuiDocument()->getMDIViewsOfType(Gui::View3DInventor::getClassTypeId());
+    for (const auto& view : views) {
+        view->viewAll();
+    }
 }
 
 bool CmdPartBox::isActive()
@@ -176,7 +185,11 @@ void CmdPartSphere::activated(int iMsg)
     runCommand(Doc, getAutoGroupCommandStr().toUtf8());
     commitCommand();
     updateActive();
-    runCommand(Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+    std::list<Gui::MDIView*> views =
+        getActiveGuiDocument()->getMDIViewsOfType(Gui::View3DInventor::getClassTypeId());
+    for (const auto& view : views) {
+        view->viewAll();
+    }
 }
 
 bool CmdPartSphere::isActive()
@@ -220,7 +233,11 @@ void CmdPartCone::activated(int iMsg)
     runCommand(Doc, getAutoGroupCommandStr().toUtf8());
     commitCommand();
     updateActive();
-    runCommand(Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+    std::list<Gui::MDIView*> views =
+        getActiveGuiDocument()->getMDIViewsOfType(Gui::View3DInventor::getClassTypeId());
+    for (const auto& view : views) {
+        view->viewAll();
+    }
 }
 
 bool CmdPartCone::isActive()
@@ -264,7 +281,11 @@ void CmdPartTorus::activated(int iMsg)
     runCommand(Doc, getAutoGroupCommandStr().toUtf8());
     commitCommand();
     updateActive();
-    runCommand(Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+    std::list<Gui::MDIView*> views =
+        getActiveGuiDocument()->getMDIViewsOfType(Gui::View3DInventor::getClassTypeId());
+    for (const auto& view : views) {
+        view->viewAll();
+    }
 }
 
 bool CmdPartTorus::isActive()
