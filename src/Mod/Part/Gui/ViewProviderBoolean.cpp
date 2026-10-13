@@ -40,6 +40,25 @@ using namespace PartGui;
 
 namespace
 {
+
+bool handleBooleanDeletionAnswerYes(const std::vector<App::DocumentObject*>& inputObjects) {
+    for (auto obj : inputObjects) {
+        if (obj && obj->isAttachedToDocument() && !obj->isRemoving()) {
+            obj->getDocument()->removeObject(obj->getNameInDocument());
+        }
+    }
+    return true;
+}
+
+bool handleBooleanDeletionAnswerNo(const std::vector<App::DocumentObject*>& inputObjects) {
+    for (auto obj : inputObjects) {
+        if (obj) {
+            Gui::Application::Instance->showViewProvider(obj);
+        }
+    }
+    return true;
+}
+
 // helper function for Boolean operation deletion with user confirmation
 bool handleBooleanDeletion(
     const std::vector<std::string>& subNames,
@@ -65,6 +84,19 @@ bool handleBooleanDeletion(
         }
         return true;
     }
+    // Power users can stop the repeated questioning of the deletion
+    Base::Reference<ParameterGrp> hGrp = App::GetApplication()
+                                             .GetUserParameter()
+                                             .GetGroup("BaseApp")
+                                             ->GetGroup("Preferences")
+                                             ->GetGroup("Mod/Part/Boolean");
+    std::string booleanDeleteAnswer = hGrp->GetASCII("BooleanDeleteAnswer");
+    if (booleanDeleteAnswer == "No") {
+        return handleBooleanDeletionAnswerNo(inputObjects);
+    }
+    else if (booleanDeleteAnswer == "Yes") {
+        return handleBooleanDeletionAnswerYes(inputObjects);
+    }
 
     QMessageBox::StandardButton choice = QMessageBox::question(
         Gui::getMainWindow(),
@@ -82,21 +114,10 @@ bool handleBooleanDeletion(
     }
 
     if (choice == QMessageBox::Yes) {
-        for (auto obj : inputObjects) {
-            if (obj && obj->isAttachedToDocument() && !obj->isRemoving()) {
-                obj->getDocument()->removeObject(obj->getNameInDocument());
-            }
-        }
-        return true;
+        return handleBooleanDeletionAnswerYes(inputObjects);
     }
 
-    for (auto obj : inputObjects) {
-        if (obj) {
-            Gui::Application::Instance->showViewProvider(obj);
-        }
-    }
-
-    return true;
+    return handleBooleanDeletionAnswerNo(inputObjects);
 }
 }  // namespace
 
